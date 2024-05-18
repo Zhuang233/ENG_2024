@@ -61,6 +61,8 @@ void TIM7_IRQHandler(void);
 void DMA2_Stream2_IRQHandler(void);
 void CAN2_RX0_IRQHandler(void);
 void CAN2_RX1_IRQHandler(void);
+void USART6_IRQHandler(void);
+void UART7_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
