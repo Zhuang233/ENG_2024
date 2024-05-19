@@ -11,4 +11,7 @@ void test_rc_moto(void);
 void test_wd(void);
 void test_reset_hy(void);
 void test_reset_qs(void);
+
+void test_lift(void);
+void test_lift_pid_init(void);
 #endif

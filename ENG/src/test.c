@@ -4,6 +4,7 @@
 //#include "trace.h"
 #include "RcDriver.h"
 #include "wd.h"
+#include "uart_zbw.h"
 
 #define TEST_PID_POS_P 1
 #define TEST_PID_POS_I 0
@@ -15,13 +16,20 @@
 PidTD pidtest;
 PidTD pid_test_spd;
 PidTD pid_test_pos;
-MotoStateTD* p_moto_state_test = &MotoState[0];
+MotoStateTD* p_moto_state_test = &MotoState[5];
+
 int current_test;
 bool hy_uninit = true;
 float qs_reset_speed = 2500;
 bool qs_uninit = true;
 uint8_t qs_reset_stage = 0;
 int32_t qs_angle_max;
+
+MotoStateTD* p_moto_state_test_lift = &MotoState[4];
+PidTD pid_test_spd_lift;
+PidTD pid_test_pos_lift;
+
+
 
 // 0号电机速度环测试
 void test_pid_spd(){
@@ -44,14 +52,14 @@ void test_pid_pos(){
 		p_moto_state_test->speed_desired = (int)pid_test_pos.outPID;
 		pid_calculate(&pid_test_spd, p_moto_state_test->speed_desired , p_moto_state_test->speed_actual);
 		current_test = (int)pid_test_spd.outPID;
-		SetMotoCurrent(&hcan1, Ahead, current_test, 0, 0 ,0);
+		SetMotoCurrent(&hcan1, Back, 0, current_test, 0 ,0);
 	  osDelay(1);
 }
 
 void test_rc_moto(){
-	MotoState[0].angle_desired += RC_CtrlData.rc.ch2;
-	if(MotoState[0].angle_desired > 1950000) MotoState[0].angle_desired = 1950000;
-	if(MotoState[0].angle_desired < 0) MotoState[0].angle_desired = 0;
+	MotoState[4].angle_desired += RC_CtrlData.rc.ch2;
+	if(MotoState[4].angle_desired > 1950000) MotoState[4].angle_desired = 1950000;
+	if(MotoState[4].angle_desired < 0) MotoState[4].angle_desired = 0;
 	osDelay(1);
 }
 
@@ -87,17 +95,19 @@ void test_wd(){
 void test_reset_hy(){
 	float speed = -800;
 	if(hy_uninit == true){
+		hy_reset = sync_data_from_c[0];
 		if(hy_reset == false){
 			// 速度环
-			pid_calculate_inc(&pidtest, speed, MotoState[0].speed_actual);
+			pid_calculate_inc(&pidtest, speed, MotoState[5].speed_actual);
 //			trace_pid(&pidtest);
-			SetMotoCurrent(&hcan1, Ahead, pidtest.outPID, 0, 0, 0);
+			SetMotoCurrent(&hcan1, Back, 0, pidtest.outPID, 0, 0);
 			
 		}
 		else{
-			SetMotoCurrent(&hcan1, Ahead, 0, 0, 0, 0);
+			SetMotoCurrent(&hcan1, Back, 0, 0, 0, 0);
 			osDelay(20);
-			if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_9) == GPIO_PIN_SET){
+			hy_reset = sync_data_from_c[0];
+			if(hy_reset== true){
 				pidInit(&pid_test_pos, 2000, 3000, TEST_PID_POS_P, TEST_PID_POS_I, TEST_PID_POS_D);
 				pidInit(&pid_test_spd, 2000, 10000, TEST_PID_SPD_P, TEST_PID_SPD_I, TEST_PID_SPD_D);
 				MotoStateInit(p_moto_state_test);
@@ -162,3 +172,23 @@ void test_reset_qs(){
 		test_pid_pos();
 	}
 }
+
+
+
+void test_lift_pid_init(){
+	pidInit(&pid_test_pos_lift, 2000, 10000, TEST_PID_POS_P, TEST_PID_POS_I, TEST_PID_POS_D);
+	pidInit(&pid_test_spd_lift, 2000, 10000, TEST_PID_SPD_P, TEST_PID_SPD_I, TEST_PID_SPD_D);
+	MotoStateInit(p_moto_state_test_lift);
+	current_test = 0;
+}
+
+// 抬升测试
+void test_lift(){
+		pid_calculate(&pid_test_pos_lift, (float)p_moto_state_test_lift->angle_desired , (float)p_moto_state_test_lift->angle);
+		p_moto_state_test_lift->speed_desired = (int)pid_test_pos_lift.outPID;
+		pid_calculate(&pid_test_spd_lift, p_moto_state_test_lift->speed_desired , p_moto_state_test_lift->speed_actual);
+		current_test = (int)pid_test_spd_lift.outPID;
+		SetMotoCurrent(&hcan1, Back, current_test, 0, 0 ,0);
+	  osDelay(1);
+}
+
