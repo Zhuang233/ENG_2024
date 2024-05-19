@@ -13,6 +13,8 @@
 //#include "trace.h"
 #include "test.h"
 #include "chassis.h"
+#include "usart.h"
+#include "uart_zbw.h"
 
 
 int zbwtest = 0;
@@ -77,6 +79,7 @@ void TestTask(void const * argument)
 	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
 	test_pid_pos_init();
 	chassis_pid_init();
+	test_lift_pid_init();
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -97,8 +100,7 @@ void TestTask(void const * argument)
 		// 微动开关测试
 		test_wd();
 		
-		// 横移复位测试
-		test_reset_hy();
+
 		
 		test_reset_qs();
 		
@@ -107,10 +109,17 @@ void TestTask(void const * argument)
 		
 		-----------------------------------------------------*/
 		// 底盘控制测试
-		ChassisTask_test();
+//		ChassisTask_test();
 		
-	
-	osDelay(1);
+		// 抬升测试
+//		test_lift();
+		// 写一个pid测试用
+//	
+//		osDelay(1);
+
+		
+				// 横移复位测试
+		test_reset_hy();
 
   }
 }
@@ -137,4 +146,10 @@ void LedTask(void const * argument)
   }
 }
 
-
+void DataSyncAnCTask(void const * argument){
+  for(;;)
+  {
+		data_sync_uart();
+    osDelay(1); 
+  }
+}

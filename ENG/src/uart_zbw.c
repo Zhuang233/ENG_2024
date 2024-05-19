@@ -11,8 +11,7 @@
 
 
 
-#define FRAME_HEAD 0x55
-#define FRAME_TAIL 0x56
+
 int16_t success_count=0;
 int16_t fail_count=0;
 
@@ -25,7 +24,9 @@ typedef struct {
 
 RingBuffer uart_ring_buffer;
 uint8_t data_rev_byte = 0;
-uint8_t real_data[FRAME_SIZE-2] = {0};
+
+uint8_t sync_data_to_c[SYNC_TO_C_SIZE] = {0};
+uint8_t sync_data_from_c[SYNC_FROM_C_SIZE] = {0};
 
 
 void RingBuffer_Init(RingBuffer *rb) {
@@ -72,7 +73,7 @@ void decode_uart_rev_data(){
 		RingBuffer_Get(&uart_ring_buffer,&test_byte);
 		if(test_byte == FRAME_HEAD){
 			for(int i=0; i<FRAME_SIZE-2;i++){
-				RingBuffer_Get(&uart_ring_buffer,(real_data+i));
+				RingBuffer_Get(&uart_ring_buffer,(sync_data_from_c+i));
 			}
 			RingBuffer_Get(&uart_ring_buffer,&test_byte);
 			success_count++;
@@ -83,6 +84,15 @@ void decode_uart_rev_data(){
 		}
 		
 	}
+}
+
+void data_sync_uart(){
+	uint8_t head = FRAME_HEAD;
+	uint8_t tail = FRAME_TAIL;
+	
+	HAL_UART_Transmit(&huart1, &head, 1, 10);
+	HAL_UART_Transmit(&huart1, sync_data_to_c, SYNC_TO_C_SIZE, 10);
+	HAL_UART_Transmit(&huart1, &tail, 1, 10);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
