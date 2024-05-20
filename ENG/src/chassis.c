@@ -47,3 +47,19 @@ void chassis_control(void)
 }
 
 
+// 底盘任务
+//1.控制数据接收与处理
+//2.pid解算
+//3.给电流
+void ChassisTask(void)
+{
+	chassis_control();
+	for(int i=0;i<4;i++){
+		pid_calculate(&chassis_pid_spd_moto[i], MotoState[i].speed_desired, MotoState[i].speed_actual);
+  }
+	SetMotoCurrent(&hcan1,Ahead,chassis_pid_spd_moto[0].outPID,
+															chassis_pid_spd_moto[1].outPID,
+															chassis_pid_spd_moto[2].outPID,
+															chassis_pid_spd_moto[3].outPID);
+}
+
