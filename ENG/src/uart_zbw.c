@@ -12,21 +12,20 @@
 
 
 
-int16_t success_count=0;
-int16_t fail_count=0;
-
 typedef struct {
     uint8_t buffer[FRAME_SIZE];
     volatile uint32_t head;
     volatile uint32_t tail;
     volatile uint32_t count;
 } RingBuffer;
-
 RingBuffer uart_ring_buffer;
-uint8_t data_rev_byte = 0;
 
-uint8_t sync_data_to_c[SYNC_TO_C_SIZE] = {0};
+
+
+uint8_t data_rev_byte = 0;
+DataUnion sync_data_to_c;
 uint8_t sync_data_from_c[SYNC_FROM_C_SIZE] = {0};
+
 
 
 void RingBuffer_Init(RingBuffer *rb) {
@@ -76,11 +75,9 @@ void decode_uart_rev_data(){
 				RingBuffer_Get(&uart_ring_buffer,(sync_data_from_c+i));
 			}
 			RingBuffer_Get(&uart_ring_buffer,&test_byte);
-			success_count++;
 		}
 		else{
 			RingBuffer_Init(&uart_ring_buffer);
-			fail_count++;
 		}
 		
 	}
@@ -90,21 +87,21 @@ void data_sync_uart(){
 	uint8_t head = FRAME_HEAD;
 	uint8_t tail = FRAME_TAIL;
 	
-	HAL_UART_Transmit(&huart1, &head, 1, 10);
-	HAL_UART_Transmit(&huart1, sync_data_to_c, SYNC_TO_C_SIZE, 10);
-	HAL_UART_Transmit(&huart1, &tail, 1, 10);
+	HAL_UART_Transmit(&huart6, &head, 1, 10);
+	HAL_UART_Transmit(&huart6, sync_data_to_c.bytes, SYNC_TO_C_SIZE, 100);
+	HAL_UART_Transmit(&huart6, &tail, 1, 10);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	
-	if(huart->Instance==UART7)
+	if(huart->Instance==USART6)
 	{
 		decode_uart_rev_data();
-		HAL_UART_Receive_IT(&huart7,&data_rev_byte,1);//恢复接受中断
+		HAL_UART_Receive_IT(&huart6,&data_rev_byte,1);//恢复接受中断
 	}
 }
 
 void usart_init(){
-	HAL_UART_Receive_IT(&huart7,&data_rev_byte,1);
+	HAL_UART_Receive_IT(&huart6,&data_rev_byte,1);
 	RingBuffer_Init(&uart_ring_buffer);
 }
