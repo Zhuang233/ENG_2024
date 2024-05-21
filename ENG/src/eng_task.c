@@ -29,13 +29,15 @@ void TestTask(void const * argument)
 	
 //	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
 //	test_pid_pos_init();
-//	chassis_pid_init();
-//	RoboArm_Pos_Init();
-//	osDelay(1000);
-//	reset_lift();
+	chassis_pid_init();
+	RoboArm_Pos_Init();
+	osDelay(1000);
+	reset_lift();
 //	TestDataUnion test;
 //	uint8_t aaa[3]={0x2f,0x42,0x40};
 	flip_init();
+	expand_init();
+  small_lift_init();
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -86,12 +88,10 @@ void TestTask(void const * argument)
 
 
 	RoboArm_RC_Ctrl();
-//	Update_Lift_Pos();
-//	Update_Expand_Pos();
-//	Update_Small_Lift_Pos();
-
-Update_Flip_Pos();
-
+	Update_Lift_Pos();
+	Update_Expand_Pos();
+	Update_Small_Lift_Pos();
+	Update_Flip_Pos();
 	osDelay(1);
 
   }
@@ -125,7 +125,7 @@ void LedTask(void const * argument)
 void DataSyncAnCTask(void const * argument){
   for(;;)
   {
-//		data_sync_uart();
+		data_sync_uart();
     osDelay(1); 
   }
 }
