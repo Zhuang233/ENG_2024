@@ -35,6 +35,7 @@ void TestTask(void const * argument)
 //	reset_lift();
 //	TestDataUnion test;
 //	uint8_t aaa[3]={0x2f,0x42,0x40};
+	small_lift_init();
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -87,6 +88,7 @@ void TestTask(void const * argument)
 	RoboArm_RC_Ctrl();
 	Update_Lift_Pos();
 	Update_Expand_Pos();
+	Update_Small_Lift_Pos();
 
 
 

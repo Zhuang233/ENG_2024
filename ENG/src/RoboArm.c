@@ -85,7 +85,38 @@ void Update_Expand_Pos(){
 
 //ËõÕÅ-------------------------------------------------------
 
+//Ð¡Ì§Éý-------------------------------------------------------
 
+#define SMALL_LIFT_POS_P 0.1
+#define SMALL_LIFT_POS_I 0
+#define SMALL_LIFT_POS_D 0
+#define SMALL_LIFT_SPD_P 20
+#define SMALL_LIFT_SPD_I 0
+#define SMALL_LIFT_SPD_D 0
+
+PidTD pid_small_lift_spd;
+PidTD pid_small_lift_pos;
+bool small_lift_inited = true;
+
+void small_lift_init(){
+	pidInit(&pid_small_lift_pos, 2000, 3000, SMALL_LIFT_POS_P, SMALL_LIFT_POS_I, SMALL_LIFT_POS_D);
+	pidInit(&pid_small_lift_spd, 2000, 10000, SMALL_LIFT_SPD_P, SMALL_LIFT_SPD_I, SMALL_LIFT_SPD_D);
+	MotoStateInit(&MotoState[6]);
+}
+
+
+void Update_Small_Lift_Pos(){
+	if(small_lift_inited){
+		pid_calculate(&pid_small_lift_pos, (float)MotoState[6].angle_desired , (float)MotoState[6].angle);
+		MotoState[6].speed_desired = (int)pid_small_lift_pos.outPID;
+		pid_calculate(&pid_small_lift_spd, MotoState[6].speed_desired , MotoState[6].speed_actual);
+		dji_moto_current_to_send[1] = pid_small_lift_spd.outPID;
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+	}
+		
+}
+
+//Ð¡Ì§Éý-------------------------------------------------------
 
 
 void RoboArm_Pos_Init(){
@@ -133,9 +164,14 @@ void RoboArm_RC_Ctrl(){
 	
 	
 	if(RC_CtrlData.rc.sw2 == 1){
-		MotoState[7].angle_desired += RC_CtrlData.rc.ch2;
+		MotoState[7].angle_desired += RC_CtrlData.rc.ch1;
 		if(MotoState[7].angle_desired > -10000) MotoState[7].angle_desired = -10000;
 		if(MotoState[7].angle_desired < -420000) MotoState[7].angle_desired = -420000;
+		
+		
+		MotoState[6].angle_desired += RC_CtrlData.rc.ch2;
+		if(MotoState[6].angle_desired > 380000) MotoState[6].angle_desired = 380000;
+		if(MotoState[6].angle_desired < 0) MotoState[6].angle_desired = 0;
 		
 	}
 }
