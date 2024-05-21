@@ -18,13 +18,10 @@
 #include "uart_zbw.h"
 #include "JointReset.h"
 #include "RoboArm.h"
-#include "arm_math.h"
 
 
 
 int zbwtest = 0;
-float Gravity_compensation = 0.0;
-float para_gravity = 0.0;
 
 // 单元测试/回归测试用
 void TestTask(void const * argument)
@@ -38,7 +35,7 @@ void TestTask(void const * argument)
 //	reset_lift();
 //	TestDataUnion test;
 //	uint8_t aaa[3]={0x2f,0x42,0x40};
-	small_lift_init();
+	flip_init();
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -88,17 +85,12 @@ void TestTask(void const * argument)
 //	ChassisTask();
 
 
-//	RoboArm_RC_Ctrl();
+	RoboArm_RC_Ctrl();
 //	Update_Lift_Pos();
 //	Update_Expand_Pos();
 //	Update_Small_Lift_Pos();
 
-
-// 动态重力补偿
-para_gravity = -(2000.0 + 1500.0 * (float)MotoState[5].angle / -200000.0);
-Gravity_compensation = para_gravity * arm_cos_f32(((float)MotoState[5].angle) * (PI/2.0)/200000.0);
-SetMotoCurrent(&hcan2, Ahead, Gravity_compensation, 0, 0, 0);
-
+Update_Flip_Pos();
 
 	osDelay(1);
 

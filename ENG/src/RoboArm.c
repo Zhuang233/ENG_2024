@@ -5,6 +5,7 @@
 #include "DJIMotoDriver.h"
 #include "JointReset.h"
 #include "chassis.h"
+#include "arm_math.h"
 
 //pitch
 #define ARM_ANGLE_MAX_1 45077
@@ -119,6 +120,45 @@ void Update_Small_Lift_Pos(){
 //小抬升-------------------------------------------------------
 
 
+//翻转-------------------------------------------------------
+
+#define FLIP_POS_P 0.08
+#define FLIP_POS_I 0.000001
+#define FLIP_POS_D 0
+#define FLIP_SPD_P 25
+#define FLIP_SPD_I 0
+#define FLIP_SPD_D 0
+
+float Gravity_compensation = 0.0;
+float para_gravity = 0.0;
+PidTD pid_flip_spd;
+PidTD pid_flip_pos;
+bool flip_inited = true;
+
+void flip_init(){
+	pidInit(&pid_flip_pos, 300, 500, FLIP_POS_P, FLIP_POS_I, FLIP_POS_D);
+	pidInit(&pid_flip_spd, 2000, 10000, FLIP_SPD_P, FLIP_SPD_I, FLIP_SPD_D);
+	MotoStateInit(&MotoState[5]);
+}
+
+
+void Update_Flip_Pos(){
+	if(flip_inited){
+		pid_calculate(&pid_flip_pos, (float)MotoState[5].angle_desired , (float)MotoState[5].angle);
+		MotoState[5].speed_desired = (int)pid_flip_pos.outPID;
+		pid_calculate(&pid_flip_spd, MotoState[5].speed_desired , MotoState[5].speed_actual);
+		// 动态重力补偿
+		para_gravity = -(2000.0 + 1500.0 * (float)MotoState[5].angle / -200000.0);
+		Gravity_compensation = para_gravity * arm_cos_f32(((float)MotoState[5].angle) * (PI/2.0)/200000.0);
+		
+		dji_moto_current_to_send[0] = pid_flip_spd.outPID + Gravity_compensation;
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+	}
+}
+
+//翻转-------------------------------------------------------
+
+
 void RoboArm_Pos_Init(){
 	sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1;
 	sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2;
@@ -173,6 +213,9 @@ void RoboArm_RC_Ctrl(){
 		if(MotoState[6].angle_desired > 380000) MotoState[6].angle_desired = 380000;
 		if(MotoState[6].angle_desired < 0) MotoState[6].angle_desired = 0;
 		
+		MotoState[5].angle_desired += RC_CtrlData.rc.ch4/5;
+		if(MotoState[5].angle_desired > 0) MotoState[5].angle_desired = 0;
+		if(MotoState[5].angle_desired < -200000) MotoState[5].angle_desired = -200000;
 	}
 }
 
