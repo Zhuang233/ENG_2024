@@ -23,6 +23,7 @@
 #define ARM_ANGLE_STD_3 24370
 
 
+int32_t virtual_link(int32_t x);
 //Ì§Éý-------------------------------------------------------
 
 #define LIFT_POS_P 0.5
@@ -204,21 +205,38 @@ void RoboArm_RC_Ctrl(){
 	
 	
 	if(RC_CtrlData.rc.sw2 == 1){
+		
+		// ËõÕÅ
 		MotoState[7].angle_desired += RC_CtrlData.rc.ch1;
 		if(MotoState[7].angle_desired > -10000) MotoState[7].angle_desired = -10000;
 		if(MotoState[7].angle_desired < -420000) MotoState[7].angle_desired = -420000;
+	
 		
-		
-		MotoState[6].angle_desired += RC_CtrlData.rc.ch2;
-		if(MotoState[6].angle_desired > 380000) MotoState[6].angle_desired = 380000;
-		if(MotoState[6].angle_desired < 0) MotoState[6].angle_desired = 0;
-		
+		// ·­×ª
 		MotoState[5].angle_desired += RC_CtrlData.rc.ch4/5;
 		if(MotoState[5].angle_desired > 0) MotoState[5].angle_desired = 0;
 		if(MotoState[5].angle_desired < -200000) MotoState[5].angle_desired = -200000;
+
+		// Ð¡Ì§Éý
+		//	MotoState[6].angle_desired += RC_CtrlData.rc.ch2;
+		
+		MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
+		if(MotoState[6].angle_desired > 380000) MotoState[6].angle_desired = 380000;
+		if(MotoState[6].angle_desired < 0) MotoState[6].angle_desired = 0;
 	}
 }
 
 
-
+int32_t virtual_link(int32_t x){
+	  if (-30000< x && x <=0)           return (float)x            / -30.0;
+    if (-40000 < x && x<= -30000)      return ((float)x + 3333.3) / -(1.0/0.55);
+    if (-57500 < x && x<= -40000)     return ((float)x + 30683)  / -0.493;
+    if (-79000 < x && x <= -57500)    return ((float)x + 31461)  / -0.478;
+    if (-87000 < x && x <= -79000)   return ((float)x + 63244)  / -0.158;
+    if (-103000 < x && x <= -87000)  return ((float)x + 31186)  / -0.372;
+    if (-125000 < x && x<= -103000)   return ((float)x - 10246)  / -0.587;
+    if (-170000 < x && x<= -125000)   return ((float)x - 298909) / -1.837;
+    if (-191500 < x && x <= -170000)  return ((float)x + 41188)  / -0.506;
+    if (-250000 < x && x<= -191500)   return ((float)x + 160311) / -0.105;
+}
 
