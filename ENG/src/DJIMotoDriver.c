@@ -78,8 +78,8 @@ void SaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 			{
 				static uint8_t i = 0;
 				//get motor id
-				i = Rx_Msg.StdId - CAN_Motor1_ID; // 组内编号
-				if(hcan == &hcan2) i += 8; // 加上组别偏移
+				i = Rx_Msg.StdId - CAN_Motor1_ID;
+				if(hcan == &hcan2) i += 5;
 				UpdateMotoState(&MotoState[i]);
 				break;
 			}

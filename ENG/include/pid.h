@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "main.h"
 #include "tim.h"
+#include "time.h"
 /*
 	必须提供符合以下条件的定时器：
 		1. 频率1MHz
@@ -11,14 +12,6 @@
 		3. 重装载值0xFFFFFFFF
 */
 #define PID_TIMER_HANDEL htim2
-
-typedef struct 
-{
-	uint32_t 	timer_cnt_now;
-	uint32_t 	timer_cnt_last;
-	float	 		timer_cnt_total;
-	float			dt;
-}TimeTD;
 
 typedef struct Pid_Object
 {

@@ -18,6 +18,19 @@ typedef struct {
 	uint16_t theta3;
 }FiveJointCtrlDataTD;
 
+
+typedef struct {
+	int32_t a;
+	int32_t b;
+}TestDataTD;
+
+typedef union{
+	TestDataTD data;
+	uint8_t bytes[sizeof(TestDataTD)];
+}TestDataUnion;
+
+
+
 typedef union{
 	FiveJointCtrlDataTD data;
 	uint8_t bytes[sizeof(FiveJointCtrlDataTD)];

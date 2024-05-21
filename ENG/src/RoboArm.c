@@ -55,6 +55,36 @@ void Update_Lift_Pos(){
 //Ì§Éý-------------------------------------------------------
 
 
+//ËõÕÅ-------------------------------------------------------
+#define EXPAND_POS_P 0.5
+#define EXPAND_POS_I 0
+#define EXPAND_POS_D 0
+#define EXPAND_SPD_P 10
+#define EXPAND_SPD_I 1
+#define EXPAND_SPD_D 0
+
+PidTD pid_expand_spd;
+PidTD pid_expand_pos;
+
+void expand_init(){
+	pidInit(&pid_expand_pos, 2000, 6000, EXPAND_POS_P, EXPAND_POS_I, EXPAND_POS_D);
+	pidInit(&pid_expand_spd, 2000, 10000, EXPAND_SPD_P, EXPAND_SPD_I, EXPAND_SPD_D);
+	MotoStateInit(&MotoState[4]);
+}
+
+
+void Update_Expand_Pos(){
+	if(expand_inited){
+		pid_calculate(&pid_expand_pos, (float)MotoState[7].angle_desired , (float)MotoState[7].angle);
+		MotoState[7].speed_desired = (int)pid_expand_pos.outPID;
+		pid_calculate(&pid_expand_spd, MotoState[7].speed_desired , MotoState[7].speed_actual);
+		dji_moto_current_to_send[2] = pid_expand_spd.outPID;
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+	}
+}
+
+//ËõÕÅ-------------------------------------------------------
+
 
 
 
@@ -99,6 +129,14 @@ void RoboArm_RC_Ctrl(){
 	else if(RC_CtrlData.rc.sw1 == 2){
 		chassis_control();
 		ChassisTask();
+	}
+	
+	
+	if(RC_CtrlData.rc.sw2 == 1){
+		MotoState[7].angle_desired += RC_CtrlData.rc.ch2;
+		if(MotoState[7].angle_desired > -10000) MotoState[7].angle_desired = -10000;
+		if(MotoState[7].angle_desired < -420000) MotoState[7].angle_desired = -420000;
+		
 	}
 }
 

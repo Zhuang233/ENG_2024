@@ -27,12 +27,14 @@ int zbwtest = 0;
 void TestTask(void const * argument)
 {
 	
-	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
-	test_pid_pos_init();
-	chassis_pid_init();
-	RoboArm_Pos_Init();
-	osDelay(1000);
-	reset_lift();
+//	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
+//	test_pid_pos_init();
+//	chassis_pid_init();
+//	RoboArm_Pos_Init();
+//	osDelay(1000);
+//	reset_lift();
+//	TestDataUnion test;
+//	uint8_t aaa[3]={0x2f,0x42,0x40};
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -57,6 +59,13 @@ void TestTask(void const * argument)
 		
 		// EC电机测试
 		EC_set_motor_position(6, 30.0, 300, 50, 3);
+
+
+//	test.data.a = MotoState[5].angle;
+//	test.data.b = MotoState[6].angle;
+//	HAL_UART_Transmit(&huart6, test.bytes, 4, 100);
+//	HAL_UART_Transmit(&huart6, test.bytes+4, 4, 100);
+//	HAL_UART_Transmit(&huart6, aaa, 3, 100);
 		
 		-----------------------------------------------------*/
 		// 底盘控制测试
@@ -65,7 +74,7 @@ void TestTask(void const * argument)
 		// 抬升测试
 //		test_lift();
 		// 写一个pid测试用
-		
+
 //	
 //		osDelay(1);
 		// 测试电机电流直接控制
@@ -73,8 +82,14 @@ void TestTask(void const * argument)
 //		osDelay(1);
 	
 //	ChassisTask();
+
+
 	RoboArm_RC_Ctrl();
 	Update_Lift_Pos();
+	Update_Expand_Pos();
+
+
+
 	osDelay(1);
 
   }
@@ -84,9 +99,12 @@ void TestTask(void const * argument)
 // 电机任务函数
 void MotoTask(void const * argument)
 {
+	osDelay(3000);
+	reset_expand();
   for(;;)
   {
     osDelay(1); 
+//		SetMotoCurrent(&hcan2, Ahead, 1000, 0, 0, 0);
   }
 }
 
@@ -105,7 +123,7 @@ void LedTask(void const * argument)
 void DataSyncAnCTask(void const * argument){
   for(;;)
   {
-		data_sync_uart();
+//		data_sync_uart();
     osDelay(1); 
   }
 }
