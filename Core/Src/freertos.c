@@ -51,6 +51,7 @@ osThreadId defaultTaskHandle;
 osThreadId TestHandle;
 osThreadId MotoHandle;
 osThreadId DataSyncAnCHandle;
+osThreadId FlipHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -61,6 +62,7 @@ void StartDefaultTask(void const * argument);
 void TestTask(void const * argument);
 void MotoTask(void const * argument);
 void DataSyncAnCTask(void const * argument);
+void FlipTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -122,6 +124,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of DataSyncAnC */
   osThreadDef(DataSyncAnC, DataSyncAnCTask, osPriorityIdle, 0, 128);
   DataSyncAnCHandle = osThreadCreate(osThread(DataSyncAnC), NULL);
+
+  /* definition and creation of Flip */
+  osThreadDef(Flip, FlipTask, osPriorityHigh, 0, 128);
+  FlipHandle = osThreadCreate(osThread(Flip), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -199,6 +205,24 @@ __weak void DataSyncAnCTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END DataSyncAnCTask */
+}
+
+/* USER CODE BEGIN Header_FlipTask */
+/**
+* @brief Function implementing the Flip thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_FlipTask */
+__weak void FlipTask(void const * argument)
+{
+  /* USER CODE BEGIN FlipTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END FlipTask */
 }
 
 /* Private application code --------------------------------------------------*/

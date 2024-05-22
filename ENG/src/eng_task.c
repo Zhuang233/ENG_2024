@@ -1,23 +1,19 @@
 #include "eng_task.h"
-
-
-//#include "FreeRTOS.h"
-//#include "task.h"
-//#include "main.h"
 #include "cmsis_os.h"
-
 #include "can.h"
 #include "DJIMotoDriver.h"
 #include "LKMotoDriver.h"
 #include "pid.h"
-//#include "trace.h"
 #include "test.h"
 #include "chassis.h"
+#include "relay.h"
 #include "usart.h"
 #include "RoboArm.h"
 #include "uart_zbw.h"
 #include "JointReset.h"
 #include "RoboArm.h"
+#include "RCDriver.h"
+
 
 
 
@@ -27,15 +23,10 @@ int zbwtest = 0;
 void TestTask(void const * argument)
 {
 	
-//	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
-//	test_pid_pos_init();
 	chassis_pid_init();
 	RoboArm_Pos_Init();
 	osDelay(1000);
 	reset_lift();
-//	TestDataUnion test;
-//	uint8_t aaa[3]={0x2f,0x42,0x40};
-	flip_init();
 	expand_init();
   small_lift_init();
   for(;;)
@@ -62,31 +53,17 @@ void TestTask(void const * argument)
 		
 		// EC电机测试
 		EC_set_motor_position(6, 30.0, 300, 50, 3);
-
-
-//	test.data.a = MotoState[5].angle;
-//	test.data.b = MotoState[6].angle;
-//	HAL_UART_Transmit(&huart6, test.bytes, 4, 100);
-//	HAL_UART_Transmit(&huart6, test.bytes+4, 4, 100);
-//	HAL_UART_Transmit(&huart6, aaa, 3, 100);
+		
+		// 底盘控制测试
+		//		ChassisTask();
+				
+		// 测试电机电流直接控制
+		//		SetMotoCurrent(&hcan1, Back, zbwtest, 0, 0, 0);
+		//		osDelay(1);
 		
 		-----------------------------------------------------*/
-		// 底盘控制测试
-//		ChassisTask();
-		
-		// 抬升测试
-//		test_lift();
-		// 写一个pid测试用
 
-//	
-//		osDelay(1);
-		// 测试电机电流直接控制
-//		SetMotoCurrent(&hcan1, Back, zbwtest, 0, 0, 0);
-//		osDelay(1);
-	
-//	ChassisTask();
-
-
+	RoboArm_RC_Ctrl_Fixed_Point();
 	RoboArm_RC_Ctrl();
 	Update_Lift_Pos();
 	Update_Expand_Pos();
@@ -106,19 +83,6 @@ void MotoTask(void const * argument)
   for(;;)
   {
     osDelay(1); 
-//		SetMotoCurrent(&hcan2, Ahead, 1000, 0, 0, 0);
-  }
-}
-
-
-void LedTask(void const * argument)
-{
-  for(;;)
-  {
-//     HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
-//		 osDelay(500);
-//		 HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
-//		 osDelay(500);
   }
 }
 
@@ -129,3 +93,55 @@ void DataSyncAnCTask(void const * argument){
     osDelay(1); 
   }
 }
+
+
+
+#define VIRTUAL_LINK 1
+#define FETCH_SLIVER_1 2
+#define FETCH_SLIVER_2 3
+#define FETCH_SLIVER_3 4
+#define RC_FLIP 5
+
+uint8_t flip_mode = VIRTUAL_LINK;
+void FlipTask(void const * argument){
+	flip_init();
+  for(;;)
+  {
+		// 函数形式，外部控制翻转就行
+		if(flip_mode == VIRTUAL_LINK){
+			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
+		}
+		// 取银矿高度和伸展
+		else if(flip_mode == FETCH_SLIVER_1){
+			MotoState[6].angle_desired = 315000;
+			MotoState[5].angle_desired = -200000;
+			MotoState[7].angle_desired = -427240;
+		}
+		// 开泵吸取、抬高
+		else if(flip_mode == FETCH_SLIVER_2){
+			xipan_left_open();
+//			xipan_right_open();
+			xipan_middle_open();
+			pump_bottom_open();
+			osDelay(5000);
+			MotoState[6].angle_desired = 450000;
+			osDelay(1000);
+			MotoState[5].angle_desired = -170000;
+		}
+		// 靠紧、函数回收
+		else if(flip_mode == FETCH_SLIVER_3){
+			MotoState[7].angle_desired = -10000;
+			MotoState[5].angle_desired = -10000;
+			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
+		}
+		else if(flip_mode == RC_FLIP){
+				MotoState[5].angle_desired += RC_CtrlData.rc.ch4/5;
+				if(MotoState[5].angle_desired > 0) MotoState[5].angle_desired = 0;
+				if(MotoState[5].angle_desired < -200000) MotoState[5].angle_desired = -200000;
+		}
+    osDelay(1); 
+  }
+}
+
+
+

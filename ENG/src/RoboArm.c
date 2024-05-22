@@ -168,9 +168,9 @@ void RoboArm_Pos_Init(){
 	sync_data_to_c.data.hy_pos = -200000;
 }
 
-// 遥控控制6轴
+// 遥控控制全车
 void RoboArm_RC_Ctrl(){
-	if(RC_CtrlData.rc.sw1 == 1){
+	if(RC_CtrlData.rc.sw1 == 1 && RC_CtrlData.rc.sw2 == 1){
 		sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
 		if(sync_data_to_c.data.theta1 > ARM_ANGLE_MAX_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MAX_1;
 		if(sync_data_to_c.data.theta1 < ARM_ANGLE_MIN_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MIN_1;
@@ -182,10 +182,11 @@ void RoboArm_RC_Ctrl(){
 		sync_data_to_c.data.theta3 -= RC_CtrlData.rc.ch3 / 15;
 		if(sync_data_to_c.data.theta3 > ARM_ANGLE_MAX_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MAX_3;
 		if(sync_data_to_c.data.theta3 < ARM_ANGLE_MIN_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MIN_3;
+		
 	}
 	
 	
-	else if(RC_CtrlData.rc.sw1 == 3){
+	else if(RC_CtrlData.rc.sw1 == 3 && RC_CtrlData.rc.sw2 == 1){
 		sync_data_to_c.data.qs_pos += RC_CtrlData.rc.ch4 * 2.5;
 		if(sync_data_to_c.data.qs_pos > 780000) sync_data_to_c.data.qs_pos = 780000;
 		if(sync_data_to_c.data.qs_pos < 10000) sync_data_to_c.data.qs_pos = 10000;
@@ -204,7 +205,7 @@ void RoboArm_RC_Ctrl(){
 	}
 	
 	
-	if(RC_CtrlData.rc.sw2 == 1){
+	if(RC_CtrlData.rc.sw2 == 1 && RC_CtrlData.rc.sw2 == 1){
 		
 		// 缩张
 		MotoState[7].angle_desired += RC_CtrlData.rc.ch1;
@@ -226,6 +227,75 @@ void RoboArm_RC_Ctrl(){
 	}
 }
 
+
+//uint8_t stage = 0;
+//void one_key_fetch_sliver(){
+//	bool fetch_finish = false;
+//	stage = 0;
+//	
+//	while(!fetch_finish){
+//		// 翻开到达拟合终点
+//		if(stage == 0 && RC_CtrlData.rc.sw2 == 1){
+//			stage = 1;
+//			MotoState[5].angle_desired = -200000;
+//			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
+//		}
+//		if(stage == 1 && MotoState[5].angle < -195000){
+//			
+//		}
+//	
+//	}
+
+//	
+
+//}
+
+
+
+float gx=500,gy=300.0,gz=600.0;
+float theta_real_1 = 0.0,theta_real_2 = 0.0,theta_real_3 = 0.0;
+float c1,c2,c3,s1,s2,s3;
+float h,w,l;
+
+
+void RoboArm_RC_Ctrl_Fixed_Point(){
+	if(RC_CtrlData.rc.sw2 == 3){
+			sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
+			if(sync_data_to_c.data.theta1 > ARM_ANGLE_MAX_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MAX_1;
+			if(sync_data_to_c.data.theta1 < ARM_ANGLE_MIN_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MIN_1;
+			
+			sync_data_to_c.data.theta2 -= RC_CtrlData.rc.ch1 / 15;
+			if(sync_data_to_c.data.theta2 > ARM_ANGLE_MAX_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MAX_2;
+			if(sync_data_to_c.data.theta2 < ARM_ANGLE_MIN_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MIN_2;
+			
+			sync_data_to_c.data.theta3 -= RC_CtrlData.rc.ch3 / 15;
+			if(sync_data_to_c.data.theta3 > ARM_ANGLE_MAX_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MAX_3;
+			if(sync_data_to_c.data.theta3 < ARM_ANGLE_MIN_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MIN_3;
+		
+			theta_real_1 = PI/32767.5*(float)(sync_data_to_c.data.theta1 - ARM_ANGLE_STD_1);
+			theta_real_2 = -PI/32767.5*(float)(sync_data_to_c.data.theta2 - ARM_ANGLE_STD_2);
+			theta_real_3 = PI/32767.5*(float)(sync_data_to_c.data.theta3 - ARM_ANGLE_STD_3);
+			c1 = arm_cos_f32(theta_real_1);
+			c2 = arm_cos_f32(theta_real_2 - PI/2);
+			c3 = arm_cos_f32(theta_real_3);
+			s1 = arm_sin_f32(theta_real_1);
+			s2 = arm_sin_f32(theta_real_2 - PI/2);
+			s3 = arm_sin_f32(theta_real_3);
+			
+			h = gz - 120.0*s2*s1;
+			w = gy - 225.0*s3 -120.0*(c3*c2*s1+s3*c1);
+			l = gx - 225.0*c3 -120.0*(-s3*c2*s1+c3*c1);
+			
+			MotoState[4].angle_desired = (int32_t)((h - 973.0)*500000.0/175.0);
+			sync_data_to_c.data.hy_pos = (int32_t)(w *390000.0/600.0 -390000);
+			sync_data_to_c.data.qs_pos = (int32_t)(l * 780000.0/388.0);
+			
+			
+			if(MotoState[4].angle_desired > -10000) MotoState[4].angle_desired = -10000;
+			if(MotoState[4].angle_desired < -1950000) MotoState[4].angle_desired = -1950000;
+		}
+
+}
 
 int32_t virtual_link(int32_t x){
 	  if (-30000< x && x <=0)           return (float)x            / -30.0;
