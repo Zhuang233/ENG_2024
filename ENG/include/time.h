@@ -17,3 +17,4 @@ typedef struct
 void TimeInit(TimeTD *time);
 void GetDt(TimeTD *time, uint32_t time_unit);
 #endif
+

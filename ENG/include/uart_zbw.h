@@ -6,9 +6,30 @@
 
 #define FRAME_HEAD 0x55
 #define FRAME_TAIL 0xaa
-#define FRAME_SIZE 10 // 接收帧长度
 #define SYNC_TO_C_SIZE (sizeof(DataUnion)) //发送数据长度
-#define SYNC_FROM_C_SIZE 8// 接收数据长度
+#define SYNC_FROM_C_SIZE 26// 接收数据长度
+
+#define FRAME_SIZE2 30 // 接收帧长度
+
+//MyCtrlUnion my_ctrl_data;
+#define FRAME_SIZE 30
+#define DATA_SIZE 28
+
+typedef struct __attribute__((packed)) {
+	uint8_t key1;
+	uint8_t key2;
+	float vx;
+	float vy;
+	float vz;
+	float roll;
+	float pitch;
+	float yaw;
+} MyCtrlTD;
+
+typedef union{
+	MyCtrlTD data;
+	uint8_t bytes[sizeof(MyCtrlTD)];
+}MyCtrlUnion;
 
 typedef struct {
 	int32_t qs_pos;
@@ -17,6 +38,25 @@ typedef struct {
 	uint16_t theta2;
 	uint16_t theta3;
 }FiveJointCtrlDataTD;
+
+typedef struct __attribute__((packed)){
+	uint8_t key1;
+	uint8_t key2;
+	uint8_t temp[2];
+	float vx;
+	float vy;
+	float vz;
+	float roll;
+	float pitch;
+	float yaw;
+}MyCtrlDataTD;
+
+//48bit(9+30+9)
+
+typedef union{
+	MyCtrlDataTD data;
+	uint8_t bytes[sizeof(MyCtrlDataTD)];
+}MyCtrlDataUnion;
 
 
 typedef struct {
@@ -36,8 +76,15 @@ typedef union{
 	uint8_t bytes[sizeof(FiveJointCtrlDataTD)];
 }DataUnion;
 
+typedef union {
+	MyCtrlDataTD data;
+    uint8_t bytes[DATA_SIZE]; // 控制数据
+} ControlData;
+
+
 extern DataUnion sync_data_to_c;
 extern uint8_t sync_data_from_c[SYNC_FROM_C_SIZE];
+extern ControlData my_ctrl_data;
 
 void usart_init(void);
 void data_sync_uart(void);

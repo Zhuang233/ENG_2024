@@ -129,6 +129,9 @@ void FlipTask(void const * argument){
 			MotoState[5].angle_desired = -170000;
 		}
 		// 靠紧、函数回收
+		
+		
+
 		else if(flip_mode == FETCH_SLIVER_3){
 			MotoState[7].angle_desired = -10000;
 			MotoState[5].angle_desired = -10000;
@@ -144,4 +147,18 @@ void FlipTask(void const * argument){
 }
 
 
+bool lock_ctrl = true;
+
+void CtrlLockTask(void const * argument){
+  for(;;)
+  {
+		lock_ctrl = true;
+		osDelay(500);
+		if(lock_ctrl == true){
+			my_ctrl_data.data.vz = 0.0f;
+			my_ctrl_data.data.vy = 0.0f;
+			my_ctrl_data.data.vx = 0.0f;
+		}
+	}
+}
 

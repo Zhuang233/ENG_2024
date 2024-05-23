@@ -6,6 +6,7 @@
 #include "JointReset.h"
 #include "chassis.h"
 #include "arm_math.h"
+#include "relay.h"
 
 //pitch
 #define ARM_ANGLE_MAX_1 45077
@@ -26,7 +27,7 @@
 int32_t virtual_link(int32_t x);
 //Ì§Éý-------------------------------------------------------
 
-#define LIFT_POS_P 0.5
+#define LIFT_POS_P 0.05
 #define LIFT_POS_I 0
 #define LIFT_POS_D 0
 #define LIFT_SPD_P 24
@@ -252,23 +253,53 @@ void RoboArm_RC_Ctrl(){
 
 
 
-float gx=500,gy=300.0,gz=600.0;
+float gx=380,gy=350.0,gz=350.0;
 float theta_real_1 = 0.0,theta_real_2 = 0.0,theta_real_3 = 0.0;
 float c1,c2,c3,s1,s2,s3;
 float h,w,l;
+bool my_ctrl_reset_first_time = true;
 
-
+extern bool lock_ctrl;
+float suofang = 2.0;
 void RoboArm_RC_Ctrl_Fixed_Point(){
 	if(RC_CtrlData.rc.sw2 == 3){
-			sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
+			if(my_ctrl_data.data.key1 == 0xff){
+				pump_top_open();
+				xipan_top_open();
+				
+			}
+			else{
+				pump_top_close();
+				xipan_top_close();
+			}
+			
+			if(my_ctrl_data.data.key2 == 0xff && my_ctrl_reset_first_time){
+				gx=250.0;
+				gy=300.0;
+				gz=380.0;
+				my_ctrl_reset_first_time = false;
+			}
+			else if(my_ctrl_data.data.key2 == 0x00){
+				my_ctrl_reset_first_time = true;
+			}
+			
+			gz += my_ctrl_data.data.vz * suofang;
+			gy -= my_ctrl_data.data.vx * 1.3*suofang;
+			gx += my_ctrl_data.data.vy * suofang;
+		
+		
+//			sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
+			sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1 - my_ctrl_data.data.pitch * 16384.0 / 90.0;
 			if(sync_data_to_c.data.theta1 > ARM_ANGLE_MAX_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MAX_1;
 			if(sync_data_to_c.data.theta1 < ARM_ANGLE_MIN_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MIN_1;
 			
-			sync_data_to_c.data.theta2 -= RC_CtrlData.rc.ch1 / 15;
+//			sync_data_to_c.data.theta2 -= RC_CtrlData.rc.ch1 / 15;
+			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - my_ctrl_data.data.roll * 16384.0 / 90.0;
 			if(sync_data_to_c.data.theta2 > ARM_ANGLE_MAX_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MAX_2;
 			if(sync_data_to_c.data.theta2 < ARM_ANGLE_MIN_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MIN_2;
 			
-			sync_data_to_c.data.theta3 -= RC_CtrlData.rc.ch3 / 15;
+//			sync_data_to_c.data.theta3 -= RC_CtrlData.rc.ch3 / 15;
+			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_1 - my_ctrl_data.data.yaw * 16384.0 / 90.0;
 			if(sync_data_to_c.data.theta3 > ARM_ANGLE_MAX_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MAX_3;
 			if(sync_data_to_c.data.theta3 < ARM_ANGLE_MIN_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MIN_3;
 		
@@ -293,8 +324,10 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			
 			if(MotoState[4].angle_desired > -10000) MotoState[4].angle_desired = -10000;
 			if(MotoState[4].angle_desired < -1950000) MotoState[4].angle_desired = -1950000;
+			
+			
 		}
-
+	
 }
 
 int32_t virtual_link(int32_t x){
