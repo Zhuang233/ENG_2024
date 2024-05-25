@@ -7,7 +7,8 @@
 #include "chassis.h"
 #include "arm_math.h"
 #include "relay.h"
-
+#include "referee.h"
+#include "math.h"
 //pitch
 #define ARM_ANGLE_MAX_1 45077
 #define ARM_ANGLE_MIN_1 12650
@@ -124,6 +125,7 @@ void Update_Small_Lift_Pos(){
 
 //翻转-------------------------------------------------------
 
+////#define FLIP_POS_P 0.08
 #define FLIP_POS_P 0.08
 #define FLIP_POS_I 0.000001
 #define FLIP_POS_D 0
@@ -206,7 +208,7 @@ void RoboArm_RC_Ctrl(){
 	}
 	
 	
-	if(RC_CtrlData.rc.sw2 == 1 && RC_CtrlData.rc.sw2 == 1){
+	if(RC_CtrlData.rc.sw2 == 2){
 		
 		// 缩张
 		MotoState[7].angle_desired += RC_CtrlData.rc.ch1;
@@ -229,27 +231,27 @@ void RoboArm_RC_Ctrl(){
 }
 
 
-//uint8_t stage = 0;
-//void one_key_fetch_sliver(){
-//	bool fetch_finish = false;
-//	stage = 0;
-//	
-//	while(!fetch_finish){
-//		// 翻开到达拟合终点
-//		if(stage == 0 && RC_CtrlData.rc.sw2 == 1){
-//			stage = 1;
-//			MotoState[5].angle_desired = -200000;
-//			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
-//		}
-//		if(stage == 1 && MotoState[5].angle < -195000){
-//			
-//		}
-//	
-//	}
+uint8_t stage = 0;
+void one_key_fetch_sliver(){
+	bool fetch_finish = false;
+	stage = 0;
+	
+	while(!fetch_finish){
+		// 翻开到达拟合终点
+		if(stage == 0 && RC_CtrlData.rc.sw2 == 1){
+			stage = 1;
+			MotoState[5].angle_desired = -200000;
+			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
+		}
+		if(stage == 1 && MotoState[5].angle < -195000){
+			
+		}
+	
+	}
 
-//	
+	
 
-//}
+}
 
 
 
@@ -263,7 +265,7 @@ extern bool lock_ctrl;
 float suofang = 2.0;
 void RoboArm_RC_Ctrl_Fixed_Point(){
 	if(RC_CtrlData.rc.sw2 == 3){
-			if(my_ctrl_data.data.key1 == 0xff){
+			if(custom_controller_data_t.key_1 == 0xff){
 				pump_top_open();
 				xipan_top_open();
 				
@@ -273,33 +275,66 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 				xipan_top_close();
 			}
 			
-			if(my_ctrl_data.data.key2 == 0xff && my_ctrl_reset_first_time){
+			if(custom_controller_data_t.key_2 == 0xff && my_ctrl_reset_first_time){
 				gx=250.0;
 				gy=300.0;
 				gz=380.0;
 				my_ctrl_reset_first_time = false;
 			}
-			else if(my_ctrl_data.data.key2 == 0x00){
+			else if(custom_controller_data_t.key_2 == 0x00){
 				my_ctrl_reset_first_time = true;
 			}
 			
-			gz += my_ctrl_data.data.vz * suofang;
-			gy -= my_ctrl_data.data.vx * 1.3*suofang;
-			gx += my_ctrl_data.data.vy * suofang;
+			gz += custom_controller_data_t.vz * suofang;
+			gy -= custom_controller_data_t.vx * 1.3*suofang;
+			gx += custom_controller_data_t.vy * suofang;
+			
+			if(gx < 250) gx = 250.0;
+			if(gx > 800) gx = 800.0;
+			if(gz < 200.0) gz = 200.0;	
+			if(gz >980.0) gz = 980.0;				
+			if(gy < 0) gy = 0;
+			if(gy > 600) gy = 600;
 		
-		
-//			sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
-			sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1 - my_ctrl_data.data.pitch * 16384.0 / 90.0;
+			// 1.遥控给欧拉角
+			//			sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
+			//			sync_data_to_c.data.theta2 -= RC_CtrlData.rc.ch1 / 15;
+			//			sync_data_to_c.data.theta3 -= RC_CtrlData.rc.ch3 / 15;
+			
+			// 2.自定义控制器欧拉角
+			//			sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1 - custom_controller_data_t.pitch * 16384.0 / 90.0;
+			//			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - custom_controller_data_t.roll * 16384.0 / 90.0;
+			//			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_1 - custom_controller_data_t.yaw * 16384.0 / 90.0;
+			
+			
+			
+			// 3.自定义控制器四元数转欧拉角(不会)
+
+//			sync_data_to_c.data.theta1 = 
+//			sync_data_to_c.data.theta2 =
+//			sync_data_to_c.data.theta3 = 
+			
+			float w,x,y,z;
+			w = custom_controller_data_t.quaternion[0];
+			x = custom_controller_data_t.quaternion[1];
+			y = custom_controller_data_t.quaternion[2];
+	    z = custom_controller_data_t.quaternion[3];
+			
+			float yaw =  asin(2.0 * (x*z - w*y)) * 180.0 / PI;
+			float pitch =  atan2(2.0 * (w*x + y*z), w*w - x*x - y*y + z*z) * 180.0 / PI;
+			float roll = -atan2(2.0 * (w*z + x*y), w*w + x*x - y*y - z*z) * 180.0 / PI;
+			
+			sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1 - pitch * 16384.0 / 90.0;
+			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - roll * 16384.0 / 90.0;
+			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3 - yaw * 16384.0 / 90.0;
+			
+			
+			
+			
 			if(sync_data_to_c.data.theta1 > ARM_ANGLE_MAX_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MAX_1;
 			if(sync_data_to_c.data.theta1 < ARM_ANGLE_MIN_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MIN_1;
-			
-//			sync_data_to_c.data.theta2 -= RC_CtrlData.rc.ch1 / 15;
-			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - my_ctrl_data.data.roll * 16384.0 / 90.0;
 			if(sync_data_to_c.data.theta2 > ARM_ANGLE_MAX_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MAX_2;
 			if(sync_data_to_c.data.theta2 < ARM_ANGLE_MIN_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MIN_2;
-			
-//			sync_data_to_c.data.theta3 -= RC_CtrlData.rc.ch3 / 15;
-			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_1 - my_ctrl_data.data.yaw * 16384.0 / 90.0;
 			if(sync_data_to_c.data.theta3 > ARM_ANGLE_MAX_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MAX_3;
 			if(sync_data_to_c.data.theta3 < ARM_ANGLE_MIN_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MIN_3;
 		
@@ -343,3 +378,7 @@ int32_t virtual_link(int32_t x){
     if (-250000 < x && x<= -191500)   return ((float)x + 160311) / -0.105;
 }
 
+
+void onekey_fetch_test(){
+
+}

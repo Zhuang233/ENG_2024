@@ -1,6 +1,6 @@
 #include "RcDriver.h"
 #include "usart.h"
-
+#include "uart_zbw.h"
 
 #define USART1_RX_BUFFER_SIZE 128
 #define RC_FRAME_LENGTH 18
@@ -8,58 +8,6 @@
 extern DMA_HandleTypeDef hdma_usart1_rx;
 
 RC_Ctl_t RC_CtrlData;
-uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE] = {0};
-
-/**
-  * @brief      enable global uart it and do not use DMA transfer done it
-  * @param[in]  huart: uart IRQHandler id
-  * @param[in]  pData: receive buff 
-  * @param[in]  Size:  buff size
-  * @retval     set success or fail
-  */
-int uart_receive_dma_no_it(UART_HandleTypeDef* huart, uint8_t* pData, uint32_t Size)
-{
-  uint32_t tmp1 = 0;
-
-  tmp1 = huart->RxState;
-	
-	if (tmp1 == HAL_UART_STATE_READY)
-	{
-		if ((pData == NULL) || (Size == 0))
-		{
-			return HAL_ERROR;
-		}
-
-		huart->pRxBuffPtr = pData;
-		huart->RxXferSize = Size;
-		huart->ErrorCode  = HAL_UART_ERROR_NONE;
-
-		/* Enable the DMA Stream */
-		HAL_DMA_Start(huart->hdmarx, (uint32_t)&huart->Instance->DR, (uint32_t)pData, Size);
-
-		/* 
-		 * Enable the DMA transfer for the receiver request by setting the DMAR bit
-		 * in the UART CR3 register 
-		 */
-		SET_BIT(huart->Instance->CR3, USART_CR3_DMAR);
-
-		return HAL_OK;
-	}
-	else
-	{
-		return HAL_BUSY;
-	}
-}
-
-
-void usart_dma_init(void)
-{
-   	/* open uart idle it */
-	__HAL_UART_CLEAR_IDLEFLAG(&huart1);
-	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
-  
-  uart_receive_dma_no_it(&huart1, USART1_Rx_Buffer, USART1_RX_BUFFER_SIZE);
-}
 
 
 void DBUS_decode(uint8_t *buff)

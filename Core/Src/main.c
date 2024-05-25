@@ -107,7 +107,7 @@ int main(void)
 	__HAL_TIM_ENABLE(&htim2);
 //	trace_init();
 	usart_dma_init();
-	usart_init();
+//	usart_init();
 	wd_init();
   /* USER CODE END 2 */
 

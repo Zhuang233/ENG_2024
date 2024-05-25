@@ -22,6 +22,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "referee.h"
 #include "RcDriver.h"
 /* USER CODE END Includes */
 
@@ -52,13 +53,15 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#include "uart_zbw.h"
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
+extern DMA_HandleTypeDef hdma_uart7_rx;
 extern DMA_HandleTypeDef hdma_usart1_rx;
+extern DMA_HandleTypeDef hdma_usart6_rx;
 extern UART_HandleTypeDef huart7;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;
@@ -181,6 +184,20 @@ void EXTI0_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA1 stream3 global interrupt.
+  */
+void DMA1_Stream3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Stream3_IRQn 0 */
+
+  /* USER CODE END DMA1_Stream3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_uart7_rx);
+  /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
+
+  /* USER CODE END DMA1_Stream3_IRQn 1 */
+}
+
+/**
   * @brief This function handles CAN1 RX0 interrupts.
   */
 void CAN1_RX0_IRQHandler(void)
@@ -267,6 +284,20 @@ void TIM7_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA2 stream1 global interrupt.
+  */
+void DMA2_Stream1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream1_IRQn 0 */
+
+  /* USER CODE END DMA2_Stream1_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart6_rx);
+  /* USER CODE BEGIN DMA2_Stream1_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream1_IRQn 1 */
+}
+
+/**
   * @brief This function handles DMA2 stream2 global interrupt.
   */
 void DMA2_Stream2_IRQHandler(void)
@@ -314,7 +345,22 @@ void CAN2_RX1_IRQHandler(void)
 void USART6_IRQHandler(void)
 {
   /* USER CODE BEGIN USART6_IRQn 0 */
+  if (__HAL_UART_GET_FLAG(&huart6, UART_FLAG_IDLE) && 
+			__HAL_UART_GET_IT_SOURCE(&huart6, UART_IT_IDLE))
+	{
+    /* clear idle it flag avoid idle interrupt all the time */
+    __HAL_UART_CLEAR_IDLEFLAG(&huart6);
+    
+		/* clear DMA transfer complete flag */
+		__HAL_DMA_DISABLE(&hdma_usart6_rx);
 
+		/* handle referee data from DMA */
+    referee_data_solve(USART6_Rx_Buffer);
+		/* restart dma transmission */
+		__HAL_DMA_SET_COUNTER(huart6.hdmarx, USART6_RX_BUFFER_SIZE);
+		__HAL_DMA_ENABLE(&hdma_usart6_rx);
+
+	}
   /* USER CODE END USART6_IRQn 0 */
   HAL_UART_IRQHandler(&huart6);
   /* USER CODE BEGIN USART6_IRQn 1 */
@@ -328,7 +374,22 @@ void USART6_IRQHandler(void)
 void UART7_IRQHandler(void)
 {
   /* USER CODE BEGIN UART7_IRQn 0 */
+  if (__HAL_UART_GET_FLAG(&huart7, UART_FLAG_IDLE) && 
+			__HAL_UART_GET_IT_SOURCE(&huart7, UART_IT_IDLE))
+	{
+    /* clear idle it flag avoid idle interrupt all the time */
+    __HAL_UART_CLEAR_IDLEFLAG(&huart7);
+    
+		/* clear DMA transfer complete flag */
+		__HAL_DMA_DISABLE(&hdma_uart7_rx);
 
+		/* handle referee data from DMA */
+    referee_data_solve(UART7_Rx_Buffer);
+		/* restart dma transmission */
+		__HAL_DMA_SET_COUNTER(huart7.hdmarx, UART7_RX_BUFFER_SIZE);
+		__HAL_DMA_ENABLE(&hdma_uart7_rx);
+
+	}
   /* USER CODE END UART7_IRQn 0 */
   HAL_UART_IRQHandler(&huart7);
   /* USER CODE BEGIN UART7_IRQn 1 */

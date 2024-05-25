@@ -53,6 +53,10 @@ osThreadId MotoHandle;
 osThreadId DataSyncAnCHandle;
 osThreadId FlipHandle;
 osThreadId CtrlLockHandle;
+osThreadId AutoFetchHandle;
+osThreadId TimeCtrlHandle;
+osThreadId UIHandle;
+osThreadId ChassisKeyHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -65,6 +69,10 @@ void MotoTask(void const * argument);
 void DataSyncAnCTask(void const * argument);
 void FlipTask(void const * argument);
 void CtrlLockTask(void const * argument);
+void AutoFetchTask(void const * argument);
+void TimeCtrlTask(void const * argument);
+void UITask(void const * argument);
+void ChassisKeyTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -134,6 +142,22 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of CtrlLock */
   osThreadDef(CtrlLock, CtrlLockTask, osPriorityIdle, 0, 128);
   CtrlLockHandle = osThreadCreate(osThread(CtrlLock), NULL);
+
+  /* definition and creation of AutoFetch */
+  osThreadDef(AutoFetch, AutoFetchTask, osPriorityNormal, 0, 128);
+  AutoFetchHandle = osThreadCreate(osThread(AutoFetch), NULL);
+
+  /* definition and creation of TimeCtrl */
+  osThreadDef(TimeCtrl, TimeCtrlTask, osPriorityIdle, 0, 128);
+  TimeCtrlHandle = osThreadCreate(osThread(TimeCtrl), NULL);
+
+  /* definition and creation of UI */
+  osThreadDef(UI, UITask, osPriorityNormal, 0, 128);
+  UIHandle = osThreadCreate(osThread(UI), NULL);
+
+  /* definition and creation of ChassisKey */
+  osThreadDef(ChassisKey, ChassisKeyTask, osPriorityNormal, 0, 128);
+  ChassisKeyHandle = osThreadCreate(osThread(ChassisKey), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -247,6 +271,78 @@ __weak void CtrlLockTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END CtrlLockTask */
+}
+
+/* USER CODE BEGIN Header_AutoFetchTask */
+/**
+* @brief Function implementing the AutoFetch thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_AutoFetchTask */
+__weak void AutoFetchTask(void const * argument)
+{
+  /* USER CODE BEGIN AutoFetchTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END AutoFetchTask */
+}
+
+/* USER CODE BEGIN Header_TimeCtrlTask */
+/**
+* @brief Function implementing the TimeCtrl thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_TimeCtrlTask */
+__weak void TimeCtrlTask(void const * argument)
+{
+  /* USER CODE BEGIN TimeCtrlTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END TimeCtrlTask */
+}
+
+/* USER CODE BEGIN Header_UITask */
+/**
+* @brief Function implementing the UI thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_UITask */
+__weak void UITask(void const * argument)
+{
+  /* USER CODE BEGIN UITask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END UITask */
+}
+
+/* USER CODE BEGIN Header_ChassisKeyTask */
+/**
+* @brief Function implementing the ChassisKey thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_ChassisKeyTask */
+__weak void ChassisKeyTask(void const * argument)
+{
+  /* USER CODE BEGIN ChassisKeyTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END ChassisKeyTask */
 }
 
 /* Private application code --------------------------------------------------*/

@@ -15,6 +15,13 @@
 #define FRAME_SIZE 30
 #define DATA_SIZE 28
 
+# define USART6_RX_BUFFER_SIZE 128
+# define USART1_RX_BUFFER_SIZE 128
+# define UART7_RX_BUFFER_SIZE 128
+extern uint8_t		USART6_Rx_Buffer[USART6_RX_BUFFER_SIZE];
+extern uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE];
+extern uint8_t		UART7_Rx_Buffer[UART7_RX_BUFFER_SIZE];
+
 typedef struct __attribute__((packed)) {
 	uint8_t key1;
 	uint8_t key2;
@@ -87,5 +94,7 @@ extern uint8_t sync_data_from_c[SYNC_FROM_C_SIZE];
 extern ControlData my_ctrl_data;
 
 void usart_init(void);
+int uart_receive_dma_no_it(UART_HandleTypeDef* huart, uint8_t* pData, uint32_t Size);
+void usart_dma_init(void);
 void data_sync_uart(void);
 #endif
