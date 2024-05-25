@@ -5,12 +5,8 @@
 #ifndef SERIAL_TEST_UI_TYPES_H
 #define SERIAL_TEST_UI_TYPES_H
 
-#ifdef __GNUC__
 #define MESSAGE_PACKED __attribute__((packed))
 #include <stdint.h>
-#else
-#define MESSAGE_PACKED
-#endif
 
 #define PRIMITIVE_CAT(x, y) x ## y
 #define CAT(x, y) PRIMITIVE_CAT(x, y)

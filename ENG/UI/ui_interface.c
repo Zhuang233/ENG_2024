@@ -6,14 +6,14 @@
 #include <string.h>
 
 uint8_t seq = 0;
-int ui_self_id = 1;
+int ui_self_id = 2;
 
-void print_message(const uint8_t *message, const int length) {
-    for (int i = 0; i < length; i++) {
-        printf("%02x ", message[i]);
-    }
-    printf("\n\n");
-}
+//void print_message(const uint8_t *message, const int length) {
+//    for (int i = 0; i < length; i++) {
+//        printf("%02x ", message[i]);
+//    }
+//    printf("\n\n");
+//}
 
 const unsigned char CRC8_TAB[256] = {
     0x00, 0x5e, 0xbc, 0xe2, 0x61, 0x3f, 0xdd, 0x83, 0xc2, 0x9c, 0x7e, 0x20, 0xa3, 0xfd, 0x1f, 0x41,
