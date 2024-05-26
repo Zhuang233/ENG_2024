@@ -57,6 +57,9 @@ osThreadId AutoFetchHandle;
 osThreadId TimeCtrlHandle;
 osThreadId UIHandle;
 osThreadId ChassisKeyHandle;
+osThreadId ChassisMotoHandle;
+osThreadId ModePoseHandle;
+osThreadId LiftHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -73,6 +76,9 @@ void AutoFetchTask(void const * argument);
 void TimeCtrlTask(void const * argument);
 void UITask(void const * argument);
 void ChassisKeyTask(void const * argument);
+void ChassisMotoTask(void const * argument);
+void ModePoseTask(void const * argument);
+void LiftTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -158,6 +164,18 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of ChassisKey */
   osThreadDef(ChassisKey, ChassisKeyTask, osPriorityNormal, 0, 128);
   ChassisKeyHandle = osThreadCreate(osThread(ChassisKey), NULL);
+
+  /* definition and creation of ChassisMoto */
+  osThreadDef(ChassisMoto, ChassisMotoTask, osPriorityNormal, 0, 128);
+  ChassisMotoHandle = osThreadCreate(osThread(ChassisMoto), NULL);
+
+  /* definition and creation of ModePose */
+  osThreadDef(ModePose, ModePoseTask, osPriorityHigh, 0, 128);
+  ModePoseHandle = osThreadCreate(osThread(ModePose), NULL);
+
+  /* definition and creation of Lift */
+  osThreadDef(Lift, LiftTask, osPriorityHigh, 0, 128);
+  LiftHandle = osThreadCreate(osThread(Lift), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -343,6 +361,60 @@ __weak void ChassisKeyTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END ChassisKeyTask */
+}
+
+/* USER CODE BEGIN Header_ChassisMotoTask */
+/**
+* @brief Function implementing the ChassisMoto thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_ChassisMotoTask */
+__weak void ChassisMotoTask(void const * argument)
+{
+  /* USER CODE BEGIN ChassisMotoTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END ChassisMotoTask */
+}
+
+/* USER CODE BEGIN Header_ModePoseTask */
+/**
+* @brief Function implementing the ModePose thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_ModePoseTask */
+__weak void ModePoseTask(void const * argument)
+{
+  /* USER CODE BEGIN ModePoseTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END ModePoseTask */
+}
+
+/* USER CODE BEGIN Header_LiftTask */
+/**
+* @brief Function implementing the Lift thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_LiftTask */
+__weak void LiftTask(void const * argument)
+{
+  /* USER CODE BEGIN LiftTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END LiftTask */
 }
 
 /* Private application code --------------------------------------------------*/

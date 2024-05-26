@@ -12,12 +12,13 @@
 //pitch
 #define ARM_ANGLE_MAX_1 45077
 #define ARM_ANGLE_MIN_1 12650
-#define ARM_ANGLE_STD_1 28492
-
+//#define ARM_ANGLE_STD_1 28492
+#define ARM_ANGLE_STD_1 ARM_ANGLE_MIN_1
 //roll
 #define ARM_ANGLE_MAX_2 42583
 #define ARM_ANGLE_MIN_2 9858
 #define ARM_ANGLE_STD_2 25823
+
 
 //yall
 #define ARM_ANGLE_MAX_3 40000
@@ -167,7 +168,7 @@ void RoboArm_Pos_Init(){
 	sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1;
 	sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2;
 	sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3;
-	sync_data_to_c.data.qs_pos = 10000;
+	sync_data_to_c.data.qs_pos = 2000;
 	sync_data_to_c.data.hy_pos = -200000;
 }
 
@@ -203,8 +204,7 @@ void RoboArm_RC_Ctrl(){
 		if(MotoState[4].angle_desired < -1950000) MotoState[4].angle_desired = -1950000;
 	}
 	else if(RC_CtrlData.rc.sw1 == 2){
-		chassis_control();
-		ChassisTask();
+
 	}
 	
 	

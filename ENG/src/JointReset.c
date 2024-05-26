@@ -5,7 +5,7 @@
 #include "cmsis_os.h"
 #include "RoboArm.h"
 #include "time.h"
-
+#include "JointReset.h"
 
 int16_t dji_moto_current_to_send[3] = {0};
 
