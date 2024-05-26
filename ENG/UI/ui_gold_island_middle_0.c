@@ -4,7 +4,7 @@
 
 #include "ui_gold_island_middle_0.h"
 
-#define FRAME_ID 0
+#define FRAME_ID 1
 #define GROUP_ID 0
 #define START_ID 0
 #define OBJ_NUM 4
@@ -29,37 +29,37 @@ void _ui_init_gold_island_middle_0() {
 
     ui_gold_island_middle_rect->figure_tpye = 1;
     ui_gold_island_middle_rect->layer = 0;
-    ui_gold_island_middle_rect->start_x = 433;
-    ui_gold_island_middle_rect->start_y = 152;
+    ui_gold_island_middle_rect->start_x = 538;
+    ui_gold_island_middle_rect->start_y = 110;
     ui_gold_island_middle_rect->color = 1;
-    ui_gold_island_middle_rect->width = 4;
-    ui_gold_island_middle_rect->end_x = 986;
-    ui_gold_island_middle_rect->end_y = 705;
+    ui_gold_island_middle_rect->width = 5;
+    ui_gold_island_middle_rect->end_x = 1137;
+    ui_gold_island_middle_rect->end_y = 711;
 
     ui_gold_island_middle_Line1->figure_tpye = 0;
     ui_gold_island_middle_Line1->layer = 0;
-    ui_gold_island_middle_Line1->start_x = 1138;
-    ui_gold_island_middle_Line1->start_y = 304;
-    ui_gold_island_middle_Line1->end_x = 986;
-    ui_gold_island_middle_Line1->end_y = 152;
+    ui_gold_island_middle_Line1->start_x = 539;
+    ui_gold_island_middle_Line1->start_y = 711;
+    ui_gold_island_middle_Line1->end_x = 795;
+    ui_gold_island_middle_Line1->end_y = 619;
     ui_gold_island_middle_Line1->color = 1;
     ui_gold_island_middle_Line1->width = 5;
 
     ui_gold_island_middle_Line2->figure_tpye = 0;
     ui_gold_island_middle_Line2->layer = 0;
-    ui_gold_island_middle_Line2->start_x = 583;
-    ui_gold_island_middle_Line2->start_y = 857;
-    ui_gold_island_middle_Line2->end_x = 431;
-    ui_gold_island_middle_Line2->end_y = 705;
+    ui_gold_island_middle_Line2->start_x = 1139;
+    ui_gold_island_middle_Line2->start_y = 710;
+    ui_gold_island_middle_Line2->end_x = 1033;
+    ui_gold_island_middle_Line2->end_y = 628;
     ui_gold_island_middle_Line2->color = 1;
     ui_gold_island_middle_Line2->width = 5;
 
     ui_gold_island_middle_Line3->figure_tpye = 0;
     ui_gold_island_middle_Line3->layer = 0;
-    ui_gold_island_middle_Line3->start_x = 1133;
-    ui_gold_island_middle_Line3->start_y = 853;
-    ui_gold_island_middle_Line3->end_x = 981;
-    ui_gold_island_middle_Line3->end_y = 701;
+    ui_gold_island_middle_Line3->start_x = 1060;
+    ui_gold_island_middle_Line3->start_y = 341;
+    ui_gold_island_middle_Line3->end_x = 1137;
+    ui_gold_island_middle_Line3->end_y = 110;
     ui_gold_island_middle_Line3->color = 1;
     ui_gold_island_middle_Line3->width = 5;
 
