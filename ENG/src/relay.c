@@ -14,28 +14,28 @@ void pump_top_open(){
 void pump_top_close(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_RESET);
 }
-void pump_bottom_open(){
+void xipan_middle_open(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_6, GPIO_PIN_SET);
 }
-void pump_bottom_close(){
+void xipan_middle_close(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_6, GPIO_PIN_RESET);
 }
-void xipan_left_open(){
+void pump_bottom_open(){
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
 }
-void xipan_left_close(){
+void pump_bottom_close(){
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
 }
-void xipan_right_open(){
+void xipan_left_open(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_SET);
 }
-void xipan_right_close(){
+void xipan_left_close(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_RESET);
 }
-void xipan_middle_open(){
+void xipan_right_open(){
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
 }
-void xipan_middle_close(){
+void xipan_right_close(){
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 void xipan_top_open(){

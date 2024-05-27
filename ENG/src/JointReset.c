@@ -45,7 +45,7 @@ void reset_lift(){
 		}
 		osDelay(1);	
 	}
-	MotoState[0].angle_desired = -10000;
+	MotoState[4].angle_desired = -1850000;
 }
 // Ì§Éý----------------------------------------------
 

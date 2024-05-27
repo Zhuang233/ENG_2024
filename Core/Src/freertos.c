@@ -59,7 +59,9 @@ osThreadId UIHandle;
 osThreadId ChassisKeyHandle;
 osThreadId ChassisMotoHandle;
 osThreadId ModePoseHandle;
+osThreadId RotationSlowHandle;
 osThreadId LiftHandle;
+osThreadId VirtualLinkHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -78,7 +80,9 @@ void UITask(void const * argument);
 void ChassisKeyTask(void const * argument);
 void ChassisMotoTask(void const * argument);
 void ModePoseTask(void const * argument);
+void RotationSlowTask(void const * argument);
 void LiftTask(void const * argument);
+void VirtualLinkTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -173,9 +177,17 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(ModePose, ModePoseTask, osPriorityHigh, 0, 128);
   ModePoseHandle = osThreadCreate(osThread(ModePose), NULL);
 
+  /* definition and creation of RotationSlow */
+  osThreadDef(RotationSlow, RotationSlowTask, osPriorityNormal, 0, 128);
+  RotationSlowHandle = osThreadCreate(osThread(RotationSlow), NULL);
+
   /* definition and creation of Lift */
-  osThreadDef(Lift, LiftTask, osPriorityHigh, 0, 128);
+  osThreadDef(Lift, LiftTask, osPriorityNormal, 0, 128);
   LiftHandle = osThreadCreate(osThread(Lift), NULL);
+
+  /* definition and creation of VirtualLink */
+  osThreadDef(VirtualLink, VirtualLinkTask, osPriorityNormal, 0, 128);
+  VirtualLinkHandle = osThreadCreate(osThread(VirtualLink), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -399,6 +411,24 @@ __weak void ModePoseTask(void const * argument)
   /* USER CODE END ModePoseTask */
 }
 
+/* USER CODE BEGIN Header_RotationSlowTask */
+/**
+* @brief Function implementing the RotationSlow thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_RotationSlowTask */
+__weak void RotationSlowTask(void const * argument)
+{
+  /* USER CODE BEGIN RotationSlowTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END RotationSlowTask */
+}
+
 /* USER CODE BEGIN Header_LiftTask */
 /**
 * @brief Function implementing the Lift thread.
@@ -415,6 +445,24 @@ __weak void LiftTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END LiftTask */
+}
+
+/* USER CODE BEGIN Header_VirtualLinkTask */
+/**
+* @brief Function implementing the VirtualLink thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_VirtualLinkTask */
+__weak void VirtualLinkTask(void const * argument)
+{
+  /* USER CODE BEGIN VirtualLinkTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END VirtualLinkTask */
 }
 
 /* Private application code --------------------------------------------------*/
