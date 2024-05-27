@@ -33,6 +33,7 @@ void LiftTask(void const * argument)
 }
 
 void DataSyncAnCTask(void const * argument){
+	osDelay(500);
   for(;;)
   {
 		data_sync_uart();
@@ -124,10 +125,16 @@ bool pose_auto = false; // 给其他任务的通知全局变量
 //#define FETCH_SLIVER_2 3
 //#define FETCH_SLIVER_3 4
 //#define RC_FLIP 5
-#define HY_STEP_FETCH_GOLD_INIT 10000
-#define LIFT_STEP_FETCH_GOLD_INIT 40000
-#define QS_STEP_FETCH_GOLD_INIT 20000
-#define FLIP_STEP_OFFSET 10000
+
+//#define HY_STEP_FETCH_GOLD_INIT 10000
+//#define LIFT_STEP_FETCH_GOLD_INIT 40000
+//#define QS_STEP_FETCH_GOLD_INIT 20000
+//#define FLIP_STEP_OFFSET 10000
+
+#define HY_STEP_FETCH_GOLD_INIT 2000
+#define LIFT_STEP_FETCH_GOLD_INIT 8000
+#define QS_STEP_FETCH_GOLD_INIT 4000
+#define FLIP_STEP_OFFSET 2000
 
 
 void pose_offest_clear(void){
@@ -203,7 +210,7 @@ void ModePoseTask(void const * argument){
 			case FETCH_GOLD_INIT:{
 				*qs = 2000;
 				*hy = -194951;
-				*lift = -1723474+70000;
+				*lift = -1723474-50000;
 				*pitch = 28492;
 				*roll = 25823;
 				*yaw = 24700;
@@ -240,7 +247,7 @@ void ModePoseTask(void const * argument){
 				}
 				*qs = 550000 + pose_offest.qs;
 				*hy = -194951+ pose_offest.hy;
-				*lift = -1723474+70000 + pose_offest.lift;
+				*lift = -1723474-50000 + pose_offest.lift;
 				*pitch = 29500;
 				*roll = 25823;
 				*yaw = 24700;
@@ -279,7 +286,7 @@ void ModePoseTask(void const * argument){
 				}
 				*qs = 550000 + pose_offest.qs;
 				*hy = -194951+ pose_offest.hy;
-				*lift = -1600000 +70000+ pose_offest.lift;
+				*lift = -1600000 -50000+ pose_offest.lift;
 				*pitch = 28000;
 				*roll = 25823;
 				*yaw = 24700;
@@ -315,7 +322,7 @@ void ModePoseTask(void const * argument){
 				}
 				*qs = 0 + pose_offest.qs;
 				*hy = -194951+ pose_offest.hy;
-				*lift = -1600000 +70000+ pose_offest.lift;
+				*lift = -1600000 -50000+ pose_offest.lift;
 				*pitch = 28000;
 				*roll = 25823;
 				*yaw = 24700;
@@ -345,12 +352,12 @@ void ModePoseTask(void const * argument){
 				pump_bottom_open();
 				xipan_left_open();
 				osDelay(500);
-				*lift = *lift - 50.0 * 500000.0/87.5;
+				*lift = *lift - 55.0 * 500000.0/87.5;
 				osDelay(2000);
 				pump_top_close();
 				xipan_top_close();
 				osDelay(2000);
-				*lift = *lift + 50.0 * 500000.0/87.5;
+				*lift = *lift + 55.0 * 500000.0/87.5;
 				osDelay(500);
 				*pitch = 28492;
 				*roll = 25823;
@@ -373,12 +380,12 @@ void ModePoseTask(void const * argument){
 				pump_bottom_open();
 				xipan_right_open();
 				osDelay(500);
-				*lift = *lift - 50.0 * 500000.0/87.5;
+				*lift = *lift - 55.0 * 500000.0/87.5;
 				osDelay(2000);
 				pump_top_close();
 				xipan_top_close();
 				osDelay(2000);
-				*lift = *lift + 50.0 * 500000.0/87.5;
+				*lift = *lift + 55.0 * 500000.0/87.5;
 				osDelay(500);
 				*pitch = 28492;
 				*roll = 25823;
@@ -391,7 +398,7 @@ void ModePoseTask(void const * argument){
 			case FETCH_GOLD_INIT_LEFT:{
 				*qs = 2000;
 				*hy = -194951;
-				*lift = -1723474+70000;
+				*lift = -1723474-50000;
 				*pitch = 28492 - 10.0 * 65535.0/360.0;
 				*roll = 25823 + 65535.0/4.0;
 				*yaw = 24700;
@@ -428,7 +435,7 @@ void ModePoseTask(void const * argument){
 				}
 				*qs = 310000 + pose_offest.qs;
 				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
-				*lift = -1723474+70000 + pose_offest.lift;
+				*lift = -1723474-50000 + pose_offest.lift;
 				*pitch = 28492 - 10.0 * 65535.0/360.0;
 				*roll = 25823 + 65535.0/4.0;
 				*yaw = 24700;
@@ -466,7 +473,7 @@ void ModePoseTask(void const * argument){
 				}
 				*qs = 310000 + pose_offest.qs;
 				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
-				*lift = -1600000 +70000+ pose_offest.lift;
+				*lift = -1600000 -50000+ pose_offest.lift;
 				*pitch = 28492 - 10.0 * 65535.0/360.0;
 				*roll = 25823 + 65535.0/4.0;
 				*yaw = 24700;
@@ -503,7 +510,7 @@ void ModePoseTask(void const * argument){
 				}
 				*qs = 0 + pose_offest.qs;
 				*hy = -194951+ pose_offest.hy;
-				*lift = -1570000+70000 + pose_offest.lift;
+				*lift = -1570000-50000 + pose_offest.lift;
 				*pitch = 28492 - 10.0 * 65535.0/360.0;
 				*roll = 25823 + 65535.0/4.0;
 				*yaw = 24700;
