@@ -62,6 +62,8 @@ osThreadId ModePoseHandle;
 osThreadId RotationSlowHandle;
 osThreadId LiftHandle;
 osThreadId VirtualLinkHandle;
+osThreadId DebugModeHandle;
+osThreadId PosLimitHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -83,6 +85,8 @@ void ModePoseTask(void const * argument);
 void RotationSlowTask(void const * argument);
 void LiftTask(void const * argument);
 void VirtualLinkTask(void const * argument);
+void DebugModeTask(void const * argument);
+void PosLimitTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -188,6 +192,14 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of VirtualLink */
   osThreadDef(VirtualLink, VirtualLinkTask, osPriorityNormal, 0, 128);
   VirtualLinkHandle = osThreadCreate(osThread(VirtualLink), NULL);
+
+  /* definition and creation of DebugMode */
+  osThreadDef(DebugMode, DebugModeTask, osPriorityNormal, 0, 128);
+  DebugModeHandle = osThreadCreate(osThread(DebugMode), NULL);
+
+  /* definition and creation of PosLimit */
+  osThreadDef(PosLimit, PosLimitTask, osPriorityNormal, 0, 128);
+  PosLimitHandle = osThreadCreate(osThread(PosLimit), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -463,6 +475,42 @@ __weak void VirtualLinkTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END VirtualLinkTask */
+}
+
+/* USER CODE BEGIN Header_DebugModeTask */
+/**
+* @brief Function implementing the DebugMode thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_DebugModeTask */
+__weak void DebugModeTask(void const * argument)
+{
+  /* USER CODE BEGIN DebugModeTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END DebugModeTask */
+}
+
+/* USER CODE BEGIN Header_PosLimitTask */
+/**
+* @brief Function implementing the PosLimit thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_PosLimitTask */
+__weak void PosLimitTask(void const * argument)
+{
+  /* USER CODE BEGIN PosLimitTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END PosLimitTask */
 }
 
 /* Private application code --------------------------------------------------*/

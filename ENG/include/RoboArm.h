@@ -17,6 +17,25 @@
 #define ARM_ANGLE_MIN_3 10000
 #define ARM_ANGLE_STD_3 24370
 
+#define QS_ANGLE_MAX 780000
+#define QS_ANGLE_MIN 0
+
+
+#define HY_ANGLE_MAX 0
+#define HY_ANGLE_MIN -390000
+
+#define LIFT_MAX 0
+#define LIFT_MIN -1950000
+
+#define FLIP_MAX 0
+#define FLIP_MIN -220000
+
+#define SMALL_LIFT_MAX 410000
+#define SMALL_LIFT_MIN 0
+
+#define EXPAND_MAX 0
+#define EXPAND_MIN -427240
+
 
 void RoboArm_Pos_Init(void);
 void RoboArm_RC_Ctrl(void);
