@@ -15,8 +15,7 @@ int8_t zbw_test = 0;
 
 void UITask(void const * argument){
 	 for(;;)
-  {
-		ui_init_gold_island_middle();
+  {	
 		osDelay(100);
 		
 	}
@@ -88,7 +87,10 @@ void ChassisMotoTask(void const * argument){
 typedef enum{
 	VIRTUAL_LINK,
 	// 取金矿，全过程应均可手动微调，以及回退（左键确认，右键回退）
-	NONE,
+	DEFAULT_INIT_NO_CLOSE, // 不关泵回默认姿态
+	SWITCH_MODE, // 功能切换入口
+	DEFAULT_INIT,// 关泵回默认姿态
+	NONE, // 只管无泵
 	FETCH_GOLD_INIT,   // 预备态ok
 	FETCH_GOLD_INDEEP, // 深入ok
 	FETCH_GOLD_INDEEP_UP,// 抬高 ok
@@ -202,6 +204,49 @@ void ModePoseTask(void const * argument){
 			pose_auto = true;
 		}
 		switch(posemod){
+			case SWITCH_MODE:{
+				// 3种模式入口
+				if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_Z)){
+					posemod = FETCH_GOLD_INIT;
+					ui_remove_gold_island_sliver();
+					osDelay(200);
+					ui_init_gold_island_middle();
+					pose_offest_clear();
+				}
+				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_X)){
+					posemod = FETCH_GOLD_INIT_LEFT;
+					// 加UI
+					pose_offest_clear();
+				}
+				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_C)){
+					posemod = FETCH_SLIVER_INIT;
+					ui_remove_gold_island_middle();
+					osDelay(200);
+					ui_init_gold_island_sliver();
+					pose_offest_clear();
+				}
+			}
+			
+			// 不关泵 + 初始位
+			case DEFAULT_INIT_NO_CLOSE:{
+				*qs = 0;
+				*hy = -194951;
+				*lift = -1773474;
+				*pitch = 28492;
+				*roll = 25823;
+				*yaw = 24700;
+				posemod = SWITCH_MODE;
+			}
+			// 关泵 + 初始位
+			case DEFAULT_INIT:{
+				*qs = 0;
+				*hy = -194951;
+				*lift = -1773474;
+				*pitch = 28492;
+				*roll = 25823;
+				*yaw = 24700;
+				posemod = NONE;
+			}
 			case NONE:{
 				// 全关 但位置未知
 				pump_top_close();
@@ -210,21 +255,7 @@ void ModePoseTask(void const * argument){
 				xipan_left_close();
 				xipan_right_close();
 				pose_auto = false;
-				
-				// 3种模式入口
-				if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_Z)){
-					posemod = FETCH_GOLD_INIT;
-					pose_offest_clear();
-				}
-				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_X)){
-					posemod = FETCH_GOLD_INIT_LEFT;
-					pose_offest_clear();
-				}
-				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_C)){
-					posemod = FETCH_SLIVER_INIT;
-					pose_offest_clear();
-				}
-				
+				posemod = SWITCH_MODE;
 			} break;
 			
 			case FETCH_GOLD_INIT:{
@@ -240,7 +271,7 @@ void ModePoseTask(void const * argument){
 					osDelay(300);
 				}
 				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = NONE;
+					posemod = DEFAULT_INIT_NO_CLOSE;
 					pose_offest_clear();
 					osDelay(300);
 				}
@@ -313,38 +344,34 @@ void ModePoseTask(void const * argument){
 				*yaw = 24700;
 				osDelay(3000);
 				*lift = -1723474;
-				posemod = FETCH_GOLD_INIT;
+				posemod = DEFAULT_INIT_NO_CLOSE;
 			} break;
 			
 			
-//			case FETCH_GOLD_STORE_RIGHT:{
-//				*qs = 160*780000/388;
-//				*hy = -200000;
-//				*lift = -1000000;
-//				osDelay(1000);
-////				for(; *roll > 25823;(*roll)-=17){
-////					osDelay(1);
-////				}
-//				*roll = 25823;
-//				*pitch = 44950;
-//				*yaw = 7986;
-//				pump_bottom_open();
-//				xipan_right_open();
-//				osDelay(500);
-//				*lift = *lift - 55.0 * 500000.0/87.5;
-//				osDelay(2000);
-//				pump_top_close();
-//				xipan_top_close();
-//				osDelay(2000);
-//				*lift = *lift + 55.0 * 500000.0/87.5;
-//				osDelay(500);
-//				*pitch = 28492;
-//				*roll = 25823;
-//				*yaw = 24700;
-//				osDelay(500);
-//				*lift = -1723474;
-//				posemod = FETCH_GOLD_INIT;
-//			} break;
+			case FETCH_GOLD_STORE_RIGHT:{
+				*qs = 160*780000/388;
+				*hy = -200000;
+				*lift = -1000000;
+				*roll = 25823;
+				*pitch = 44950;
+				*yaw = 7986;
+				osDelay(2000);
+				pump_bottom_open();
+				xipan_right_open();
+				osDelay(500);
+				*lift = *lift - 55.0 * 500000.0/87.5;
+				osDelay(2000);
+				pump_top_close();
+				xipan_top_close();
+				osDelay(2500);
+				*lift = *lift + 55.0 * 500000.0/87.5;
+				*pitch = 28492;
+				*roll = 25823;
+				*yaw = 24700;
+				osDelay(3000);
+				*lift = -1723474;
+				posemod = DEFAULT_INIT_NO_CLOSE;
+			} break;
 //			
 //			case FETCH_GOLD_INIT_LEFT:{
 //				*qs = 2000;
@@ -633,20 +660,37 @@ void ModePoseTask(void const * argument){
 				zbw_test = 1;
 				// 上吸盘兑换
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Hold(&Keys.KEY_F)){
+					// 先到一个合适的兑换初始位（待标定）
+//						*lift = 0;
+//						*qs = 330 * 390000.0/294.0;
+//						*hy = -194951;
+//						*pitch = ARM_ANGLE_MAX_1;
+//						*roll = ARM_ANGLE_STD_2;
+//						*yaw = ARM_ANGLE_STD_3;
+//						osDelay(2000);
+					
 					// 兑换循环 
 					for(;;){
 						RoboArm_RC_Ctrl_Fixed_Point(); 
 						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)) break; 
 						osDelay(1);
 					}	
+					// 兑换完去默认姿态但是别关泵
+					posemod = DEFAULT_INIT_NO_CLOSE;
 				}
-				// 回归
-				*lift = 0;
-				*pitch = 28492;
-				*roll = ARM_ANGLE_STD_2;
-				*yaw = ARM_ANGLE_STD_3;
-				*qs = 0;
-				*hy = -194951;
+				
+				// 左吸盘
+				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Hold(&Keys.KEY_C)){
+				
+				
+				}
+				
+				
+				// 右吸盘
+				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Hold(&Keys.KEY_V)){
+				
+				
+				}
 			} break;
 			
 			
