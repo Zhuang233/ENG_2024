@@ -22,6 +22,18 @@ _ui_update_gold_island_middle_0()
 _ui_remove_gold_island_middle_0()
     
 
+#include "ui_gold_island_sliver_0.h"
+
+#define ui_init_gold_island_sliver() \
+_ui_init_gold_island_sliver_0()
+
+#define ui_update_gold_island_sliver() \
+_ui_update_gold_island_sliver_0()
+
+#define ui_remove_gold_island_sliver() \
+_ui_remove_gold_island_sliver_0()
+    
+
 
 #ifdef __cplusplus
 }
