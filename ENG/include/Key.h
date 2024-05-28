@@ -11,6 +11,12 @@ typedef struct
 	bool	toggle_flag;
 }KEY_MSG;
 
+typedef struct 
+{
+	bool 	press_flag;
+	bool	toggle_flag;
+}MOUSE_MSG;
+
 typedef struct
 {
 	KEY_MSG KEY_W;
@@ -30,16 +36,25 @@ typedef struct
 	KEY_MSG KEY_C;
 	KEY_MSG KEY_V;
 	KEY_MSG KEY_B;
-	
 }KEYS;
 
+typedef struct
+{
+	MOUSE_MSG LEFT;
+	MOUSE_MSG RIGHT;
+}MOUSE;
+
 void Key_Init(void);
+void Mouse_Init(void);
 bool Key_Check_Press(KEY_MSG* msg);
 bool Key_Check_Hold(KEY_MSG* msg);
+bool Mouse_Check_Press(MOUSE_MSG* msg);
+bool Mouse_Check_Hold(MOUSE_MSG* msg);
 bool Key_Check_Toggle(KEY_MSG* msg);
 
 
 extern KEYS Keys;
+extern MOUSE Mouse;
 
 #endif	
 

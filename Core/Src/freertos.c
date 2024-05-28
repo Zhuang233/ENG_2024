@@ -64,6 +64,7 @@ osThreadId LiftHandle;
 osThreadId VirtualLinkHandle;
 osThreadId DebugModeHandle;
 osThreadId PosLimitHandle;
+osThreadId OffsetHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -87,6 +88,7 @@ void LiftTask(void const * argument);
 void VirtualLinkTask(void const * argument);
 void DebugModeTask(void const * argument);
 void PosLimitTask(void const * argument);
+void OffsetTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -200,6 +202,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of PosLimit */
   osThreadDef(PosLimit, PosLimitTask, osPriorityNormal, 0, 128);
   PosLimitHandle = osThreadCreate(osThread(PosLimit), NULL);
+
+  /* definition and creation of Offset */
+  osThreadDef(Offset, OffsetTask, osPriorityNormal, 0, 128);
+  OffsetHandle = osThreadCreate(osThread(Offset), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -511,6 +517,24 @@ __weak void PosLimitTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END PosLimitTask */
+}
+
+/* USER CODE BEGIN Header_OffsetTask */
+/**
+* @brief Function implementing the Offset thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_OffsetTask */
+__weak void OffsetTask(void const * argument)
+{
+  /* USER CODE BEGIN OffsetTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END OffsetTask */
 }
 
 /* Private application code --------------------------------------------------*/

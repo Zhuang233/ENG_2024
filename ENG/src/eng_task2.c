@@ -10,13 +10,15 @@
 #include "JointReset.h"
 #include "relay.h"
 
+int8_t zbw_test = 0;
 
 
 void UITask(void const * argument){
 	 for(;;)
   {
 		ui_init_gold_island_middle();
-		osDelay(500);
+		osDelay(100);
+		
 	}
 
 }
@@ -103,7 +105,8 @@ typedef enum{
 	FETCH_SLIVER_BACK1,		// 翻回存
 	FETCH_SLIVER_BACK2,		// 翻回存2
 	FETCH_SLIVER_TOP_DOWN, // 顶部吸盘降
-	FETCH_SLIVWER_STORE_LEFT //存
+	FETCH_SLIVWER_STORE_LEFT, //存
+	SELECT_EXCANGE_MODE, //选择兑矿模式
 }PoseMode;
 
 struct Pose_offest{
@@ -131,10 +134,10 @@ bool pose_auto = false; // 给其他任务的通知全局变量
 //#define QS_STEP_FETCH_GOLD_INIT 20000
 //#define FLIP_STEP_OFFSET 10000
 
-#define HY_STEP_FETCH_GOLD_INIT 2000
-#define LIFT_STEP_FETCH_GOLD_INIT 8000
-#define QS_STEP_FETCH_GOLD_INIT 4000
-#define FLIP_STEP_OFFSET 2000
+#define HY_STEP 2000
+#define LIFT_STEP 8000 //(+12个)
+#define QS_STEP 4000
+#define FLIP_STEP 2000
 
 
 void pose_offest_clear(void){
@@ -158,12 +161,12 @@ uint16_t yaw_slow = ARM_ANGLE_STD_3;
 void RotationSlowTask(void const * argument){
 	for(;;){
 		if(rotateslow_flag){
-			if(sync_data_to_c.data.theta1 > pitch_slow + 50) sync_data_to_c.data.theta1-=25;
-			if(sync_data_to_c.data.theta2 > roll_slow + 50) sync_data_to_c.data.theta2-=25;
-			if(sync_data_to_c.data.theta3 > yaw_slow + 50) sync_data_to_c.data.theta3-=25;
-			if(sync_data_to_c.data.theta1 < pitch_slow - 50) sync_data_to_c.data.theta1+=25;
-			if(sync_data_to_c.data.theta2 < roll_slow - 50) sync_data_to_c.data.theta2+=25;
-			if(sync_data_to_c.data.theta3 < yaw_slow - 50) sync_data_to_c.data.theta3+=25;
+			if(sync_data_to_c.data.theta1 > pitch_slow + 20) sync_data_to_c.data.theta1-=10;
+			if(sync_data_to_c.data.theta2 > roll_slow + 20) sync_data_to_c.data.theta2-=10;
+			if(sync_data_to_c.data.theta3 > yaw_slow + 20) sync_data_to_c.data.theta3-=10;
+			if(sync_data_to_c.data.theta1 < pitch_slow - 20) sync_data_to_c.data.theta1+=10;
+			if(sync_data_to_c.data.theta2 < roll_slow - 20) sync_data_to_c.data.theta2+=10;
+			if(sync_data_to_c.data.theta3 < yaw_slow - 20) sync_data_to_c.data.theta3+=10;
 			osDelay(1);
 		}
 	}
@@ -200,12 +203,15 @@ void ModePoseTask(void const * argument){
 		}
 		switch(posemod){
 			case NONE:{
+				// 全关 但位置未知
 				pump_top_close();
 				xipan_top_close();
 				pump_bottom_close();
 				xipan_left_close();
 				xipan_right_close();
 				pose_auto = false;
+				
+				// 3种模式入口
 				if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_Z)){
 					posemod = FETCH_GOLD_INIT;
 					pose_offest_clear();
@@ -220,19 +226,20 @@ void ModePoseTask(void const * argument){
 				}
 				
 			} break;
+			
 			case FETCH_GOLD_INIT:{
-				*qs = 2000;
-				*hy = -194951;
-				*lift = -1723474-50000;
+				// 中金初始姿态
+				*qs = 0;
+				*hy = -194951 + pose_offest.hy;
+				*lift = -1773474 + pose_offest.lift;
 				*pitch = 28492;
 				*roll = 25823;
 				*yaw = 24700;
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
 					posemod = FETCH_GOLD_INDEEP;
-					pose_offest_clear();
 					osDelay(300);
 				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
 					posemod = NONE;
 					pose_offest_clear();
 					osDelay(300);
@@ -240,128 +247,58 @@ void ModePoseTask(void const * argument){
 				
 			} break;
 			case FETCH_GOLD_INDEEP: {
-				if(Key_Check_Press(&Keys.KEY_A)){
-					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_D)){
-					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_W)){
-					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_S)){
-					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_Q)){
-					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_E)){
-					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-				}
 				*qs = 550000 + pose_offest.qs;
 				*hy = -194951+ pose_offest.hy;
-				*lift = -1723474-50000 + pose_offest.lift;
-				*pitch = 29500;
-				*roll = 25823;
-				*yaw = 24700;
+				*lift = -1773474 + pose_offest.lift;
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
 					posemod = FETCH_GOLD_INDEEP_UP;
 					pump_top_open();
 					xipan_top_open();
-					pose_offest_clear();
 					osDelay(3000);
 				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
 					posemod = FETCH_GOLD_INIT;
-					pose_offest_clear();
-					osDelay(300);	
+					osDelay(300);
 				}
 			
 			}break;
 			case FETCH_GOLD_INDEEP_UP:{
-				if(Key_Check_Press(&Keys.KEY_A)){
-					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_D)){
-					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_W)){
-					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_S)){
-					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_Q)){
-					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_E)){
-					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-				}
 				*qs = 550000 + pose_offest.qs;
 				*hy = -194951+ pose_offest.hy;
-				*lift = -1600000 -50000+ pose_offest.lift;
-				*pitch = 28000;
-				*roll = 25823;
-				*yaw = 24700;
+				*lift = -1650000+ pose_offest.lift;
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
 					posemod = FETCH_GOLD_OUT;
-					pose_offest_clear();
 					osDelay(300);
 				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
+					pump_top_close();
+					xipan_top_close();
 					posemod = FETCH_GOLD_INDEEP;
-					pose_offest_clear();
-					osDelay(300);	
+					osDelay(3000);
 				}
 			} break;
 			case FETCH_GOLD_OUT:{
-				if(Key_Check_Press(&Keys.KEY_A)){
-					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_D)){
-					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_W)){
-					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_S)){
-					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_Q)){
-					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_E)){
-					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-				}
 				*qs = 0 + pose_offest.qs;
 				*hy = -194951+ pose_offest.hy;
-				*lift = -1600000 -50000+ pose_offest.lift;
-				*pitch = 28000;
-				*roll = 25823;
-				*yaw = 24700;
+				*lift = -1650000+ pose_offest.lift;
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
 					posemod = FETCH_GOLD_STORE_LEFT;
-					pose_offest_clear();
 					osDelay(300);
 				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
 					posemod = FETCH_GOLD_INDEEP_UP;
-					pose_offest_clear();
-					osDelay(300);	
+					osDelay(300);
 				}
 				
 			} break;
 			case FETCH_GOLD_STORE_LEFT:{
 				*qs = 160*780000/388;
-				*hy = -200000;
+				*hy = -194951;
 				*lift = -1000000;
-				osDelay(1000);
-//				for(; *roll > 25823;(*roll)-=17){
-//					osDelay(1);
-//				}
 				*roll = 25823;
 				*pitch = 44950;
 				*yaw = 40754;
+				osDelay(2000);
 				pump_bottom_open();
 				xipan_left_open();
 				osDelay(500);
@@ -369,175 +306,176 @@ void ModePoseTask(void const * argument){
 				osDelay(2000);
 				pump_top_close();
 				xipan_top_close();
-				osDelay(2000);
+				osDelay(2500);
 				*lift = *lift + 55.0 * 500000.0/87.5;
-				osDelay(500);
 				*pitch = 28492;
 				*roll = 25823;
 				*yaw = 24700;
-				osDelay(500);
+				osDelay(3000);
 				*lift = -1723474;
 				posemod = FETCH_GOLD_INIT;
 			} break;
-			case FETCH_GOLD_STORE_RIGHT:{
-				*qs = 160*780000/388;
-				*hy = -200000;
-				*lift = -1000000;
-				osDelay(1000);
-//				for(; *roll > 25823;(*roll)-=17){
-//					osDelay(1);
+			
+			
+//			case FETCH_GOLD_STORE_RIGHT:{
+//				*qs = 160*780000/388;
+//				*hy = -200000;
+//				*lift = -1000000;
+//				osDelay(1000);
+////				for(; *roll > 25823;(*roll)-=17){
+////					osDelay(1);
+////				}
+//				*roll = 25823;
+//				*pitch = 44950;
+//				*yaw = 7986;
+//				pump_bottom_open();
+//				xipan_right_open();
+//				osDelay(500);
+//				*lift = *lift - 55.0 * 500000.0/87.5;
+//				osDelay(2000);
+//				pump_top_close();
+//				xipan_top_close();
+//				osDelay(2000);
+//				*lift = *lift + 55.0 * 500000.0/87.5;
+//				osDelay(500);
+//				*pitch = 28492;
+//				*roll = 25823;
+//				*yaw = 24700;
+//				osDelay(500);
+//				*lift = -1723474;
+//				posemod = FETCH_GOLD_INIT;
+//			} break;
+//			
+//			case FETCH_GOLD_INIT_LEFT:{
+//				*qs = 2000;
+//				*hy = -194951;
+//				*lift = -1723474-50000;
+//				*pitch = 28492 - 10.0 * 65535.0/360.0;
+//				*roll = 25823 + 65535.0/4.0;
+//				*yaw = 24700;
+//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+//					posemod = FETCH_GOLD_INDEEP_LEFT;
+//					pose_offest_clear();
+//					osDelay(300);
 //				}
-				*roll = 25823;
-				*pitch = 44950;
-				*yaw = 7986;
-				pump_bottom_open();
-				xipan_right_open();
-				osDelay(500);
-				*lift = *lift - 55.0 * 500000.0/87.5;
-				osDelay(2000);
-				pump_top_close();
-				xipan_top_close();
-				osDelay(2000);
-				*lift = *lift + 55.0 * 500000.0/87.5;
-				osDelay(500);
-				*pitch = 28492;
-				*roll = 25823;
-				*yaw = 24700;
-				osDelay(500);
-				*lift = -1723474;
-				posemod = FETCH_GOLD_INIT;
-			} break;
-			
-			case FETCH_GOLD_INIT_LEFT:{
-				*qs = 2000;
-				*hy = -194951;
-				*lift = -1723474-50000;
-				*pitch = 28492 - 10.0 * 65535.0/360.0;
-				*roll = 25823 + 65535.0/4.0;
-				*yaw = 24700;
-				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = FETCH_GOLD_INDEEP_LEFT;
-					pose_offest_clear();
-					osDelay(300);
-				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = NONE;
-					pose_offest_clear();
-					osDelay(300);
-				}
-			} break;
-				
-			case FETCH_GOLD_INDEEP_LEFT:{
-				if(Key_Check_Press(&Keys.KEY_A)){
-					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_D)){
-					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_W)){
-					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_S)){
-					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_Q)){
-					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_E)){
-					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-				}
-				*qs = 310000 + pose_offest.qs;
-				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
-				*lift = -1723474-50000 + pose_offest.lift;
-				*pitch = 28492 - 10.0 * 65535.0/360.0;
-				*roll = 25823 + 65535.0/4.0;
-				*yaw = 24700;
-				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = FETCH_GOLD_INDEEP_UP_LEFT;
-					pump_top_open();
-					xipan_top_open();
-					pose_offest_clear();
-					osDelay(3000);
-				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = FETCH_GOLD_INIT_LEFT;
-					pose_offest_clear();
-					osDelay(300);	
-				}
-			} break;
-			case FETCH_GOLD_INDEEP_UP_LEFT:{
-				if(Key_Check_Press(&Keys.KEY_A)){
-					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_D)){
-					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_W)){
-					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_S)){
-					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_Q)){
-					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_E)){
-					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-				}
-				*qs = 310000 + pose_offest.qs;
-				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
-				*lift = -1600000 -50000+ pose_offest.lift;
-				*pitch = 28492 - 10.0 * 65535.0/360.0;
-				*roll = 25823 + 65535.0/4.0;
-				*yaw = 24700;
-				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = FETCH_GOLD_OUT_LEFT;
-					pose_offest_clear();
-					osDelay(300);
-				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = FETCH_GOLD_INDEEP_LEFT;
-					pose_offest_clear();
-					osDelay(300);	
-				}
-			} break;
-			
-			case FETCH_GOLD_OUT_LEFT: {
-				if(Key_Check_Press(&Keys.KEY_A)){
-					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_D)){
-					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_W)){
-					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_S)){
-					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_Q)){
-					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-				}
-				if(Key_Check_Press(&Keys.KEY_E)){
-					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-				}
-				*qs = 0 + pose_offest.qs;
-				*hy = -194951+ pose_offest.hy;
-				*lift = -1570000-50000 + pose_offest.lift;
-				*pitch = 28492 - 10.0 * 65535.0/360.0;
-				*roll = 25823 + 65535.0/4.0;
-				*yaw = 24700;
-				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = FETCH_GOLD_STORE_RIGHT;
-					pose_offest_clear();
-					osDelay(300);
-				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = FETCH_GOLD_INDEEP_UP_LEFT;
-					pose_offest_clear();
-					osDelay(300);	
-				}
-			}break;
+//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+//					posemod = NONE;
+//					pose_offest_clear();
+//					osDelay(300);
+//				}
+//			} break;
+//				
+//			case FETCH_GOLD_INDEEP_LEFT:{
+//				if(Key_Check_Press(&Keys.KEY_A)){
+//					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_D)){
+//					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_W)){
+//					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_S)){
+//					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_Q)){
+//					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_E)){
+//					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
+//				}
+//				*qs = 310000 + pose_offest.qs;
+//				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
+//				*lift = -1723474-50000 + pose_offest.lift;
+//				*pitch = 28492 - 10.0 * 65535.0/360.0;
+//				*roll = 25823 + 65535.0/4.0;
+//				*yaw = 24700;
+//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+//					posemod = FETCH_GOLD_INDEEP_UP_LEFT;
+//					pump_top_open();
+//					xipan_top_open();
+//					pose_offest_clear();
+//					osDelay(3000);
+//				}
+//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+//					posemod = FETCH_GOLD_INIT_LEFT;
+//					pose_offest_clear();
+//					osDelay(300);	
+//				}
+//			} break;
+//			case FETCH_GOLD_INDEEP_UP_LEFT:{
+//				if(Key_Check_Press(&Keys.KEY_A)){
+//					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_D)){
+//					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_W)){
+//					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_S)){
+//					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_Q)){
+//					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_E)){
+//					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
+//				}
+//				*qs = 310000 + pose_offest.qs;
+//				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
+//				*lift = -1600000 -50000+ pose_offest.lift;
+//				*pitch = 28492 - 10.0 * 65535.0/360.0;
+//				*roll = 25823 + 65535.0/4.0;
+//				*yaw = 24700;
+//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+//					posemod = FETCH_GOLD_OUT_LEFT;
+//					pose_offest_clear();
+//					osDelay(300);
+//				}
+//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+//					posemod = FETCH_GOLD_INDEEP_LEFT;
+//					pose_offest_clear();
+//					osDelay(300);	
+//				}
+//			} break;
+//			
+//			case FETCH_GOLD_OUT_LEFT: {
+//				if(Key_Check_Press(&Keys.KEY_A)){
+//					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_D)){
+//					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_W)){
+//					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_S)){
+//					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_Q)){
+//					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
+//				}
+//				if(Key_Check_Press(&Keys.KEY_E)){
+//					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
+//				}
+//				*qs = 0 + pose_offest.qs;
+//				*hy = -194951+ pose_offest.hy;
+//				*lift = -1570000-50000 + pose_offest.lift;
+//				*pitch = 28492 - 10.0 * 65535.0/360.0;
+//				*roll = 25823 + 65535.0/4.0;
+//				*yaw = 24700;
+//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+//					posemod = FETCH_GOLD_STORE_RIGHT;
+//					pose_offest_clear();
+//					osDelay(300);
+//				}
+//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+//					posemod = FETCH_GOLD_INDEEP_UP_LEFT;
+//					pose_offest_clear();
+//					osDelay(300);	
+//				}
+//			}break;
 			case FETCH_SLIVER_INIT:{
 				*qs = 2000;
 				*hy = -194951;
@@ -684,9 +622,32 @@ void ModePoseTask(void const * argument){
 					osDelay(2000);
 					*lift = *lift - (50.0 * 500000.0/87.5 + 500000.0);
 					first_time_fetch_sliver_store_left = false;
-				}				
+				}
+				else{
+					posemod = SELECT_EXCANGE_MODE;
+					pose_offest_clear();
+					osDelay(300);
+				}
 			} break;
-			
+			case SELECT_EXCANGE_MODE:{
+				zbw_test = 1;
+				// 上吸盘兑换
+				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Hold(&Keys.KEY_F)){
+					// 兑换循环 
+					for(;;){
+						RoboArm_RC_Ctrl_Fixed_Point(); 
+						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)) break; 
+						osDelay(1);
+					}	
+				}
+				// 回归
+				*lift = 0;
+				*pitch = 28492;
+				*roll = ARM_ANGLE_STD_2;
+				*yaw = ARM_ANGLE_STD_3;
+				*qs = 0;
+				*hy = -194951;
+			} break;
 			
 			
 		}
@@ -791,21 +752,44 @@ void PosLimitTask(void const * argument){
 
 }
 
-//#include "FreeRTOS.h"
-//#include "task.h"
-//#include "event_groups.h"
 
 
-//// 事件组句柄
-//EventGroupHandle_t xEventGroup;
-
-//// 定义事件标志位
-//const EventBits_t ALL_JOINTS_SAFE = (1 << 0);
-//const EventBits_t RESET_COMPLETE = (1 << 1);
 
 
-//qs 22cm
-//pitch min
-//lift 
+#define NEED_LIFT_OFFSET (posemod == FETCH_GOLD_INIT \
+											 || posemod == FETCH_GOLD_INDEEP \
+										 	 || posemod == FETCH_GOLD_INDEEP_UP \
+											 || posemod == FETCH_GOLD_OUT \
+)
+
+#define NEED_HY_OFFSET (posemod == FETCH_GOLD_INIT \
+											 || posemod == FETCH_GOLD_INDEEP \
+										 	 || posemod == FETCH_GOLD_INDEEP_UP \
+											 || posemod == FETCH_GOLD_OUT \
+)
+
+#define NEED_QS_OFFSET (posemod == FETCH_GOLD_INIT \
+											 || posemod == FETCH_GOLD_INDEEP \
+											 || posemod == FETCH_GOLD_INDEEP_UP \
+											 || posemod == FETCH_GOLD_OUT \
+)
 
 
+
+void OffsetTask(void const * argument){
+	for(;;){
+		if(NEED_LIFT_OFFSET){
+			if(Key_Check_Press(&Keys.KEY_W)) pose_offest.lift += LIFT_STEP;
+			if(Key_Check_Press(&Keys.KEY_S)) pose_offest.lift -= LIFT_STEP;
+		}
+		if(NEED_HY_OFFSET){
+			if(Key_Check_Press(&Keys.KEY_A)) pose_offest.hy += HY_STEP;
+			if(Key_Check_Press(&Keys.KEY_D)) pose_offest.hy -= HY_STEP;
+		}
+		if(NEED_QS_OFFSET){
+			if(Key_Check_Press(&Keys.KEY_Q)) pose_offest.qs += QS_STEP;
+			if(Key_Check_Press(&Keys.KEY_E)) pose_offest.qs -= QS_STEP;
+		}
+		osDelay(1);
+	}
+}

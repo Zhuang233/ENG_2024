@@ -250,15 +250,14 @@ bool my_ctrl_reset_first_time = true;
 extern bool lock_ctrl;
 float suofang = 2.0;
 void RoboArm_RC_Ctrl_Fixed_Point(){
-	if(RC_CtrlData.rc.sw2 == 3){
+//	if(RC_CtrlData.rc.sw2 == 3){
 			if(custom_controller_data_t.key_1 == 0xff){
-				pump_top_open();
-				xipan_top_open();
-				
-			}
-			else{
 				pump_top_close();
 				xipan_top_close();
+			}
+			else{
+				pump_top_open();
+				xipan_top_open();
 			}
 			
 			if(custom_controller_data_t.key_2 == 0xff && my_ctrl_reset_first_time){
@@ -310,7 +309,7 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			float pitch =  atan2(2.0 * (w*x + y*z), w*w - x*x - y*y + z*z) * 180.0 / PI;
 			float roll = -atan2(2.0 * (w*z + x*y), w*w + x*x - y*y - z*z) * 180.0 / PI;
 			
-			sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1 - pitch * 16384.0 / 90.0;
+			sync_data_to_c.data.theta1 = 28492 - pitch * 16384.0 / 90.0;
 			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - roll * 16384.0 / 90.0;
 			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3 - yaw * 16384.0 / 90.0;
 			
@@ -346,8 +345,8 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			if(MotoState[4].angle_desired > -10000) MotoState[4].angle_desired = -10000;
 			if(MotoState[4].angle_desired < -1950000) MotoState[4].angle_desired = -1950000;
 			
-			
-		}
+//			
+//		}
 	
 }
 
