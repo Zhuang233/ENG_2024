@@ -609,7 +609,8 @@ void ModePoseTask(void const * argument){
 			
 				
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = FETCH_SLIVER_TOP_DOWN;
+//					posemod = FETCH_SLIVER_TOP_DOWN;
+					posemod = NONE;
 					pose_offest_clear();
 					osDelay(300);
 				}
@@ -663,28 +664,28 @@ void ModePoseTask(void const * argument){
 			
 			case SELECT_EXCANGE_MODE:{	
 				// …œŒ¸≈Ã∂“ªªF
-				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_F)){
-						*lift = -1400000;
-						*qs = 0;
-						*hy = -194951;
-						*pitch = 28492;
-						*roll = ARM_ANGLE_STD_2;
-						*yaw = ARM_ANGLE_STD_3;
-						key_1_last = custom_controller_data_t.key_1;	
-						osDelay(2000);
-					// ∂“ªª—≠ª∑					
-					for(;;){
-						RoboArm_RC_Ctrl_Fixed_Point(); 
-						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)) {
-							pump_top_close();
-							xipan_top_close();
-							break; 
-						}
-						
-						osDelay(1);
-					}	
-					posemod = NONE;
-				}
+//				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_F)){
+//						*lift = -1400000;
+//						*qs = 0;
+//						*hy = -194951;
+//						*pitch = 28492;
+//						*roll = ARM_ANGLE_STD_2;
+//						*yaw = ARM_ANGLE_STD_3;
+//						key_1_last = custom_controller_data_t.key_1;	
+//						osDelay(2000);
+//					// ∂“ªª—≠ª∑					
+//					for(;;){
+//						RoboArm_RC_Ctrl_Fixed_Point(); 
+//						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)) {
+//							pump_top_close();
+//							xipan_top_close();
+//							break; 
+//						}
+//						
+//						osDelay(1);
+//					}	
+//					posemod = NONE;
+//				}
 				
 				// ◊ÛŒ¸≈Ã∂“ªª C
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_C)){

@@ -241,7 +241,7 @@ void one_key_fetch_sliver(){
 
 
 
-float gx=280,gy=350.0,gz=400.0;
+float gx=280,gy=350.0,gz=00.0;
 float theta_real_1 = 0.0,theta_real_2 = 0.0,theta_real_3 = 0.0;
 float c1,c2,c3,s1,s2,s3;
 float h,w,l;
