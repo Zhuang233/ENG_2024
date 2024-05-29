@@ -241,7 +241,7 @@ void one_key_fetch_sliver(){
 
 
 
-float gx=380,gy=350.0,gz=350.0;
+float gx=280,gy=350.0,gz=400.0;
 float theta_real_1 = 0.0,theta_real_2 = 0.0,theta_real_3 = 0.0;
 float c1,c2,c3,s1,s2,s3;
 float h,w,l;
@@ -249,9 +249,21 @@ bool my_ctrl_reset_first_time = true;
 
 extern bool lock_ctrl;
 float suofang = 2.0;
+uint8_t key_1_last = 0x00;
 void RoboArm_RC_Ctrl_Fixed_Point(){
+	
 //	if(RC_CtrlData.rc.sw2 == 3){
-			if(custom_controller_data_t.key_1 == 0xff){
+	
+//			if(custom_controller_data_t.key_1 == 0x00){
+//				pump_top_open();
+//				xipan_top_open();
+//			}
+//			else{
+//				pump_top_close();
+//				xipan_top_close();
+//			}
+	
+			if(custom_controller_data_t.key_1 != key_1_last){
 				pump_top_close();
 				xipan_top_close();
 			}
@@ -262,8 +274,8 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			
 			if(custom_controller_data_t.key_2 == 0xff && my_ctrl_reset_first_time){
 				gx=250.0;
-				gy=300.0;
-				gz=380.0;
+				gy=250.0;
+				gz=500.0;
 				my_ctrl_reset_first_time = false;
 			}
 			else if(custom_controller_data_t.key_2 == 0x00){
@@ -349,6 +361,9 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //		}
 	
 }
+
+
+
 
 int32_t virtual_link(int32_t x){
 	  if (-30000< x && x <=0)           return (float)x            / -30.0;
