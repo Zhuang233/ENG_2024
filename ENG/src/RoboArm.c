@@ -241,7 +241,7 @@ void one_key_fetch_sliver(){
 
 
 
-float gx=280,gy=350.0,gz=00.0;
+float gx=280,gy=350.0,gz=500.0;
 float theta_real_1 = 0.0,theta_real_2 = 0.0,theta_real_3 = 0.0;
 float c1,c2,c3,s1,s2,s3;
 float h,w,l;
@@ -250,8 +250,11 @@ bool my_ctrl_reset_first_time = true;
 extern bool lock_ctrl;
 float suofang = 2.0;
 uint8_t key_1_last = 0x00;
+
+			extern uint16_t pitch_slow;
+			extern uint16_t roll_slow;
+			extern uint16_t yaw_slow;
 void RoboArm_RC_Ctrl_Fixed_Point(){
-	
 //	if(RC_CtrlData.rc.sw2 == 3){
 	
 //			if(custom_controller_data_t.key_1 == 0x00){
@@ -321,7 +324,9 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			float pitch =  atan2(2.0 * (w*x + y*z), w*w - x*x - y*y + z*z) * 180.0 / PI;
 			float roll = -atan2(2.0 * (w*z + x*y), w*w + x*x - y*y - z*z) * 180.0 / PI;
 			
-			sync_data_to_c.data.theta1 = 28492 - pitch * 16384.0 / 90.0;
+			
+			// 
+			sync_data_to_c.data.theta1  = 28492 - pitch * 16384.0 / 90.0;
 			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - roll * 16384.0 / 90.0;
 			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3 - yaw * 16384.0 / 90.0;
 			

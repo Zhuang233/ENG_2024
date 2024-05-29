@@ -8,6 +8,10 @@
 // Y I7 Œ¸≈Ã…œ
 // Z I2 ∆¯±√…œ
 
+
+uint8_t xipan_left_closed = 1;
+uint8_t xipan_right_closed = 1; 
+
 void pump_top_open(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_SET);
 }
@@ -24,12 +28,16 @@ void pump_bottom_open(){
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
 }
 void pump_bottom_close(){
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
+	if(xipan_left_closed == 1 && xipan_left_closed == 1){
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
+	}
 }
 void xipan_left_open(){
+	xipan_left_closed = 0;
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_SET);
 }
 void xipan_left_close(){
+	xipan_left_closed = 1;
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_RESET);
 }
 void xipan_right_open(){

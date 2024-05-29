@@ -7,8 +7,8 @@
 //#define ARM_ANGLE_STD_1 28492
 #define ARM_ANGLE_STD_1 ARM_ANGLE_MIN_1
 //roll
-#define ARM_ANGLE_MAX_2 42583
-#define ARM_ANGLE_MIN_2 9858
+#define ARM_ANGLE_MAX_2 59069
+#define ARM_ANGLE_MIN_2 0
 #define ARM_ANGLE_STD_2 25823
 
 

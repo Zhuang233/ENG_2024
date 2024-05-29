@@ -162,6 +162,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	}
 }
 
+
+
 //void usart_init(){
 //	HAL_UART_Receive_IT(&huart6,&data_rev_byte,1);
 //	HAL_UART_Receive_IT(&huart7,&USART7_Rx_Buffer,1);
