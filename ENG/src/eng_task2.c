@@ -692,12 +692,12 @@ void ModePoseTask(void const * argument){
 //			
 //			}break;
 			case TAKE_GROUND_ORE_INIT:{
-				*lift = 0 + pose_offest.lift;
-				*hy = 0 + pose_offest.hy;
-				*qs = 0 + pose_offest.qs;
-				*yaw = 0 + pose_offest.yaw;
-				*pitch = 0 + pose_offest.pitch;
-				*roll = 0;
+				*lift = -1773474 + pose_offest.lift;
+				*hy = -194951 + pose_offest.hy;
+				*qs = 780000 + pose_offest.qs;
+				*yaw = 24700 + pose_offest.yaw;
+				*pitch = 44950 + pose_offest.pitch;
+				*roll = 25823;
 				
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
 					posemod = TAKE_GROUND_ORE_TAKE_BACK;
@@ -707,30 +707,24 @@ void ModePoseTask(void const * argument){
 					posemod = NONE;
 					osDelay(300);
 				}
-			}
+			}break;
 			case TAKE_GROUND_ORE_TAKE_BACK:{
+				
 				// 开泵下压
-				*lift = 0;
+				*lift = -1873474;
 				pump_top_open();
 				xipan_top_open();
 				osDelay(2500);
 				
 				// 抬起上翻
-				*lift = 0;
-				*hy = 0;
+				*lift = -1273474;
+				*hy = -194951;
 				osDelay(1000);
-				*pitch = 0;
-				*yaw = 0;
+				*pitch = 12590;
+				*yaw = 24700;
 				osDelay(1000);
 				*qs = 0;
-				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = NONE;
-					osDelay(300);
-				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = TAKE_GROUND_ORE_INIT;
-					osDelay(300);
-				}
+				posemod = NONE;
 			
 			}break;
 			
