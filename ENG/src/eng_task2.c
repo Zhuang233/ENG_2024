@@ -118,6 +118,9 @@ typedef enum{
 	FETCH_SLIVER_TOP_DOWN, // 顶部吸盘降
 	FETCH_SLIVWER_STORE_LEFT, //存
 	SELECT_EXCANGE_MODE, //选择兑矿模式
+	TAKE_GROUND_ORE_INIT,//取地矿初始姿态（可微调）
+	TAKE_GROUND_ORE_TAKE_BACK,// 取地矿拿回来举着
+	FREE_ARM,// 自由机械臂,(最大限位，用于取地矿拨到合适姿态或者救援)
 	PARA_FIND,  // 啥都不干，选手动参数用
 }PoseMode;
 
@@ -258,6 +261,10 @@ void ModePoseTask(void const * argument){
 				}
 				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_V)){
 					posemod = SELECT_EXCANGE_MODE;
+					pose_offest_clear();
+				}
+				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_B)){
+					posemod = TAKE_GROUND_ORE_INIT;
 					pose_offest_clear();
 				}
 				
@@ -681,6 +688,48 @@ void ModePoseTask(void const * argument){
 //				
 //			
 //			}break;
+			case TAKE_GROUND_ORE_INIT:{
+				*lift = 0 + pose_offest.lift;
+				*hy = 0 + pose_offest.hy;
+				*qs = 0 + pose_offest.qs;
+				*yaw = 0 + pose_offest.yaw;
+				*pitch = 0 + pose_offest.pitch;
+				*roll = 0;
+				
+				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+					posemod = TAKE_GROUND_ORE_TAKE_BACK;
+					osDelay(300);
+				}
+				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+					posemod = NONE;
+					osDelay(300);
+				}
+			}
+			case TAKE_GROUND_ORE_TAKE_BACK:{
+				// 开泵下压
+				*lift = 0;
+				pump_top_open();
+				xipan_top_open();
+				osDelay(2500);
+				
+				// 抬起上翻
+				*lift = 0;
+				*hy = 0;
+				osDelay(1000);
+				*pitch = 0;
+				*yaw = 0;
+				osDelay(1000);
+				*qs = 0;
+				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+					posemod = NONE;
+					osDelay(300);
+				}
+				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+					posemod = TAKE_GROUND_ORE_INIT;
+					osDelay(300);
+				}
+			
+			}break;
 			
 			case SELECT_EXCANGE_MODE:{	
 				// 上吸盘兑换F
