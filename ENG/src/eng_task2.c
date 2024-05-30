@@ -30,6 +30,8 @@ void UITask(void const * argument){
 		osDelay(100);
 		ui_init_gold_island_sliver();
 		osDelay(100);
+		
+		
 	}
 
 }
@@ -561,8 +563,10 @@ void ModePoseTask(void const * argument){
 					*pitch = ARM_ANGLE_MAX_1;
 					*roll = ARM_ANGLE_STD_2;
 					*yaw = ARM_ANGLE_STD_3;
-					*flip = -200000;
-					osDelay(2000);
+					*flip = -170000;
+					osDelay(1500);
+					*expand = -427240;
+					osDelay(1000);
 //					first_time_fetch_sliver_flip = false;
 //				}
 				
@@ -575,7 +579,6 @@ void ModePoseTask(void const * argument){
 				// 取双边银矿标准姿态
 				*small_lift = 325000;
 				*flip = -220000;
-				*expand = -427240;
 				osDelay(3000); // 吸3s
 				
 //				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
