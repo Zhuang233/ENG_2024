@@ -275,19 +275,23 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 				xipan_top_open();
 			}
 			
-			if(custom_controller_data_t.key_2 == 0xff && my_ctrl_reset_first_time){
-				gx=250.0;
-				gy=250.0;
-				gz=500.0;
-				my_ctrl_reset_first_time = false;
-			}
-			else if(custom_controller_data_t.key_2 == 0x00){
-				my_ctrl_reset_first_time = true;
-			}
+//		if(custom_controller_data_t.key_2 == 0xff && my_ctrl_reset_first_time){
+//			gx=250.0;
+//			gy=250.0;
+//			gz=500.0;
+//			my_ctrl_reset_first_time = false;
+//		}
+//		else if(custom_controller_data_t.key_2 == 0x00){
+//			my_ctrl_reset_first_time = true;
+//		}
 			
+			if(custom_controller_data_t.key_2 != 0xff){
 			gz += custom_controller_data_t.vz * suofang;
 			gy -= custom_controller_data_t.vx * 1.3*suofang;
 			gx += custom_controller_data_t.vy * suofang;
+			}
+			
+
 			
 			if(gx < 250) gx = 250.0;
 			if(gx > 800) gx = 800.0;

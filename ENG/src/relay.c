@@ -11,11 +11,14 @@
 
 uint8_t xipan_left_closed = 1;
 uint8_t xipan_right_closed = 1; 
+uint8_t pump_flag = 0;
 
 void pump_top_open(){
+	pump_flag = 1;
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_SET);
 }
 void pump_top_close(){
+	pump_flag = 0;
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_RESET);
 }
 void xipan_middle_open(){
