@@ -8,10 +8,6 @@
 #include "ui_interface.h"
 
 extern ui_interface_rect_t *ui_gold_island_sliver_NewRect;
-extern ui_interface_line_t *ui_gold_island_sliver_Line1;
-extern ui_interface_line_t *ui_gold_island_sliver_Line2;
-extern ui_interface_line_t *ui_gold_island_sliver_Line3;
-extern ui_interface_line_t *ui_gold_island_sliver_Line4;
 
 void _ui_init_gold_island_sliver_0();
 void _ui_update_gold_island_sliver_0();
