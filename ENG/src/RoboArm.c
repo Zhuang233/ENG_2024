@@ -127,7 +127,7 @@ PidTD pid_flip_pos;
 bool flip_inited = true;
 
 void flip_init(){
-	pidInit(&pid_flip_pos, 300, 500, FLIP_POS_P, FLIP_POS_I, FLIP_POS_D);
+	pidInit(&pid_flip_pos, 300, 800, FLIP_POS_P, FLIP_POS_I, FLIP_POS_D);
 	pidInit(&pid_flip_spd, 2000, 10000, FLIP_SPD_P, FLIP_SPD_I, FLIP_SPD_D);
 	MotoStateInit(&MotoState[5]);
 }
