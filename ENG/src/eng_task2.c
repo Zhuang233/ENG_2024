@@ -124,6 +124,8 @@ typedef enum{
 	TAKE_GROUND_ORE_TAKE_BACK,// 取地矿拿回来举着
 	FREE_ARM,// 自由机械臂,(最大限位，用于取地矿拨到合适姿态或者救援)
 	PARA_FIND,  // 啥都不干，选手动参数用
+	SINGEL_SLIVER_INIT,
+	SINGEL_SLIVER_BACK
 }PoseMode;
 
 struct Pose_offest{
@@ -254,7 +256,7 @@ void ModePoseTask(void const * argument){
 					pose_offest_clear();
 				}
 				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_X)){
-					posemod = FETCH_GOLD_INIT_LEFT;
+					posemod = SINGEL_SLIVER_INIT;
 					pose_offest_clear();
 				}
 				else if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_C)){
@@ -271,6 +273,31 @@ void ModePoseTask(void const * argument){
 				}
 				
 			} break;
+			
+			case SINGEL_SLIVER_INIT:{
+				*lift = -1203474;
+				*pitch = 28770;
+				*qs = 50000;
+				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+					posemod = SINGEL_SLIVER_BACK;
+					osDelay(300);
+				}
+				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
+					posemod = NONE;
+					pose_offest_clear();
+					osDelay(300);
+				}
+			} break;
+			
+			case SINGEL_SLIVER_BACK:{
+				pump_top_open();
+				xipan_top_open();
+				osDelay(2500);
+				*lift = -803474;
+				osDelay(1500);
+				*pitch = 12590;
+				posemod = NONE;
+			}break;
 			
 			case FETCH_GOLD_INIT:{
 				// 中金初始姿态
