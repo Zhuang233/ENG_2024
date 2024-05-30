@@ -286,16 +286,16 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //		}
 			
 			if(custom_controller_data_t.key_2 != 0xff){
-			gz += custom_controller_data_t.vz * suofang;
-			gy -= custom_controller_data_t.vx * 1.3*suofang;
-			gx += custom_controller_data_t.vy * suofang;
+				gz += custom_controller_data_t.vz * suofang;
+				gy -= custom_controller_data_t.vx * suofang;
+				gx += custom_controller_data_t.vy * suofang;
 			}
 			
 
 			
 			if(gx < 250) gx = 250.0;
 			if(gx > 800) gx = 800.0;
-			if(gz < 200.0) gz = 200.0;	
+			if(gz < 430.0) gz = 430.0;	
 			if(gz >980.0) gz = 980.0;				
 			if(gy < 0) gy = 0;
 			if(gy > 600) gy = 600;
