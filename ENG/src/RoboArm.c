@@ -249,7 +249,7 @@ bool my_ctrl_reset_first_time = true;
 
 extern bool lock_ctrl;
 float suofang = 2.0;
-uint8_t key_1_last = 0x00;
+uint8_t key_2_last = 0x00;
 
 			extern uint16_t pitch_slow;
 			extern uint16_t roll_slow;
@@ -266,7 +266,7 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //				xipan_top_close();
 //			}
 	
-			if(custom_controller_data_t.key_1 != key_1_last){
+			if(custom_controller_data_t.key_2 != key_2_last){
 				pump_top_close();
 				xipan_top_close();
 			}

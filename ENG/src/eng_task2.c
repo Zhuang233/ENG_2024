@@ -194,7 +194,7 @@ void RotationSlowTask(void const * argument){
 
 
 bool virtual_link_flag = true;
-extern uint8_t key_1_last;
+extern uint8_t key_2_last;
 // 姿态控制任务，所有固定姿态由此处理,UI需要显示
 void ModePoseTask(void const * argument){
 	int32_t* qs = &(sync_data_to_c.data.qs_pos);
@@ -772,7 +772,7 @@ void ModePoseTask(void const * argument){
 						*pitch = 28492;
 						*roll = 25823;
 						*yaw = 24370; 
-						key_1_last = custom_controller_data_t.key_1;	
+						key_2_last = custom_controller_data_t.key_2;	
 						osDelay(3500);
 						rotateslow_flag = false;
 					// 兑换循环					
@@ -819,7 +819,7 @@ void ModePoseTask(void const * argument){
 				*roll = 25823;
 				*yaw = 24370;  
 				osDelay(3500);
-				key_1_last = custom_controller_data_t.key_1;	
+				key_2_last = custom_controller_data_t.key_2;	
 					// 兑换循环
 					rotateslow_flag = false;					
 					for(;;){	
@@ -871,7 +871,7 @@ void ModePoseTask(void const * argument){
 				*pitch = 28492;
 				*yaw = 24370;
 				osDelay(3000);
-				key_1_last = custom_controller_data_t.key_1;	
+				key_2_last = custom_controller_data_t.key_2;	
 					// 兑换循环
 					rotateslow_flag = false;					
 					for(;;){
