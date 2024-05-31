@@ -181,12 +181,12 @@ uint16_t yaw_slow = ARM_ANGLE_STD_3;
 void RotationSlowTask(void const * argument){
 	for(;;){
 		if(rotateslow_flag){
-			if(sync_data_to_c.data.theta1 > pitch_slow + 20) sync_data_to_c.data.theta1-=10;
-			if(sync_data_to_c.data.theta2 > roll_slow + 20) sync_data_to_c.data.theta2-=10;
-			if(sync_data_to_c.data.theta3 > yaw_slow + 20) sync_data_to_c.data.theta3-=10;
-			if(sync_data_to_c.data.theta1 < pitch_slow - 20) sync_data_to_c.data.theta1+=10;
-			if(sync_data_to_c.data.theta2 < roll_slow - 20) sync_data_to_c.data.theta2+=10;
-			if(sync_data_to_c.data.theta3 < yaw_slow - 20) sync_data_to_c.data.theta3+=10;
+			if(sync_data_to_c.data.theta1 > pitch_slow + 40) sync_data_to_c.data.theta1-=20;
+			if(sync_data_to_c.data.theta2 > roll_slow + 40) sync_data_to_c.data.theta2-=20;
+			if(sync_data_to_c.data.theta3 > yaw_slow + 40) sync_data_to_c.data.theta3-=20;
+			if(sync_data_to_c.data.theta1 < pitch_slow - 40) sync_data_to_c.data.theta1+=20;
+			if(sync_data_to_c.data.theta2 < roll_slow - 40) sync_data_to_c.data.theta2+=20;
+			if(sync_data_to_c.data.theta3 < yaw_slow - 40) sync_data_to_c.data.theta3+=20;
 		}
 		osDelay(1);
 	}
@@ -275,9 +275,10 @@ void ModePoseTask(void const * argument){
 			} break;
 			
 			case SINGEL_SLIVER_INIT:{
-				*lift = -1203474;
+				*lift = -1203474 + pose_offest.lift;
+				*hy = -194951 + pose_offest.hy;
 				*pitch = 28770;
-				*qs = 50000;
+				*qs = 0 + pose_offest.qs;
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
 					posemod = SINGEL_SLIVER_BACK;
 					osDelay(300);
@@ -293,7 +294,7 @@ void ModePoseTask(void const * argument){
 				pump_top_open();
 				xipan_top_open();
 				osDelay(2500);
-				*lift = -803474;
+				*lift = -803474 + pose_offest.lift;
 				osDelay(1500);
 				*pitch = 12590;
 				posemod = NONE;
@@ -367,7 +368,7 @@ void ModePoseTask(void const * argument){
 			case FETCH_GOLD_STORE_LEFT:{
 				// 向上抬 左转					
 				*qs = 261649;
-				*hy = -204951;
+				*hy = -215000;
 				*lift = -1000000;
 				*roll = 25823;
 				*pitch = 44950;
@@ -397,8 +398,8 @@ void ModePoseTask(void const * argument){
 			} break;
 			case FETCH_GOLD_STORE_RIGHT:{
 				// 向上抬 右转	
-				*qs = 160*780000/388;
-				*hy = -200000;
+				*qs = 191649;
+				*hy = -190000;
 				*lift = -1000000;
 				*roll = 25823;
 				*pitch = 44950;
@@ -791,12 +792,12 @@ void ModePoseTask(void const * argument){
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_C)){
 				
 				// 向上抬 左转					
-				*qs = 160*780000/388;
-				*hy = -194951;
+				*qs = 261649;
+				*hy = -215000;
 				*lift = -1000000;
 				*roll = 25823;
 				*pitch = 44950;
-				*yaw = 40754;
+				*yaw = 42754;
 				osDelay(3500);
 					
 				// 开上泵
@@ -841,8 +842,8 @@ void ModePoseTask(void const * argument){
 				}
 					
 				// 向上抬 右转	
-				*qs = 160*780000/388;
-				*hy = -200000;
+				*qs = 191649;
+				*hy = -190000;
 				*lift = -1000000;
 				*roll = 59069;
 				*pitch = 12590;
