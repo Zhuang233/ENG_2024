@@ -285,11 +285,11 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //			my_ctrl_reset_first_time = true;
 //		}
 			
-			if(custom_controller_data_t.key_2 != 0xff){
+//			if(custom_controller_data_t.key_2 != 0xff){
 				gz += custom_controller_data_t.vz * suofang;
 				gy -= custom_controller_data_t.vx * suofang;
 				gx += custom_controller_data_t.vy * suofang;
-			}
+//			}
 			
 
 			
