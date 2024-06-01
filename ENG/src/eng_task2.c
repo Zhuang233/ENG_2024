@@ -177,16 +177,31 @@ bool rotateslow_flag = false;
 uint16_t pitch_slow =  ARM_ANGLE_STD_1;
 uint16_t roll_slow = ARM_ANGLE_STD_2;
 uint16_t yaw_slow = ARM_ANGLE_STD_3;
+bool rotatesfaster = false;
+
 
 void RotationSlowTask(void const * argument){
 	for(;;){
 		if(rotateslow_flag){
-			if(sync_data_to_c.data.theta1 > pitch_slow + 40) sync_data_to_c.data.theta1-=20;
-			if(sync_data_to_c.data.theta2 > roll_slow + 40) sync_data_to_c.data.theta2-=20;
-			if(sync_data_to_c.data.theta3 > yaw_slow + 40) sync_data_to_c.data.theta3-=20;
-			if(sync_data_to_c.data.theta1 < pitch_slow - 40) sync_data_to_c.data.theta1+=20;
-			if(sync_data_to_c.data.theta2 < roll_slow - 40) sync_data_to_c.data.theta2+=20;
-			if(sync_data_to_c.data.theta3 < yaw_slow - 40) sync_data_to_c.data.theta3+=20;
+			if(rotatesfaster){
+//				if(sync_data_to_c.data.theta1 > pitch_slow + 80) sync_data_to_c.data.theta1-=40;
+//				if(sync_data_to_c.data.theta2 > roll_slow + 80) sync_data_to_c.data.theta2-=40;
+//				if(sync_data_to_c.data.theta3 > yaw_slow + 80) sync_data_to_c.data.theta3-=40;
+//				if(sync_data_to_c.data.theta1 < pitch_slow - 80) sync_data_to_c.data.theta1+=40;
+//				if(sync_data_to_c.data.theta2 < roll_slow - 80) sync_data_to_c.data.theta2+=40;
+//				if(sync_data_to_c.data.theta3 < yaw_slow - 80) sync_data_to_c.data.theta3+=40;	
+				sync_data_to_c.data.theta1 = pitch_slow;
+				sync_data_to_c.data.theta2 = roll_slow;
+				sync_data_to_c.data.theta3 = yaw_slow;
+			}
+			else{
+				if(sync_data_to_c.data.theta1 > pitch_slow + 40) sync_data_to_c.data.theta1-=20;
+				if(sync_data_to_c.data.theta2 > roll_slow + 40) sync_data_to_c.data.theta2-=20;
+				if(sync_data_to_c.data.theta3 > yaw_slow + 40) sync_data_to_c.data.theta3-=20;
+				if(sync_data_to_c.data.theta1 < pitch_slow - 40) sync_data_to_c.data.theta1+=20;
+				if(sync_data_to_c.data.theta2 < roll_slow - 40) sync_data_to_c.data.theta2+=20;
+				if(sync_data_to_c.data.theta3 < yaw_slow - 40) sync_data_to_c.data.theta3+=20;
+			}
 		}
 		osDelay(1);
 	}
@@ -195,6 +210,7 @@ void RotationSlowTask(void const * argument){
 
 bool virtual_link_flag = true;
 extern uint8_t key_2_last;
+extern float gx,gy,gz;
 // 姿态控制任务，所有固定姿态由此处理,UI需要显示
 void ModePoseTask(void const * argument){
 	int32_t* qs = &(sync_data_to_c.data.qs_pos);
@@ -275,15 +291,19 @@ void ModePoseTask(void const * argument){
 			} break;
 			
 			case SINGEL_SLIVER_INIT:{
+				rotatesfaster = true;
 				*lift = -1203474 + pose_offest.lift;
 				*hy = -194951 + pose_offest.hy;
 				*pitch = 28770;
-				*qs = 0 + pose_offest.qs;
+				*qs = 25000 + pose_offest.qs;
+				osDelay(5);
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+					rotatesfaster = false;
 					posemod = SINGEL_SLIVER_BACK;
 					osDelay(300);
 				}
 				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
+					rotatesfaster = false;
 					posemod = NONE;
 					pose_offest_clear();
 					osDelay(300);
@@ -356,7 +376,7 @@ void ModePoseTask(void const * argument){
 				*hy = -194951+ pose_offest.hy;
 				*lift = -1650000+ pose_offest.lift;
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = FETCH_GOLD_STORE_LEFT;
+					posemod = NONE;
 					osDelay(300);
 				}
 				else if(RC_CtrlData.mouse.press_r == 1 && RC_CtrlData.mouse.last_press_r == 0){
@@ -404,16 +424,15 @@ void ModePoseTask(void const * argument){
 				*roll = 25823;
 				*pitch = 44950;
 				*yaw = 7986;
-				osDelay(2000);
+				osDelay(500);
 				
 				// 开底泵
 				pump_bottom_open();
 				xipan_right_open();
-				osDelay(500);
 				
 				// 下压
 				*lift = *lift - 55.0 * 500000.0/87.5;
-				osDelay(2000);
+				osDelay(800);
 				
 				// 关上泵
 				pump_top_close();
@@ -562,7 +581,7 @@ void ModePoseTask(void const * argument){
 //				}
 //			}break;
 			case FETCH_SLIVER_INIT:{
-				*qs = 2000;
+				*qs = 25000;
 				*hy = -194951;
 				*lift = 0;
 				*pitch = ARM_ANGLE_STD_1;
@@ -699,11 +718,13 @@ void ModePoseTask(void const * argument){
 				*hy = -194951;
 				if(first_time_fetch_sliver_store_left){
 					*lift = 0;
+					rotatesfaster = true;
 					osDelay(1000);
 					*roll = 25823;
 					*pitch = 44950;	
 					*yaw = 40754;
 					osDelay(2000);
+					rotatesfaster = false;
 					*lift = *lift - (50.0 * 500000.0/87.5 + 500000.0);
 					first_time_fetch_sliver_store_left = false;
 				}
@@ -720,6 +741,7 @@ void ModePoseTask(void const * argument){
 //			
 //			}break;
 			case TAKE_GROUND_ORE_INIT:{
+				rotatesfaster = true;
 				*lift = -1773474 + pose_offest.lift;
 				*hy = -194951 + pose_offest.hy;
 				*qs = 780000 + pose_offest.qs;
@@ -728,10 +750,12 @@ void ModePoseTask(void const * argument){
 				*roll = 25823;
 				
 				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+					rotatesfaster = false;
 					posemod = TAKE_GROUND_ORE_TAKE_BACK;
 					osDelay(300);
 				}
 				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+					rotatesfaster = false;
 					posemod = NONE;
 					osDelay(300);
 				}
@@ -776,7 +800,8 @@ void ModePoseTask(void const * argument){
 						key_2_last = custom_controller_data_t.key_2;	
 						osDelay(3500);
 						rotateslow_flag = false;
-					// 兑换循环					
+					// 兑换循环	
+					gx=280,gy=350.0,gz=500.0;
 					for(;;){
 						RoboArm_RC_Ctrl_Fixed_Point(); 
 						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)) {
@@ -791,14 +816,15 @@ void ModePoseTask(void const * argument){
 				// 左吸盘兑换 C
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_C)){
 				
-				// 向上抬 左转					
-				*qs = 261649;
+				// 向上抬 左转	
+				rotatesfaster = true;					
+				*qs = 361649;
 				*hy = -215000;
 				*lift = -1000000;
 				*roll = 25823;
 				*pitch = 44950;
 				*yaw = 42754;
-				osDelay(3500);
+				osDelay(500);
 					
 				// 开上泵
 				pump_top_open();
@@ -806,11 +832,12 @@ void ModePoseTask(void const * argument){
 	
 				// 下压
 				*lift = *lift - 55.0 * 500000.0/87.5;
-				osDelay(2000);
+				osDelay(1000);
 					
 				// 关底泵
 				pump_bottom_close();
 				xipan_left_close();
+				rotatesfaster = false;
 				osDelay(2500);
 				// 上抬转回来
 				* qs = 98042;
@@ -819,11 +846,13 @@ void ModePoseTask(void const * argument){
 				*pitch = 28492;
 				*roll = 25823;
 				*yaw = 24370;  
-				osDelay(3500);
+				osDelay(2500);
 				key_2_last = custom_controller_data_t.key_2;	
 					// 兑换循环
-					rotateslow_flag = false;					
+					rotateslow_flag = false;	
+					gx=280,gy=350.0,gz=500.0;				
 					for(;;){	
+						
 						RoboArm_RC_Ctrl_Fixed_Point(); 
 						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)) {
 							rotateslow_flag = true;
@@ -842,13 +871,14 @@ void ModePoseTask(void const * argument){
 				}
 					
 				// 向上抬 右转	
-				*qs = 191649;
+				rotatesfaster = true;
+				*qs = 291649;
 				*hy = -190000;
 				*lift = -1000000;
 				*roll = 59069;
 				*pitch = 12590;
 				*yaw = 7986;
-				osDelay(3500);
+				osDelay(500);
 					
 				// 开上泵
 				pump_top_open();
@@ -856,25 +886,27 @@ void ModePoseTask(void const * argument){
 	
 				// 下压
 				*lift = *lift - 55.0 * 500000.0/87.5;
-				osDelay(2000);
+				osDelay(1000);
 					
 				// 关底泵
 				pump_bottom_close();
 				xipan_right_close();
+				rotatesfaster = false;
 				osDelay(2500);
 				// 上抬转回来
 				*lift = -1009038;
 				osDelay(300);
 				*roll = 25823;
-				osDelay(3000);
+				osDelay(1500);
 				*qs = 98042;
 				*hy = -162500;
 				*pitch = 28492;
 				*yaw = 24370;
-				osDelay(3000);
+				osDelay(1000);
 				key_2_last = custom_controller_data_t.key_2;	
 					// 兑换循环
-					rotateslow_flag = false;					
+					rotateslow_flag = false;		
+					gx=280,gy=350.0,gz=500.0;
 					for(;;){
 						RoboArm_RC_Ctrl_Fixed_Point(); 
 						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)){
