@@ -11,22 +11,27 @@
 #define FRAME_OBJ_NUM 5
 
 CAT(ui_, CAT(FRAME_OBJ_NUM, _frame_t)) ui_gold_island_middle_0;
+
+// 将图形对象分配到帧数据段的空间中
 ui_interface_rect_t *ui_gold_island_middle_rect = (ui_interface_rect_t *)&(ui_gold_island_middle_0.data[0]);
 ui_interface_line_t *ui_gold_island_middle_Line1 = (ui_interface_line_t *)&(ui_gold_island_middle_0.data[1]);
 ui_interface_line_t *ui_gold_island_middle_Line2 = (ui_interface_line_t *)&(ui_gold_island_middle_0.data[2]);
 ui_interface_line_t *ui_gold_island_middle_Line3 = (ui_interface_line_t *)&(ui_gold_island_middle_0.data[3]);
 
 void _ui_init_gold_island_middle_0() {
+		// 给所有对象取名字，定义增加操作
     for (int i = 0; i < OBJ_NUM; i++) {
         ui_gold_island_middle_0.data[i].figure_name[0] = FRAME_ID;
         ui_gold_island_middle_0.data[i].figure_name[1] = GROUP_ID;
         ui_gold_island_middle_0.data[i].figure_name[2] = i + START_ID;
         ui_gold_island_middle_0.data[i].operate_tpyel = 1;
     }
+		// 剩下的对象空操作
     for (int i = OBJ_NUM; i < FRAME_OBJ_NUM; i++) {
         ui_gold_island_middle_0.data[i].operate_tpyel = 0;
     }
-
+		
+		// 定义所有obj类型和对应属性
     ui_gold_island_middle_rect->figure_tpye = 1;
     ui_gold_island_middle_rect->layer = 0;
     ui_gold_island_middle_rect->start_x = 538;
@@ -69,6 +74,7 @@ void _ui_init_gold_island_middle_0() {
 }
 
 void _ui_update_gold_island_middle_0() {
+		//定义修改操作
     for (int i = 0; i < OBJ_NUM; i++) {
         ui_gold_island_middle_0.data[i].operate_tpyel = 2;
     }
@@ -78,6 +84,7 @@ void _ui_update_gold_island_middle_0() {
 }
 
 void _ui_remove_gold_island_middle_0() {
+	  //定义删除操作
     for (int i = 0; i < OBJ_NUM; i++) {
         ui_gold_island_middle_0.data[i].operate_tpyel = 3;
     }

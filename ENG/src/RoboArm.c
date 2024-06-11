@@ -13,7 +13,7 @@
 
 
 int32_t virtual_link(int32_t x);
-//Ì§Éı-------------------------------------------------------
+//æŠ¬å‡-------------------------------------------------------
 
 #define LIFT_POS_P 0.05
 #define LIFT_POS_I 0
@@ -43,10 +43,10 @@ void Update_Lift_Pos(){
 		
 }
 
-//Ì§Éı-------------------------------------------------------
+//æŠ¬å‡-------------------------------------------------------
 
 
-//ËõÕÅ-------------------------------------------------------
+//ç¼©å¼ -------------------------------------------------------
 #define EXPAND_POS_P 0.5
 #define EXPAND_POS_I 0
 #define EXPAND_POS_D 0
@@ -74,9 +74,9 @@ void Update_Expand_Pos(){
 	}
 }
 
-//ËõÕÅ-------------------------------------------------------
+//ç¼©å¼ -------------------------------------------------------
 
-//Ğ¡Ì§Éı-------------------------------------------------------
+//å°æŠ¬å‡-------------------------------------------------------
 
 #define SMALL_LIFT_POS_P 0.1
 #define SMALL_LIFT_POS_I 0
@@ -107,10 +107,10 @@ void Update_Small_Lift_Pos(){
 		
 }
 
-//Ğ¡Ì§Éı-------------------------------------------------------
+//å°æŠ¬å‡-------------------------------------------------------
 
 
-//·­×ª-------------------------------------------------------
+//ç¿»è½¬-------------------------------------------------------
 
 ////#define FLIP_POS_P 0.08
 #define FLIP_POS_P 0.08
@@ -138,7 +138,7 @@ void Update_Flip_Pos(){
 		pid_calculate(&pid_flip_pos, (float)MotoState[5].angle_desired , (float)MotoState[5].angle);
 		MotoState[5].speed_desired = (int)pid_flip_pos.outPID;
 		pid_calculate(&pid_flip_spd, MotoState[5].speed_desired , MotoState[5].speed_actual);
-		// ¶¯Ì¬ÖØÁ¦²¹³¥
+		// åŠ¨æ€é‡åŠ›è¡¥å¿
 		para_gravity = -(2000.0 + 1500.0 * (float)MotoState[5].angle / -200000.0);
 		Gravity_compensation = para_gravity * arm_cos_f32(((float)MotoState[5].angle) * (PI/2.0)/200000.0);
 		
@@ -147,7 +147,7 @@ void Update_Flip_Pos(){
 	}
 }
 
-//·­×ª-------------------------------------------------------
+//ç¿»è½¬-------------------------------------------------------
 
 
 void RoboArm_Pos_Init(){
@@ -158,7 +158,7 @@ void RoboArm_Pos_Init(){
 	sync_data_to_c.data.hy_pos = -200000;
 }
 
-// Ò£¿Ø¿ØÖÆÈ«³µ
+// é¥æ§æ§åˆ¶å…¨è½¦
 void RoboArm_RC_Ctrl(){
 	if(RC_CtrlData.rc.sw1 == 1 && RC_CtrlData.rc.sw2 == 1){
 		sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
@@ -196,18 +196,18 @@ void RoboArm_RC_Ctrl(){
 	
 	if(RC_CtrlData.rc.sw2 == 2){
 		
-		// ËõÕÅ
+		// ç¼©å¼ 
 		MotoState[7].angle_desired += RC_CtrlData.rc.ch1;
 		if(MotoState[7].angle_desired > -10000) MotoState[7].angle_desired = -10000;
 		if(MotoState[7].angle_desired < -420000) MotoState[7].angle_desired = -420000;
 	
 		
-		// ·­×ª
+		// ç¿»è½¬
 		MotoState[5].angle_desired += RC_CtrlData.rc.ch4/5;
 		if(MotoState[5].angle_desired > 0) MotoState[5].angle_desired = 0;
 		if(MotoState[5].angle_desired < -200000) MotoState[5].angle_desired = -200000;
 
-		// Ğ¡Ì§Éı
+		// å°æŠ¬å‡
 		//	MotoState[6].angle_desired += RC_CtrlData.rc.ch2;
 		
 		MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
@@ -223,7 +223,7 @@ void one_key_fetch_sliver(){
 	stage = 0;
 	
 	while(!fetch_finish){
-		// ·­¿ªµ½´ïÄâºÏÖÕµã
+		// ç¿»å¼€åˆ°è¾¾æ‹Ÿåˆç»ˆç‚¹
 		if(stage == 0 && RC_CtrlData.rc.sw2 == 1){
 			stage = 1;
 			MotoState[5].angle_desired = -200000;
@@ -300,19 +300,19 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			if(gy < 0) gy = 0;
 			if(gy > 600) gy = 600;
 		
-			// 1.Ò£¿Ø¸øÅ·À­½Ç
+			// 1.é¥æ§ç»™æ¬§æ‹‰è§’
 			//			sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
 			//			sync_data_to_c.data.theta2 -= RC_CtrlData.rc.ch1 / 15;
 			//			sync_data_to_c.data.theta3 -= RC_CtrlData.rc.ch3 / 15;
 			
-			// 2.×Ô¶¨Òå¿ØÖÆÆ÷Å·À­½Ç
+			// 2.è‡ªå®šä¹‰æ§åˆ¶å™¨æ¬§æ‹‰è§’
 			//			sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1 - custom_controller_data_t.pitch * 16384.0 / 90.0;
 			//			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - custom_controller_data_t.roll * 16384.0 / 90.0;
 			//			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_1 - custom_controller_data_t.yaw * 16384.0 / 90.0;
 			
 			
 			
-			// 3.×Ô¶¨Òå¿ØÖÆÆ÷ËÄÔªÊı×ªÅ·À­½Ç(²»»á)
+			// 3.è‡ªå®šä¹‰æ§åˆ¶å™¨å››å…ƒæ•°è½¬æ¬§æ‹‰è§’(ä¸ä¼š)
 
 //			sync_data_to_c.data.theta1 = 
 //			sync_data_to_c.data.theta2 =

@@ -73,10 +73,10 @@ void FlipTask(void const * argument){
 }
 
 
-// µ×ÅÌÈÎÎñ
-//1.¿ØÖÆÊı¾İ½ÓÊÕÓë´¦Àí
-//2.pid½âËã
-//3.¸øµçÁ÷
+// åº•ç›˜ä»»åŠ¡
+//1.æ§åˆ¶æ•°æ®æ¥æ”¶ä¸å¤„ç†
+//2.pidè§£ç®—
+//3.ç»™ç”µæµ
 void ChassisMotoTask(void const * argument){
 	 chassis_pid_init();
 	 for(;;)
@@ -100,30 +100,30 @@ void ChassisMotoTask(void const * argument){
 
 typedef enum{
 	VIRTUAL_LINK,
-	// È¡½ğ¿ó£¬È«¹ı³ÌÓ¦¾ù¿ÉÊÖ¶¯Î¢µ÷£¬ÒÔ¼°»ØÍË£¨×ó¼üÈ·ÈÏ£¬ÓÒ¼ü»ØÍË£©
+	// å–é‡‘çŸ¿ï¼Œå…¨è¿‡ç¨‹åº”å‡å¯æ‰‹åŠ¨å¾®è°ƒï¼Œä»¥åŠå›é€€ï¼ˆå·¦é”®ç¡®è®¤ï¼Œå³é”®å›é€€ï¼‰
 	NONE,
-	FETCH_GOLD_INIT,   // Ô¤±¸Ì¬ok
-	FETCH_GOLD_INDEEP, // ÉîÈëok
-	FETCH_GOLD_INDEEP_UP,// Ì§¸ß ok
-	FETCH_GOLD_OUT, // È¡³öok
-	FETCH_GOLD_STORE_LEFT, // ´æ¿ó×óok
-	FETCH_GOLD_STORE_RIGHT, // ´æ¿óÓÒ (Íá)
-	FETCH_GOLD_INIT_LEFT, // ×óÔ¤±¸Ì¬ 8
-	FETCH_GOLD_INDEEP_LEFT, // ×óÉîÈë ok
-	FETCH_GOLD_INDEEP_UP_LEFT,// ×óÌ§¸ß ok
-	FETCH_GOLD_OUT_LEFT, // ×óÈ¡³ö ok
+	FETCH_GOLD_INIT,   // é¢„å¤‡æ€ok
+	FETCH_GOLD_INDEEP, // æ·±å…¥ok
+	FETCH_GOLD_INDEEP_UP,// æŠ¬é«˜ ok
+	FETCH_GOLD_OUT, // å–å‡ºok
+	FETCH_GOLD_STORE_LEFT, // å­˜çŸ¿å·¦ok
+	FETCH_GOLD_STORE_RIGHT, // å­˜çŸ¿å³ (æ­ª)
+	FETCH_GOLD_INIT_LEFT, // å·¦é¢„å¤‡æ€ 8
+	FETCH_GOLD_INDEEP_LEFT, // å·¦æ·±å…¥ ok
+	FETCH_GOLD_INDEEP_UP_LEFT,// å·¦æŠ¬é«˜ ok
+	FETCH_GOLD_OUT_LEFT, // å·¦å–å‡º ok
 	
-	FETCH_SLIVER_INIT, // ÉÏÌ§Éı 12
-	FETCH_SLIVER_FLIP,		// ·­×ªÎü
-	FETCH_SLIVER_BACK1,		// ·­»Ø´æ
-	FETCH_SLIVER_BACK2,		// ·­»Ø´æ2
-	FETCH_SLIVER_TOP_DOWN, // ¶¥²¿ÎüÅÌ½µ
-	FETCH_SLIVWER_STORE_LEFT, //´æ
-	SELECT_EXCANGE_MODE, //Ñ¡Ôñ¶Ò¿óÄ£Ê½
-	TAKE_GROUND_ORE_INIT,//È¡µØ¿ó³õÊ¼×ËÌ¬£¨¿ÉÎ¢µ÷£©
-	TAKE_GROUND_ORE_TAKE_BACK,// È¡µØ¿óÄÃ»ØÀ´¾Ù×Å
-	FREE_ARM,// ×ÔÓÉ»úĞµ±Û,(×î´óÏŞÎ»£¬ÓÃÓÚÈ¡µØ¿ó²¦µ½ºÏÊÊ×ËÌ¬»òÕß¾ÈÔ®)
-	PARA_FIND,  // É¶¶¼²»¸É£¬Ñ¡ÊÖ¶¯²ÎÊıÓÃ
+	FETCH_SLIVER_INIT, // ä¸ŠæŠ¬å‡ 12
+	FETCH_SLIVER_FLIP,		// ç¿»è½¬å¸
+	FETCH_SLIVER_BACK1,		// ç¿»å›å­˜
+	FETCH_SLIVER_BACK2,		// ç¿»å›å­˜2
+	FETCH_SLIVER_TOP_DOWN, // é¡¶éƒ¨å¸ç›˜é™
+	FETCH_SLIVWER_STORE_LEFT, //å­˜
+	SELECT_EXCANGE_MODE, //é€‰æ‹©å…‘çŸ¿æ¨¡å¼
+	TAKE_GROUND_ORE_INIT,//å–åœ°çŸ¿åˆå§‹å§¿æ€ï¼ˆå¯å¾®è°ƒï¼‰
+	TAKE_GROUND_ORE_TAKE_BACK,// å–åœ°çŸ¿æ‹¿å›æ¥ä¸¾ç€
+	FREE_ARM,// è‡ªç”±æœºæ¢°è‡‚,(æœ€å¤§é™ä½ï¼Œç”¨äºå–åœ°çŸ¿æ‹¨åˆ°åˆé€‚å§¿æ€æˆ–è€…æ•‘æ´)
+	PARA_FIND,  // å•¥éƒ½ä¸å¹²ï¼Œé€‰æ‰‹åŠ¨å‚æ•°ç”¨
 	SINGEL_SLIVER_INIT,
 	SINGEL_SLIVER_BACK
 }PoseMode;
@@ -141,7 +141,7 @@ struct Pose_offest{
 }pose_offest;
 
 PoseMode posemod = NONE;
-bool pose_auto = false; // ¸øÆäËûÈÎÎñµÄÍ¨ÖªÈ«¾Ö±äÁ¿
+bool pose_auto = false; // ç»™å…¶ä»–ä»»åŠ¡çš„é€šçŸ¥å…¨å±€å˜é‡
 //#define VIRTUAL_LINK 1
 //#define FETCH_SLIVER_1 2
 //#define FETCH_SLIVER_2 3
@@ -154,7 +154,7 @@ bool pose_auto = false; // ¸øÆäËûÈÎÎñµÄÍ¨ÖªÈ«¾Ö±äÁ¿
 //#define FLIP_STEP_OFFSET 10000
 
 #define HY_STEP 2000
-#define LIFT_STEP 8000 //(+12¸ö)
+#define LIFT_STEP 8000 //(+12ä¸ª)
 #define QS_STEP 4000
 #define FLIP_STEP 2000
 
@@ -211,7 +211,7 @@ void RotationSlowTask(void const * argument){
 bool virtual_link_flag = true;
 extern uint8_t key_2_last;
 extern float gx,gy,gz;
-// ×ËÌ¬¿ØÖÆÈÎÎñ£¬ËùÓĞ¹Ì¶¨×ËÌ¬ÓÉ´Ë´¦Àí,UIĞèÒªÏÔÊ¾
+// å§¿æ€æ§åˆ¶ä»»åŠ¡ï¼Œæ‰€æœ‰å›ºå®šå§¿æ€ç”±æ­¤å¤„ç†,UIéœ€è¦æ˜¾ç¤º
 void ModePoseTask(void const * argument){
 	int32_t* qs = &(sync_data_to_c.data.qs_pos);
 	int32_t* hy = &(sync_data_to_c.data.hy_pos);
@@ -250,7 +250,7 @@ void ModePoseTask(void const * argument){
 				osDelay(1);
 			}break;
 			case NONE:{
-				// »ØÄ¬ÈÏÎ»ÖÃ
+				// å›é»˜è®¤ä½ç½®
 				*qs = 0;
 				*hy = -194951;
 				*lift = -1273474;
@@ -266,7 +266,7 @@ void ModePoseTask(void const * argument){
 //				xipan_right_close();
 				pose_auto = false;
 				
-				// 3ÖÖÄ£Ê½Èë¿Ú
+				// 3ç§æ¨¡å¼å…¥å£
 				if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_Z)){
 					posemod = FETCH_GOLD_INIT;
 					pose_offest_clear();
@@ -321,7 +321,7 @@ void ModePoseTask(void const * argument){
 			}break;
 			
 			case FETCH_GOLD_INIT:{
-				// ÖĞ½ğ³õÊ¼×ËÌ¬
+				// ä¸­é‡‘åˆå§‹å§¿æ€
 				*qs = 0;
 				*hy = -194951 + pose_offest.hy;
 				*lift = -1773474 + pose_offest.lift;
@@ -386,7 +386,7 @@ void ModePoseTask(void const * argument){
 				
 			} break;
 			case FETCH_GOLD_STORE_LEFT:{
-				// ÏòÉÏÌ§ ×ó×ª					
+				// å‘ä¸ŠæŠ¬ å·¦è½¬					
 				*qs = 261649;
 				*hy = -215000;
 				*lift = -1000000;
@@ -395,29 +395,29 @@ void ModePoseTask(void const * argument){
 				*yaw = 42754;
 				osDelay(2000);
 					
-				// ¿ªµ×±Ã
+				// å¼€åº•æ³µ
 				pump_bottom_open();
 				xipan_left_open();
 				osDelay(500);
-				// ÏÂÑ¹
+				// ä¸‹å‹
 				*lift = *lift - 55.0 * 500000.0/87.5;
 				osDelay(2000);
-				// ¹ØÉÏ±Ã
+				// å…³ä¸Šæ³µ
 				pump_top_close();
 				xipan_top_close();
 				osDelay(2500);
-				// ÉÏÌ§×ª»ØÀ´
+				// ä¸ŠæŠ¬è½¬å›æ¥
 				*lift = *lift + 55.0 * 500000.0/87.5;
 				*pitch = 28492;
 				*roll = 25823;
 				*yaw = 24700;
-				// ½µµ½³õÊ¼Î»ÖÃ
+				// é™åˆ°åˆå§‹ä½ç½®
 				osDelay(3000);
 				*lift = -1723474;
 				posemod = NONE;
 			} break;
 			case FETCH_GOLD_STORE_RIGHT:{
-				// ÏòÉÏÌ§ ÓÒ×ª	
+				// å‘ä¸ŠæŠ¬ å³è½¬	
 				*qs = 191649;
 				*hy = -190000;
 				*lift = -1000000;
@@ -426,26 +426,26 @@ void ModePoseTask(void const * argument){
 				*yaw = 7986;
 				osDelay(500);
 				
-				// ¿ªµ×±Ã
+				// å¼€åº•æ³µ
 				pump_bottom_open();
 				xipan_right_open();
 				
-				// ÏÂÑ¹
+				// ä¸‹å‹
 				*lift = *lift - 55.0 * 500000.0/87.5;
 				osDelay(800);
 				
-				// ¹ØÉÏ±Ã
+				// å…³ä¸Šæ³µ
 				pump_top_close();
 				xipan_top_close();
 				osDelay(2500);
 				
-				// ÉÏÌ§×ª»ØÀ´
+				// ä¸ŠæŠ¬è½¬å›æ¥
 				*lift = *lift + 55.0 * 500000.0/87.5;
 				*pitch = 28492;
 				*roll = 25823;
 				*yaw = 24700;
 				
-				// ½µµ½³õÊ¼Î»ÖÃ
+				// é™åˆ°åˆå§‹ä½ç½®
 				osDelay(3000);
 				*lift = -1723474;
 				posemod = NONE;
@@ -603,7 +603,7 @@ void ModePoseTask(void const * argument){
 			case FETCH_SLIVER_FLIP:{
 //				if(first_time_fetch_sliver_flip){
 				
-					// Éì³öÈ¥£¬Ì§µ½×î¶¥
+					// ä¼¸å‡ºå»ï¼ŒæŠ¬åˆ°æœ€é¡¶
 					*qs = 330 * 390000.0/294.0;
 					*hy = -194951;
 					*lift = 0;
@@ -623,10 +623,10 @@ void ModePoseTask(void const * argument){
 				xipan_left_open();
 				xipan_right_open();
 				
-				// È¡Ë«±ßÒø¿ó±ê×¼×ËÌ¬
+				// å–åŒè¾¹é“¶çŸ¿æ ‡å‡†å§¿æ€
 				*small_lift = 325000;
 				*flip = -220000;
-				osDelay(3000); // Îü3s
+				osDelay(3000); // å¸3s
 				
 //				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
 //					first_time_fetch_sliver_flip = true;
@@ -648,7 +648,7 @@ void ModePoseTask(void const * argument){
 //					*flip = -200000;
 //					first_time_fetch_sliver_back = false;
 //				}
-				// °ÎÆğ
+				// æ‹”èµ·
 				*small_lift = 410000;
 				osDelay(800);
 				
@@ -762,13 +762,13 @@ void ModePoseTask(void const * argument){
 			}break;
 			case TAKE_GROUND_ORE_TAKE_BACK:{
 				
-				// ¿ª±ÃÏÂÑ¹
+				// å¼€æ³µä¸‹å‹
 				*lift = -1873474;
 				pump_top_open();
 				xipan_top_open();
 				osDelay(2500);
 				
-				// Ì§ÆğÉÏ·­
+				// æŠ¬èµ·ä¸Šç¿»
 				*lift = -1273474;
 				*hy = -194951;
 				osDelay(1000);
@@ -781,7 +781,7 @@ void ModePoseTask(void const * argument){
 			}break;
 			
 			case SELECT_EXCANGE_MODE:{	
-				// ÉÏÎüÅÌ¶Ò»»F
+				// ä¸Šå¸ç›˜å…‘æ¢F
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_F)){
 						*lift = -1400000;
 						*qs = 0;
@@ -800,7 +800,7 @@ void ModePoseTask(void const * argument){
 						key_2_last = custom_controller_data_t.key_2;	
 						osDelay(3500);
 						rotateslow_flag = false;
-					// ¶Ò»»Ñ­»·	
+					// å…‘æ¢å¾ªç¯	
 					gx=280,gy=350.0,gz=500.0;
 					for(;;){
 						RoboArm_RC_Ctrl_Fixed_Point(); 
@@ -813,10 +813,10 @@ void ModePoseTask(void const * argument){
 					posemod = NONE;
 				}
 				
-				// ×óÎüÅÌ¶Ò»» C
+				// å·¦å¸ç›˜å…‘æ¢ C
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_C)){
 				
-				// ÏòÉÏÌ§ ×ó×ª	
+				// å‘ä¸ŠæŠ¬ å·¦è½¬	
 				rotatesfaster = true;					
 				*qs = 361649;
 				*hy = -215000;
@@ -826,20 +826,20 @@ void ModePoseTask(void const * argument){
 				*yaw = 42754;
 				osDelay(500);
 					
-				// ¿ªÉÏ±Ã
+				// å¼€ä¸Šæ³µ
 				pump_top_open();
 				xipan_top_open();
 	
-				// ÏÂÑ¹
+				// ä¸‹å‹
 				*lift = *lift - 55.0 * 500000.0/87.5;
 				osDelay(1000);
 					
-				// ¹Øµ×±Ã
+				// å…³åº•æ³µ
 				pump_bottom_close();
 				xipan_left_close();
 				rotatesfaster = false;
 				osDelay(2500);
-				// ÉÏÌ§×ª»ØÀ´
+				// ä¸ŠæŠ¬è½¬å›æ¥
 				* qs = 98042;
 				*hy = -162500;
 				*lift = -1009038;
@@ -848,7 +848,7 @@ void ModePoseTask(void const * argument){
 				*yaw = 24370;  
 				osDelay(2500);
 				key_2_last = custom_controller_data_t.key_2;	
-					// ¶Ò»»Ñ­»·
+					// å…‘æ¢å¾ªç¯
 					rotateslow_flag = false;	
 					gx=280,gy=350.0,gz=500.0;				
 					for(;;){	
@@ -863,14 +863,14 @@ void ModePoseTask(void const * argument){
 					posemod = NONE;
 				}
 				
-				// ÓÒÎüÅÌ¶Ò»» V
+				// å³å¸ç›˜å…‘æ¢ V
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_V)){
-				// Îó´¥ÍË³ö¶Ò»»Ñ¡Ôñ
+				// è¯¯è§¦é€€å‡ºå…‘æ¢é€‰æ‹©
 				if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
 					posemod = NONE;
 				}
 					
-				// ÏòÉÏÌ§ ÓÒ×ª	
+				// å‘ä¸ŠæŠ¬ å³è½¬	
 				rotatesfaster = true;
 				*qs = 291649;
 				*hy = -190000;
@@ -880,20 +880,20 @@ void ModePoseTask(void const * argument){
 				*yaw = 7986;
 				osDelay(500);
 					
-				// ¿ªÉÏ±Ã
+				// å¼€ä¸Šæ³µ
 				pump_top_open();
 				xipan_top_open();
 	
-				// ÏÂÑ¹
+				// ä¸‹å‹
 				*lift = *lift - 55.0 * 500000.0/87.5;
 				osDelay(1000);
 					
-				// ¹Øµ×±Ã
+				// å…³åº•æ³µ
 				pump_bottom_close();
 				xipan_right_close();
 				rotatesfaster = false;
 				osDelay(2500);
-				// ÉÏÌ§×ª»ØÀ´
+				// ä¸ŠæŠ¬è½¬å›æ¥
 				*lift = -1009038;
 				osDelay(300);
 				*roll = 25823;
@@ -904,7 +904,7 @@ void ModePoseTask(void const * argument){
 				*yaw = 24370;
 				osDelay(1000);
 				key_2_last = custom_controller_data_t.key_2;	
-					// ¶Ò»»Ñ­»·
+					// å…‘æ¢å¾ªç¯
 					rotateslow_flag = false;		
 					gx=280,gy=350.0,gz=500.0;
 					for(;;){
@@ -926,7 +926,7 @@ void ModePoseTask(void const * argument){
 		osDelay(1);
 	}
 }
-// Ò»¼ü½ğ¿óÄ£Ê½
+// ä¸€é”®é‡‘çŸ¿æ¨¡å¼
 
 
 
@@ -943,17 +943,17 @@ void VirtualLinkTask(void const * argument){
 
 
 
-// »úÆ÷µ÷ÊÔÄ£Ê½£¨¼ìÂ¼ÓÃ£©
+// æœºå™¨è°ƒè¯•æ¨¡å¼ï¼ˆæ£€å½•ç”¨ï¼‰
 bool debug_mode = false;
 void DebugModeTask(void const * argument){
 	for(;;){
-		//ctrl+shift+v·ÀÎó´¥½øÈëµ÷ÊÔÄ£Ê½
+		//ctrl+shift+vé˜²è¯¯è§¦è¿›å…¥è°ƒè¯•æ¨¡å¼
 		if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Hold(&Keys.KEY_SHIFT) && Key_Check_Press(&Keys.KEY_R)){
 			debug_mode = !debug_mode;
 		}
 		
 		if(debug_mode == true){
-			//¸Äui
+			//æ”¹ui
 			if(Key_Check_Hold(&Keys.KEY_W)) MotoState[4].angle_desired += 1950/5;
 			if(Key_Check_Hold(&Keys.KEY_S)) MotoState[4].angle_desired -= 1950/5;
 			if(Key_Check_Hold(&Keys.KEY_A))	sync_data_to_c.data.hy_pos += 400/5;

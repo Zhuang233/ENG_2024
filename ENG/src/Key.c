@@ -17,7 +17,7 @@ void Single_Mouse_Init(MOUSE_MSG* msg)
 	msg->toggle_flag = 0;
 }
 
-void Mouth_Init(void)		//Êó±ê³õÊ¼»¯
+void Mouth_Init(void)		//é¼ æ ‡åˆå§‹åŒ–
 {
 	uint8_t i=0;
 	MOUSE_MSG *pMsg = &Mouse.LEFT;
@@ -25,7 +25,7 @@ void Mouth_Init(void)		//Êó±ê³õÊ¼»¯
 		Single_Mouse_Init(pMsg+i);
 }
 
-void Key_Init(void)		//16¸ö°´¼ü³õÊ¼»¯
+void Key_Init(void)		//16ä¸ªæŒ‰é”®åˆå§‹åŒ–
 {
 	uint8_t i=0;
 	KEY_MSG *pMsg = &Keys.KEY_W;
@@ -33,16 +33,16 @@ void Key_Init(void)		//16¸ö°´¼ü³õÊ¼»¯
 		Single_Key_Init(pMsg+i, 1<<i);
 }
 
-/// @brief	¼ü°´ÏÂ ? 1(½öÒ»´Î) : 0
+/// @brief	é”®æŒ‰ä¸‹ ? 1(ä»…ä¸€æ¬¡) : 0
 bool Key_Check_Press(KEY_MSG* msg)	
 {
-	// ÉÏ´ÎÃ»°´ÏÂ£¬Õâ´Î°´ÏÂ
+	// ä¸Šæ¬¡æ²¡æŒ‰ä¸‹ï¼Œè¿™æ¬¡æŒ‰ä¸‹
 	if((RC_CtrlData.key.info & msg->code) && !msg->press_flag)
 	{
 		msg->press_flag = 1;
 		return 1;
 	}
-	// ÉÏ´Î°´ÏÂ£¬Õâ´ÎÃ»°´ÏÂ
+	// ä¸Šæ¬¡æŒ‰ä¸‹ï¼Œè¿™æ¬¡æ²¡æŒ‰ä¸‹
 	if(!(RC_CtrlData.key.info & msg->code) && msg->press_flag)
 		msg->press_flag = 0;
 	return 0;
@@ -51,19 +51,19 @@ bool Key_Check_Press(KEY_MSG* msg)
 
 bool Mouse_Check_Press(MOUSE_MSG* msg)	
 {
-	// ÉÏ´ÎÃ»°´ÏÂ£¬Õâ´Î°´ÏÂ
+	// ä¸Šæ¬¡æ²¡æŒ‰ä¸‹ï¼Œè¿™æ¬¡æŒ‰ä¸‹
 	if((RC_CtrlData.mouse.press_l) && !msg->press_flag)
 	{
 		msg->press_flag = 1;
 		return 1;
 	}
-	// ÉÏ´Î°´ÏÂ£¬Õâ´ÎÃ»°´ÏÂ
+	// ä¸Šæ¬¡æŒ‰ä¸‹ï¼Œè¿™æ¬¡æ²¡æŒ‰ä¸‹
 	if(!(RC_CtrlData.mouse.press_l) && msg->press_flag)
 		msg->press_flag = 0;
 	return 0;
 }
 
-/// @brief	¼ü°´ÏÂ ? 1 : 0
+/// @brief	é”®æŒ‰ä¸‹ ? 1 : 0
 bool Key_Check_Hold(KEY_MSG* msg)
 {
 	if((RC_CtrlData.key.info & msg->code) && !msg->press_flag)
@@ -84,7 +84,7 @@ bool Mouse_Check_Hold(MOUSE_MSG* msg)
 }
 
 
-/// @brief	¼ü°´ÏÂ ? ±êÖ¾Î»^=1(½öÒ»´Î)
+/// @brief	é”®æŒ‰ä¸‹ ? æ ‡å¿—ä½^=1(ä»…ä¸€æ¬¡)
 bool Key_Check_Toggle(KEY_MSG* msg)
 {
 	if(Key_Check_Press(msg))

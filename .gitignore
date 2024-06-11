@@ -13,6 +13,5 @@
 *.iex
 *.Sure
 *.uvoptx
-*.uvprojx
 MDK-ARM/JLinkLog.txt
 MDK-ARM/JLinkSettings.ini

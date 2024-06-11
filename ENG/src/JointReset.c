@@ -10,7 +10,7 @@
 int16_t dji_moto_current_to_send[3] = {0};
 
 
-// Ì§Éı----------------------------------------------
+// æŠ¬å‡----------------------------------------------
 #define LIFT_RESET_SPD_P 15
 #define LIFT_RESET_SPD_I 0
 #define LIFT_RESET_SPD_D 0
@@ -26,13 +26,13 @@ void lift_init_reset_stage(){
 
 
 
-// Ì§ÉıÎ»ÖÃ³õÊ¼»¯
+// æŠ¬å‡ä½ç½®åˆå§‹åŒ–
 void reset_lift(){
 	float speed = 3000;
 	lift_init_reset_stage();
 	while(lift_inited == false){
 		if(lift_reset == false){
-			// ËÙ¶È»·
+			// é€Ÿåº¦ç¯
 			pid_calculate(&pid_lift_reset_spd, speed, MotoState[4].speed_actual);
 			SetMotoCurrent(&hcan1, Back, (pid_lift_reset_spd.outPID + 2000), 0, 0, 0);
 		}
@@ -47,10 +47,10 @@ void reset_lift(){
 	}
 	MotoState[4].angle_desired = -1850000;
 }
-// Ì§Éı----------------------------------------------
+// æŠ¬å‡----------------------------------------------
 
 
-// ËõÕÅ----------------------------------------------
+// ç¼©å¼ ----------------------------------------------
 #define EXPAND_RESET_SPD_P 1
 #define EXPAND_RESET_SPD_I 0
 #define EXPAND_RESET_SPD_D 0
@@ -77,14 +77,14 @@ void duzhuan_TimeInit(TimeTD *time){
 
 
 
-// ËõÕÅÎ»ÖÃ³õÊ¼»¯ ¶Â×ª¼ì²â
+// ç¼©å¼ ä½ç½®åˆå§‹åŒ– å µè½¬æ£€æµ‹
 void reset_expand(){
 	float expand_reset_speed = 3000;
 	expand_init_reset_stage();
 	duzhuan_TimeInit(&t_duzhuan);
 	GetDt(&t_duzhuan,MILLISECOND);
 	while(expand_inited == false){
-		// ÅĞ¶Ï¶Â×ª
+		// åˆ¤æ–­å µè½¬
 		GetDt(&t_duzhuan,MILLISECOND);
 		detect_time +=t_duzhuan.dt;
 		if (detect_time > 300){
@@ -94,9 +94,9 @@ void reset_expand(){
 			start_stage = 0;
 		}
 		
-		// ²»×ªÁË
+		// ä¸è½¬äº†
 		if((MotoState[7].angle - last_detect_angle > 8000) || start_stage){
-				// ËÙ¶È»·
+				// é€Ÿåº¦ç¯
 			a = MotoState[7].angle - last_detect_angle;
 				pid_calculate(&pid_expand_reset_spd, expand_reset_speed, MotoState[7].speed_actual);
 				dji_moto_current_to_send[2] = pid_expand_reset_spd.outPID;
@@ -115,4 +115,4 @@ void reset_expand(){
 	}
 }
 
-// ËõÕÅ----------------------------------------------
+// ç¼©å¼ ----------------------------------------------

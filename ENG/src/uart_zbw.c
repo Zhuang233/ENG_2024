@@ -1,11 +1,11 @@
 #include "uart_zbw.h"
 #include "usart.h"
 #include <stdbool.h>
-// AC°åÍ¨ÐÅÐ­Òé
+// ACæ¿é€šä¿¡åè®®
 /*
-Ö¡Í· 0x55
-ÖÐ¼ä8×Ö½ÚÊý¾Ý
-Ö¡Î² 0xaa
+å¸§å¤´ 0x55
+ä¸­é—´8å­—èŠ‚æ•°æ®
+å¸§å°¾ 0xaa
 */
 
 
@@ -59,7 +59,7 @@ bool RingBuffer_Put(RingBuffer *rb, uint8_t data) {
 
 bool RingBuffer_Get(RingBuffer *rb, uint8_t *data) {
     if (RingBuffer_IsEmpty(rb)) {
-        return false; // »º³åÇø¿Õ
+        return false; // ç¼“å†²åŒºç©º
     }
     *data = rb->buffer[rb->head];
     rb->head = (rb->head + 1) % FRAME_SIZE;
@@ -72,30 +72,30 @@ bool RingBuffer_Get(RingBuffer *rb, uint8_t *data) {
 
 
 
-//uint8_t my_ctrl_buffer[FRAME_SIZE]; // »º´æ½ÓÊÕµÄÊý¾Ý
-//uint8_t rev_remaid = 0; // Ê£ÓàÐèÒª½ÓÊÕµÄ×Ö½ÚÊý
-//uint8_t data_rev_byte; // ×î½ü½ÓÊÕµ½µÄÒ»¸ö×Ö½Ú£¨Õâ¸ö±äÁ¿ÐèÒªÔÚ±ð´¦ÉèÖÃ£©
+//uint8_t my_ctrl_buffer[FRAME_SIZE]; // ç¼“å­˜æŽ¥æ”¶çš„æ•°æ®
+//uint8_t rev_remaid = 0; // å‰©ä½™éœ€è¦æŽ¥æ”¶çš„å­—èŠ‚æ•°
+//uint8_t data_rev_byte; // æœ€è¿‘æŽ¥æ”¶åˆ°çš„ä¸€ä¸ªå­—èŠ‚ï¼ˆè¿™ä¸ªå˜é‡éœ€è¦åœ¨åˆ«å¤„è®¾ç½®ï¼‰
 
 
 
 
-//ControlData my_ctrl_data; // ¿ØÖÆÊý¾Ý½á¹¹
+//ControlData my_ctrl_data; // æŽ§åˆ¶æ•°æ®ç»“æž„
 
 //void decode_my_ctrl_data(void) {
 //    if (data_rev_byte == FRAME_HEAD && rev_remaid == 0) {
-//        // ¿ªÊ¼ÐÂÖ¡
-//        rev_remaid = FRAME_SIZE - 1; // Ô¤ÆÚ½ÓÊÕµÄÊ£ÓàÖ¡³¤¶È
+//        // å¼€å§‹æ–°å¸§
+//        rev_remaid = FRAME_SIZE - 1; // é¢„æœŸæŽ¥æ”¶çš„å‰©ä½™å¸§é•¿åº¦
 //				my_ctrl_buffer[0] = data_rev_byte;
 //    } else if (rev_remaid > 0) {
-//        // ÏÈµÝ¼õ£¬ÒÔ±ã¶ÔÓ¦µ½ÕýÈ·µÄÊý×éË÷Òý£¨»ùÓÚ0£©
+//        // å…ˆé€’å‡ï¼Œä»¥ä¾¿å¯¹åº”åˆ°æ­£ç¡®çš„æ•°ç»„ç´¢å¼•ï¼ˆåŸºäºŽ0ï¼‰
 //        rev_remaid--;
 //        my_ctrl_buffer[FRAME_SIZE -1- rev_remaid] = data_rev_byte;
 
-//        // ¼ì²éÊÇ·ñ½ÓÊÕÍêÕû¸öÖ¡
+//        // æ£€æŸ¥æ˜¯å¦æŽ¥æ”¶å®Œæ•´ä¸ªå¸§
 //        if (rev_remaid == 0) {
-//            // ¼ì²é×îºóÒ»¸ö×Ö½ÚÊÇ·ñÎªÖ¡Î²
+//            // æ£€æŸ¥æœ€åŽä¸€ä¸ªå­—èŠ‚æ˜¯å¦ä¸ºå¸§å°¾
 //            if (data_rev_byte == FRAME_TAIL) {
-//                // ½«Êý¾Ý¸´ÖÆµ½¿ØÖÆÊý¾Ý½á¹¹
+//                // å°†æ•°æ®å¤åˆ¶åˆ°æŽ§åˆ¶æ•°æ®ç»“æž„
 
 //                    my_ctrl_data.bytes[0] = my_ctrl_buffer[1];
 //							      my_ctrl_data.bytes[1] = my_ctrl_buffer[2];
@@ -131,10 +131,10 @@ bool RingBuffer_Get(RingBuffer *rb, uint8_t *data) {
 //							      my_ctrl_data.bytes[25] = my_ctrl_buffer[24];
 //							      my_ctrl_data.bytes[26] = my_ctrl_buffer[25];
 //							      my_ctrl_data.bytes[27] = my_ctrl_buffer[26];
-//                // ÔÚÕâÀï£¬Äã¿ÉÒÔµ÷ÓÃÒ»¸öº¯ÊýÀ´´¦Àímy_ctrl_data
+//                // åœ¨è¿™é‡Œï¼Œä½ å¯ä»¥è°ƒç”¨ä¸€ä¸ªå‡½æ•°æ¥å¤„ç†my_ctrl_data
 //            } else {
-//                // ´íÎó´¦Àí£ºÎ´ÔÚÔ¤ÆÚÎ»ÖÃ½ÓÊÕµ½Ö¡Î²
-//                // Äã¿ÉÒÔÔÚÕâÀïÌí¼Ó´íÎó´¦Àí»òÈÕÖ¾¼ÇÂ¼
+//                // é”™è¯¯å¤„ç†ï¼šæœªåœ¨é¢„æœŸä½ç½®æŽ¥æ”¶åˆ°å¸§å°¾
+//                // ä½ å¯ä»¥åœ¨è¿™é‡Œæ·»åŠ é”™è¯¯å¤„ç†æˆ–æ—¥å¿—è®°å½•
 //            }
 //        }
 //    }
@@ -154,7 +154,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart->Instance==USART6)
 	{
 //		decode_my_ctrl_data();
-//		HAL_UART_Receive_IT(&huart6,&data_rev_byte,1);//»Ö¸´½ÓÊÜÖÐ¶Ï
+//		HAL_UART_Receive_IT(&huart6,&data_rev_byte,1);//æ¢å¤æŽ¥å—ä¸­æ–­
 	}
 	if(huart->Instance==UART7){
 		
