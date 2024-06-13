@@ -139,8 +139,8 @@ void Update_Flip_Pos(){
 		MotoState[5].speed_desired = (int)pid_flip_pos.outPID;
 		pid_calculate(&pid_flip_spd, MotoState[5].speed_desired , MotoState[5].speed_actual);
 		// 动态重力补偿
-		para_gravity = -(2000.0 + 1500.0 * (float)MotoState[5].angle / -200000.0);
-		Gravity_compensation = para_gravity * arm_cos_f32(((float)MotoState[5].angle) * (PI/2.0)/200000.0);
+		para_gravity = -(2000.0f + 1500.0f * (float)MotoState[5].angle / -200000.0f);
+		Gravity_compensation = para_gravity * arm_cos_f32(((float)MotoState[5].angle) * (PI/2.0f)/200000.0f);
 		
 		dji_moto_current_to_send[0] = pid_flip_spd.outPID + Gravity_compensation;
 		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
@@ -294,12 +294,12 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			
 
 			
-			if(gx < 250) gx = 250.0;
-			if(gx > 800) gx = 800.0;
-			if(gz < 430.0) gz = 430.0;	
-			if(gz >980.0) gz = 980.0;				
-			if(gy < 0) gy = 0;
-			if(gy > 600) gy = 600;
+			if(gx < 250.0f) gx = 250.0f;
+			if(gx > 800.0f) gx = 800.0f;
+			if(gz < 430.0f) gz = 430.0f;	
+			if(gz >980.0f) gz = 980.0f;				
+			if(gy < 0.0f) gy = 0.0f;
+			if(gy > 600.0f) gy = 600.0f;
 		
 			// 1.遥控给欧拉角
 			//			sync_data_to_c.data.theta1 += RC_CtrlData.rc.ch2 / 15;
@@ -345,9 +345,9 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			if(sync_data_to_c.data.theta3 > ARM_ANGLE_MAX_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MAX_3;
 			if(sync_data_to_c.data.theta3 < ARM_ANGLE_MIN_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MIN_3;
 		
-			theta_real_1 = PI/32767.5*(float)(sync_data_to_c.data.theta1 - ARM_ANGLE_STD_1);
-			theta_real_2 = -PI/32767.5*(float)(sync_data_to_c.data.theta2 - ARM_ANGLE_STD_2);
-			theta_real_3 = PI/32767.5*(float)(sync_data_to_c.data.theta3 - ARM_ANGLE_STD_3);
+			theta_real_1 = PI/32767.5f *(float)(sync_data_to_c.data.theta1 - ARM_ANGLE_STD_1);
+			theta_real_2 = -PI/32767.5f *(float)(sync_data_to_c.data.theta2 - ARM_ANGLE_STD_2);
+			theta_real_3 = PI/32767.5f *(float)(sync_data_to_c.data.theta3 - ARM_ANGLE_STD_3);
 			c1 = arm_cos_f32(theta_real_1);
 			c2 = arm_cos_f32(theta_real_2 - PI/2);
 			c3 = arm_cos_f32(theta_real_3);
@@ -362,9 +362,9 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //			l = gx - 225.0*c3 -120.0*(-s3*c2*s1+c3*c1);
 			l = 100.0;
 			
-			MotoState[4].angle_desired = (int32_t)((h - 973.0)*500000.0/175.0);
-			sync_data_to_c.data.hy_pos = (int32_t)(w *390000.0/600.0 -390000);
-			sync_data_to_c.data.qs_pos = (int32_t)(l * 780000.0/388.0);
+			MotoState[4].angle_desired = (int32_t)((h - 973.0f)*500000.0f/175.0f);
+			sync_data_to_c.data.hy_pos = (int32_t)(w *390000.0f/600.0f -390000.0f);
+			sync_data_to_c.data.qs_pos = (int32_t)(l * 780000.0f/388.0f);
 			
 			
 			if(MotoState[4].angle_desired > -10000) MotoState[4].angle_desired = -10000;
@@ -379,8 +379,8 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 
 
 int32_t virtual_link(int32_t x){
-	  if (-30000< x && x <=0)           return (float)x            / -30.0;
-    if (-40000 < x && x<= -30000)      return ((float)x + 3333.3) / -(1.0/0.55);
+	  if (-30000< x && x <=0)           return (float)x            / -30.0f;
+    if (-40000 < x && x<= -30000)      return ((float)x + 3333.3f) / -(1.0f/0.55f);
     if (-57500 < x && x<= -40000)     return ((float)x + 30683)  / -0.493;
     if (-79000 < x && x <= -57500)    return ((float)x + 31461)  / -0.478;
     if (-87000 < x && x <= -79000)   return ((float)x + 63244)  / -0.158;
@@ -389,6 +389,7 @@ int32_t virtual_link(int32_t x){
     if (-170000 < x && x<= -125000)   return ((float)x - 298909) / -1.837;
     if (-191500 < x && x <= -170000)  return ((float)x + 41188)  / -0.506;
     if (-250000 < x && x<= -191500)   return ((float)x + 160311) / -0.105;
+		return 0;
 }
 
 
