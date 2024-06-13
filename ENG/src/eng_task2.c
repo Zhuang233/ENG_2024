@@ -36,8 +36,7 @@ void UITask(void const * argument){
 
 }
 
-void LiftTask(void const * argument)
-{
+void LiftTask(void const * argument){
 	osDelay(1000);
 	reset_lift();
   for(;;)
@@ -61,15 +60,13 @@ void FlipTask(void const * argument){
   small_lift_init();
 	flip_init();
 	reset_expand();
-	 for(;;)
+	for(;;)
   {
 		Update_Flip_Pos();
 		Update_Small_Lift_Pos();
 		Update_Expand_Pos();
     osDelay(1); 
   }
-
-
 }
 
 
@@ -99,7 +96,7 @@ void ChassisMotoTask(void const * argument){
 
 
 typedef enum{
-	VIRTUAL_LINK,
+//	VIRTUAL_LINK,
 	// 取金矿，全过程应均可手动微调，以及回退（左键确认，右键回退）
 	NONE,
 	FETCH_GOLD_INIT,   // 预备态ok
@@ -108,21 +105,18 @@ typedef enum{
 	FETCH_GOLD_OUT, // 取出ok
 	FETCH_GOLD_STORE_LEFT, // 存矿左ok
 	FETCH_GOLD_STORE_RIGHT, // 存矿右 (歪)
-	FETCH_GOLD_INIT_LEFT, // 左预备态 8
-	FETCH_GOLD_INDEEP_LEFT, // 左深入 ok
-	FETCH_GOLD_INDEEP_UP_LEFT,// 左抬高 ok
-	FETCH_GOLD_OUT_LEFT, // 左取出 ok
+//	FETCH_GOLD_INIT_LEFT, // 左预备态 8
+//	FETCH_GOLD_INDEEP_LEFT, // 左深入 ok
+//	FETCH_GOLD_INDEEP_UP_LEFT,// 左抬高 ok
+//	FETCH_GOLD_OUT_LEFT, // 左取出 ok
 	
 	FETCH_SLIVER_INIT, // 上抬升 12
-	FETCH_SLIVER_FLIP,		// 翻转吸
-	FETCH_SLIVER_BACK1,		// 翻回存
-	FETCH_SLIVER_BACK2,		// 翻回存2
-	FETCH_SLIVER_TOP_DOWN, // 顶部吸盘降
+	FETCH_SLIVER_FLIP,		// 翻转吸 + 翻回存 + 翻回存2
 	FETCH_SLIVWER_STORE_LEFT, //存
 	SELECT_EXCANGE_MODE, //选择兑矿模式
 	TAKE_GROUND_ORE_INIT,//取地矿初始姿态（可微调）
 	TAKE_GROUND_ORE_TAKE_BACK,// 取地矿拿回来举着
-	FREE_ARM,// 自由机械臂,(最大限位，用于取地矿拨到合适姿态或者救援)
+//	FREE_ARM,// 自由机械臂,(最大限位，用于取地矿拨到合适姿态或者救援)
 	PARA_FIND,  // 啥都不干，选手动参数用
 	SINGEL_SLIVER_INIT,
 	SINGEL_SLIVER_BACK
@@ -142,22 +136,11 @@ struct Pose_offest{
 
 PoseMode posemod = NONE;
 bool pose_auto = false; // 给其他任务的通知全局变量
-//#define VIRTUAL_LINK 1
-//#define FETCH_SLIVER_1 2
-//#define FETCH_SLIVER_2 3
-//#define FETCH_SLIVER_3 4
-//#define RC_FLIP 5
-
-//#define HY_STEP_FETCH_GOLD_INIT 10000
-//#define LIFT_STEP_FETCH_GOLD_INIT 40000
-//#define QS_STEP_FETCH_GOLD_INIT 20000
-//#define FLIP_STEP_OFFSET 10000
 
 #define HY_STEP 2000
 #define LIFT_STEP 8000 //(+12个)
 #define QS_STEP 4000
 #define FLIP_STEP 2000
-
 
 void pose_offest_clear(void){
 	pose_offest.hy = 0;
@@ -178,7 +161,6 @@ uint16_t pitch_slow =  ARM_ANGLE_STD_1;
 uint16_t roll_slow = ARM_ANGLE_STD_2;
 uint16_t yaw_slow = ARM_ANGLE_STD_3;
 bool rotatesfaster = false;
-
 
 void RotationSlowTask(void const * argument){
 	for(;;){
@@ -227,8 +209,8 @@ void ModePoseTask(void const * argument){
 	int32_t* expand = &(MotoState[7].angle_desired);
 	
 	rotateslow_flag = true;
-	bool first_time_fetch_sliver_flip = true;
-	bool first_time_fetch_sliver_back = true;
+//	bool first_time_fetch_sliver_flip = true;
+//	bool first_time_fetch_sliver_back = true;
 	bool first_time_fetch_sliver_store_left = true;
 	
 	RoboArm_Pos_Init();
@@ -450,136 +432,6 @@ void ModePoseTask(void const * argument){
 				*lift = -1723474;
 				posemod = NONE;
 			} break;
-//			case FETCH_GOLD_INIT_LEFT:{
-//				*qs = 2000;
-//				*hy = -194951;
-//				*lift = -1723474-50000;
-//				*pitch = 28492 - 10.0 * 65535.0/360.0;
-//				*roll = 25823 + 65535.0/4.0;
-//				*yaw = 24700;
-//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-//					posemod = FETCH_GOLD_INDEEP_LEFT;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-//					posemod = NONE;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//			} break;
-//				
-//			case FETCH_GOLD_INDEEP_LEFT:{
-//				if(Key_Check_Press(&Keys.KEY_A)){
-//					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_D)){
-//					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_W)){
-//					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_S)){
-//					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_Q)){
-//					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_E)){
-//					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-//				}
-//				*qs = 310000 + pose_offest.qs;
-//				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
-//				*lift = -1723474-50000 + pose_offest.lift;
-//				*pitch = 28492 - 10.0 * 65535.0/360.0;
-//				*roll = 25823 + 65535.0/4.0;
-//				*yaw = 24700;
-//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-//					posemod = FETCH_GOLD_INDEEP_UP_LEFT;
-//					pump_top_open();
-//					xipan_top_open();
-//					pose_offest_clear();
-//					osDelay(3000);
-//				}
-//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-//					posemod = FETCH_GOLD_INIT_LEFT;
-//					pose_offest_clear();
-//					osDelay(300);	
-//				}
-//			} break;
-//			case FETCH_GOLD_INDEEP_UP_LEFT:{
-//				if(Key_Check_Press(&Keys.KEY_A)){
-//					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_D)){
-//					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_W)){
-//					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_S)){
-//					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_Q)){
-//					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_E)){
-//					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-//				}
-//				*qs = 310000 + pose_offest.qs;
-//				*hy = -194951 + 20.0*390000.0/294.0+ pose_offest.hy;
-//				*lift = -1600000 -50000+ pose_offest.lift;
-//				*pitch = 28492 - 10.0 * 65535.0/360.0;
-//				*roll = 25823 + 65535.0/4.0;
-//				*yaw = 24700;
-//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-//					posemod = FETCH_GOLD_OUT_LEFT;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-//					posemod = FETCH_GOLD_INDEEP_LEFT;
-//					pose_offest_clear();
-//					osDelay(300);	
-//				}
-//			} break;
-//			
-//			case FETCH_GOLD_OUT_LEFT: {
-//				if(Key_Check_Press(&Keys.KEY_A)){
-//					pose_offest.hy += HY_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_D)){
-//					pose_offest.hy -= HY_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_W)){
-//					pose_offest.lift += LIFT_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_S)){
-//					pose_offest.lift -= LIFT_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_Q)){
-//					pose_offest.qs += QS_STEP_FETCH_GOLD_INIT;
-//				}
-//				if(Key_Check_Press(&Keys.KEY_E)){
-//					pose_offest.qs -= QS_STEP_FETCH_GOLD_INIT;
-//				}
-//				*qs = 0 + pose_offest.qs;
-//				*hy = -194951+ pose_offest.hy;
-//				*lift = -1570000-50000 + pose_offest.lift;
-//				*pitch = 28492 - 10.0 * 65535.0/360.0;
-//				*roll = 25823 + 65535.0/4.0;
-//				*yaw = 24700;
-//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-//					posemod = FETCH_GOLD_STORE_RIGHT;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-//					posemod = FETCH_GOLD_INDEEP_UP_LEFT;
-//					pose_offest_clear();
-//					osDelay(300);	
-//				}
-//			}break;
 			case FETCH_SLIVER_INIT:{
 				*qs = 25000;
 				*hy = -194951;
@@ -601,21 +453,17 @@ void ModePoseTask(void const * argument){
 				
 			} break;
 			case FETCH_SLIVER_FLIP:{
-//				if(first_time_fetch_sliver_flip){
-				
-					// 伸出去，抬到最顶
-					*qs = 330 * 390000.0/294.0;
-					*hy = -194951;
-					*lift = 0;
-					*pitch = ARM_ANGLE_MAX_1;
-					*roll = ARM_ANGLE_STD_2;
-					*yaw = ARM_ANGLE_STD_3;
-					*flip = -170000;
-					osDelay(1500);
-					*expand = -427240;
-					osDelay(1000);
-//					first_time_fetch_sliver_flip = false;
-//				}
+				// 伸出去，抬到最顶
+				*qs = 330 * 390000.0/294.0;
+				*hy = -194951;
+				*lift = 0;
+				*pitch = ARM_ANGLE_MAX_1;
+				*roll = ARM_ANGLE_STD_2;
+				*yaw = ARM_ANGLE_STD_3;
+				*flip = -170000;
+				osDelay(1500);
+				*expand = -427240;
+				osDelay(1000);
 				
 				virtual_link_flag = false;
 				osDelay(30);
@@ -628,90 +476,19 @@ void ModePoseTask(void const * argument){
 				*flip = -220000;
 				osDelay(3000); // 吸3s
 				
-//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-//					first_time_fetch_sliver_flip = true;
-//					posemod = FETCH_SLIVER_BACK1;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-//					first_time_fetch_sliver_flip = true;
-//					posemod = FETCH_SLIVER_INIT;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				
-//			} break;
-//			case FETCH_SLIVER_BACK1:{
-
-//				if(first_time_fetch_sliver_back){
-//					*flip = -200000;
-//					first_time_fetch_sliver_back = false;
-//				}
 				// 拔起
 				*small_lift = 410000;
 				osDelay(800);
 				
 				*flip = -150000;
 				osDelay(1000);
-			
-				
-//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-//					first_time_fetch_sliver_back = true;
-//					posemod = FETCH_SLIVER_BACK2;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-//					first_time_fetch_sliver_back = true;
-//					posemod = FETCH_SLIVER_FLIP;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				
-//			} break;
-//			case FETCH_SLIVER_BACK2:{
-//				*lift = 0;
-//				osDelay(1500);
-//				*qs = 330 * 390000.0/294.0;
-//				*hy = -194951;
-//				*pitch = ARM_ANGLE_MAX_1;
-//				*roll = ARM_ANGLE_STD_2;
-//				*yaw = ARM_ANGLE_STD_3;
-				
+		
 				virtual_link_flag = true;
 				*expand = 0;
 				osDelay(300);
 				*flip = 0;
 			
-				
-//				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-//					posemod = FETCH_SLIVER_TOP_DOWN;
-					posemod = NONE;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-//				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-//					posemod = FETCH_SLIVER_BACK1;
-//					pose_offest_clear();
-//					osDelay(300);
-//				}
-			} break;
-			case FETCH_SLIVER_TOP_DOWN:{
-				*lift = -780000;
-				pump_top_open();
-				xipan_top_open();
-	
-				if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
-					posemod = FETCH_SLIVWER_STORE_LEFT;
-					pose_offest_clear();
-					osDelay(5000);
-				}
-				else if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = FETCH_SLIVER_BACK2;
-					pose_offest_clear();
-					osDelay(300);
-				}
+				posemod = NONE;
 			} break;
 			case FETCH_SLIVWER_STORE_LEFT:{
 				*qs = 160*780000/388;
@@ -736,10 +513,6 @@ void ModePoseTask(void const * argument){
 					}
 				}
 			} break;
-//			case TAKE_ORE_LEFT:{
-//				
-//			
-//			}break;
 			case TAKE_GROUND_ORE_INIT:{
 				rotatesfaster = true;
 				*lift = -1773474 + pose_offest.lift;
@@ -781,7 +554,7 @@ void ModePoseTask(void const * argument){
 			}break;
 			
 			case SELECT_EXCANGE_MODE:{	
-				// 上吸盘兑换F
+				// 上吸盘兑换 F
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_F)){
 						*lift = -1400000;
 						*qs = 0;
@@ -814,8 +587,7 @@ void ModePoseTask(void const * argument){
 				}
 				
 				// 左吸盘兑换 C
-				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_C)){
-				
+				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_C)){	
 				// 向上抬 左转	
 				rotatesfaster = true;					
 				*qs = 361649;
@@ -865,11 +637,6 @@ void ModePoseTask(void const * argument){
 				
 				// 右吸盘兑换 V
 				if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_V)){
-				// 误触退出兑换选择
-				if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
-					posemod = NONE;
-				}
-					
 				// 向上抬 右转	
 				rotatesfaster = true;
 				*qs = 291649;
@@ -917,19 +684,16 @@ void ModePoseTask(void const * argument){
 					}
 					posemod = NONE;
 				}
-				
-				
-				
-
+				// 误触退出兑换选择
+				if(RC_CtrlData.mouse.press_r== 1 && RC_CtrlData.mouse.last_press_r == 0){
+					posemod = NONE;
+				}
 			} break;
 		}
 		osDelay(1);
 	}
 }
 // 一键金矿模式
-
-
-
 void VirtualLinkTask(void const * argument){
 	for(;;){
 		if(virtual_link_flag){
@@ -947,7 +711,7 @@ void VirtualLinkTask(void const * argument){
 bool debug_mode = false;
 void DebugModeTask(void const * argument){
 	for(;;){
-		//ctrl+shift+v防误触进入调试模式
+		//ctrl+shift+r防误触进入调试模式
 		if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Hold(&Keys.KEY_SHIFT) && Key_Check_Press(&Keys.KEY_R)){
 			debug_mode = !debug_mode;
 		}
