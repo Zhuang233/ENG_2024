@@ -797,7 +797,7 @@ void ModePoseTask(void const * argument){
 						*pitch = 28492;
 						*roll = 25823;
 						*yaw = 24370; 
-						key_2_last = custom_controller_data_t.key_2;	
+//						key_2_last = custom_controller_data_t.key_2;	
 						osDelay(3500);
 						rotateslow_flag = false;
 					// 兑换循环	
@@ -847,7 +847,7 @@ void ModePoseTask(void const * argument){
 				*roll = 25823;
 				*yaw = 24370;  
 				osDelay(2500);
-				key_2_last = custom_controller_data_t.key_2;	
+//				key_2_last = custom_controller_data_t.key_2;	
 					// 兑换循环
 					rotateslow_flag = false;	
 					gx=280,gy=350.0,gz=500.0;				
@@ -903,7 +903,7 @@ void ModePoseTask(void const * argument){
 				*pitch = 28492;
 				*yaw = 24370;
 				osDelay(1000);
-				key_2_last = custom_controller_data_t.key_2;	
+//				key_2_last = custom_controller_data_t.key_2;	
 					// 兑换循环
 					rotateslow_flag = false;		
 					gx=280,gy=350.0,gz=500.0;

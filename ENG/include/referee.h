@@ -328,14 +328,21 @@ typedef __packed struct //0x0304
   uint16_t reserved;
 } ext_robot_command_t;
 
+//typedef __packed struct
+//{
+//	uint8_t key_1;
+//	uint8_t key_2;
+//	fp32 vx;
+//	fp32 vy;
+//	fp32 vz;
+//	fp32 quaternion[4];
+//} custom_controller_t;
+
 typedef __packed struct
 {
-	uint8_t key_1;
-	uint8_t key_2;
-	fp32 vx;
-	fp32 vy;
-	fp32 vz;
-	fp32 quaternion[4];
+	int16_t encoder;
+	uint16_t adc_value;
+	uint8_t undefine[26];
 } custom_controller_t;
 
 extern uint8_t referee_tx_buf[REF_PROTOCOL_FRAME_MAX_SIZE];

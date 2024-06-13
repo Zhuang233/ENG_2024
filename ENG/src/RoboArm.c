@@ -266,14 +266,14 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //				xipan_top_close();
 //			}
 	
-			if(custom_controller_data_t.key_2 != key_2_last){
-				pump_top_close();
-				xipan_top_close();
-			}
-			else{
-				pump_top_open();
-				xipan_top_open();
-			}
+//			if(custom_controller_data_t.key_2 != key_2_last){
+//				pump_top_close();
+//				xipan_top_close();
+//			}
+//			else{
+//				pump_top_open();
+//				xipan_top_open();
+//			}
 			
 //		if(custom_controller_data_t.key_2 == 0xff && my_ctrl_reset_first_time){
 //			gx=250.0;
@@ -286,9 +286,10 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //		}
 			
 //			if(custom_controller_data_t.key_2 != 0xff){
-				gz += custom_controller_data_t.vz * suofang;
-				gy -= custom_controller_data_t.vx * suofang;
-				gx += custom_controller_data_t.vy * suofang;
+//				gz += custom_controller_data_t.vz * suofang;
+//				gy -= custom_controller_data_t.vx * suofang;
+//				gx += custom_controller_data_t.vy * suofang;
+					gy = ((float)custom_controller_data_t.encoder + 32768.0f) * 600.0f / 65536.0f  ; //gy 0 ~ 600 encoder -32768 ~ 32767
 //			}
 			
 
@@ -318,22 +319,22 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //			sync_data_to_c.data.theta2 =
 //			sync_data_to_c.data.theta3 = 
 			
-			float w,x,y,z;
-			w = custom_controller_data_t.quaternion[0];
-			x = custom_controller_data_t.quaternion[1];
-			y = custom_controller_data_t.quaternion[2];
-	    z = custom_controller_data_t.quaternion[3];
-			
-			float yaw =  asin(2.0 * (x*z - w*y)) * 180.0 / PI;
-			float pitch =  atan2(2.0 * (w*x + y*z), w*w - x*x - y*y + z*z) * 180.0 / PI;
-			float roll = -atan2(2.0 * (w*z + x*y), w*w + x*x - y*y - z*z) * 180.0 / PI;
+//			float w,x,y,z;
+//			w = custom_controller_data_t.quaternion[0];
+//			x = custom_controller_data_t.quaternion[1];
+//			y = custom_controller_data_t.quaternion[2];
+//	    z = custom_controller_data_t.quaternion[3];
+//			
+//			float yaw =  asin(2.0 * (x*z - w*y)) * 180.0 / PI;
+//			float pitch =  atan2(2.0 * (w*x + y*z), w*w - x*x - y*y + z*z) * 180.0 / PI;
+//			float roll = -atan2(2.0 * (w*z + x*y), w*w + x*x - y*y - z*z) * 180.0 / PI;
 			
 			
 			// 
-			sync_data_to_c.data.theta1  = 28492 - pitch * 16384.0 / 90.0;
-			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - roll * 16384.0 / 90.0;
-			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3 - yaw * 16384.0 / 90.0;
-			
+//			sync_data_to_c.data.theta1  = 28492 - pitch * 16384.0 / 90.0;
+//			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - roll * 16384.0 / 90.0;
+//			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3 - yaw * 16384.0 / 90.0;
+			sync_data_to_c.data.theta3 = (uint16_t)( ((float)custom_controller_data_t.adc_value - 400.0f) * ((40754.0f-7986.0f)/(1830.0f-400.0f)) + 7986.0f ); // yaw 7986 ~ 40754 adc 400~1830
 			
 			
 			
@@ -354,9 +355,12 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 			s2 = arm_sin_f32(theta_real_2 - PI/2);
 			s3 = arm_sin_f32(theta_real_3);
 			
-			h = gz - 120.0*s2*s1;
-			w = gy - 225.0*s3 -120.0*(c3*c2*s1+s3*c1);
-			l = gx - 225.0*c3 -120.0*(-s3*c2*s1+c3*c1);
+//			h = gz - 120.0*s2*s1;
+			h = 619.0;
+//			w = gy - 225.0*s3 -120.0*(c3*c2*s1+s3*c1);
+			w = gy;
+//			l = gx - 225.0*c3 -120.0*(-s3*c2*s1+c3*c1);
+			l = 100.0;
 			
 			MotoState[4].angle_desired = (int32_t)((h - 973.0)*500000.0/175.0);
 			sync_data_to_c.data.hy_pos = (int32_t)(w *390000.0/600.0 -390000);
