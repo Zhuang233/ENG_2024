@@ -30,11 +30,14 @@ void xipan_middle_close(){
 void pump_bottom_open(){
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
 }
+
+// 关下面泵函数被调用时，只有两个吸盘全关了才能真的关
 void pump_bottom_close(){
-	if(xipan_left_closed == 1 && xipan_left_closed == 1){
+	if(xipan_left_closed == 1 && xipan_right_closed == 1){
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
 	}
 }
+
 void xipan_left_open(){
 	xipan_left_closed = 0;
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_SET);
@@ -44,9 +47,11 @@ void xipan_left_close(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_RESET);
 }
 void xipan_right_open(){
+	xipan_right_closed = 0;
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
 }
 void xipan_right_close(){
+	xipan_right_closed = 1;
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 void xipan_top_open(){
