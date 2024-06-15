@@ -144,9 +144,9 @@ void data_sync_uart(){
 	uint8_t head = FRAME_HEAD;
 	uint8_t tail = FRAME_TAIL;
 	
-	HAL_UART_Transmit(&huart6, &head, 1, 10);
-	HAL_UART_Transmit(&huart6, sync_data_to_c.bytes, SYNC_TO_C_SIZE, 100);
-	HAL_UART_Transmit(&huart6, &tail, 1, 10);
+	HAL_UART_Transmit_DMA(&huart6, &head, 1);
+	HAL_UART_Transmit_DMA(&huart6, sync_data_to_c.bytes, SYNC_TO_C_SIZE);
+	HAL_UART_Transmit_DMA(&huart6, &tail, 1);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){

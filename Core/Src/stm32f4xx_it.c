@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "referee.h"
 #include "RcDriver.h"
+#include "trcRecorder.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,7 +44,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+extern TraceISRHandle_t Can1Rx0ISRHandle;
+extern TraceISRHandle_t Can2Rx1ISRHandle;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -203,11 +205,11 @@ void DMA1_Stream3_IRQHandler(void)
 void CAN1_RX0_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
-
+		xTraceISRBegin(Can1Rx0ISRHandle);
   /* USER CODE END CAN1_RX0_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
-
+		xTraceISREnd(0);
   /* USER CODE END CAN1_RX0_IRQn 1 */
 }
 
@@ -331,11 +333,11 @@ void CAN2_RX0_IRQHandler(void)
 void CAN2_RX1_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN2_RX1_IRQn 0 */
-
+	xTraceISRBegin(Can2Rx1ISRHandle);
   /* USER CODE END CAN2_RX1_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan2);
   /* USER CODE BEGIN CAN2_RX1_IRQn 1 */
-
+	xTraceISREnd(0);
   /* USER CODE END CAN2_RX1_IRQn 1 */
 }
 

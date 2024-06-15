@@ -65,6 +65,7 @@ osThreadId VirtualLinkHandle;
 osThreadId DebugModeHandle;
 osThreadId PosLimitHandle;
 osThreadId OffsetHandle;
+osThreadId canRecvHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -89,6 +90,7 @@ void VirtualLinkTask(void const * argument);
 void DebugModeTask(void const * argument);
 void PosLimitTask(void const * argument);
 void OffsetTask(void const * argument);
+void canRecvTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -136,7 +138,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of Test */
@@ -148,7 +150,7 @@ void MX_FREERTOS_Init(void) {
   MotoHandle = osThreadCreate(osThread(Moto), NULL);
 
   /* definition and creation of DataSyncAnC */
-  osThreadDef(DataSyncAnC, DataSyncAnCTask, osPriorityIdle, 0, 128);
+  osThreadDef(DataSyncAnC, DataSyncAnCTask, osPriorityNormal, 0, 128);
   DataSyncAnCHandle = osThreadCreate(osThread(DataSyncAnC), NULL);
 
   /* definition and creation of Flip */
@@ -156,7 +158,7 @@ void MX_FREERTOS_Init(void) {
   FlipHandle = osThreadCreate(osThread(Flip), NULL);
 
   /* definition and creation of CtrlLock */
-  osThreadDef(CtrlLock, CtrlLockTask, osPriorityIdle, 0, 128);
+  osThreadDef(CtrlLock, CtrlLockTask, osPriorityNormal, 0, 128);
   CtrlLockHandle = osThreadCreate(osThread(CtrlLock), NULL);
 
   /* definition and creation of AutoFetch */
@@ -164,7 +166,7 @@ void MX_FREERTOS_Init(void) {
   AutoFetchHandle = osThreadCreate(osThread(AutoFetch), NULL);
 
   /* definition and creation of TimeCtrl */
-  osThreadDef(TimeCtrl, TimeCtrlTask, osPriorityIdle, 0, 128);
+  osThreadDef(TimeCtrl, TimeCtrlTask, osPriorityNormal, 0, 128);
   TimeCtrlHandle = osThreadCreate(osThread(TimeCtrl), NULL);
 
   /* definition and creation of UI */
@@ -207,6 +209,10 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(Offset, OffsetTask, osPriorityNormal, 0, 128);
   OffsetHandle = osThreadCreate(osThread(Offset), NULL);
 
+  /* definition and creation of canRecv */
+  osThreadDef(canRecv, canRecvTask, osPriorityHigh, 0, 128);
+  canRecvHandle = osThreadCreate(osThread(canRecv), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -244,7 +250,7 @@ __weak void TestTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END TestTask */
 }
@@ -262,7 +268,7 @@ __weak void MotoTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END MotoTask */
 }
@@ -280,7 +286,7 @@ __weak void DataSyncAnCTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END DataSyncAnCTask */
 }
@@ -298,7 +304,7 @@ __weak void FlipTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END FlipTask */
 }
@@ -316,7 +322,7 @@ __weak void CtrlLockTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END CtrlLockTask */
 }
@@ -334,7 +340,7 @@ __weak void AutoFetchTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END AutoFetchTask */
 }
@@ -352,7 +358,7 @@ __weak void TimeCtrlTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END TimeCtrlTask */
 }
@@ -370,7 +376,7 @@ __weak void UITask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END UITask */
 }
@@ -388,7 +394,7 @@ __weak void ChassisKeyTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END ChassisKeyTask */
 }
@@ -406,7 +412,7 @@ __weak void ChassisMotoTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END ChassisMotoTask */
 }
@@ -424,7 +430,7 @@ __weak void ModePoseTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END ModePoseTask */
 }
@@ -442,7 +448,7 @@ __weak void RotationSlowTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END RotationSlowTask */
 }
@@ -460,7 +466,7 @@ __weak void LiftTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END LiftTask */
 }
@@ -478,7 +484,7 @@ __weak void VirtualLinkTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END VirtualLinkTask */
 }
@@ -496,7 +502,7 @@ __weak void DebugModeTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END DebugModeTask */
 }
@@ -514,7 +520,7 @@ __weak void PosLimitTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END PosLimitTask */
 }
@@ -532,9 +538,27 @@ __weak void OffsetTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END OffsetTask */
+}
+
+/* USER CODE BEGIN Header_canRecvTask */
+/**
+* @brief Function implementing the canRecv thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_canRecvTask */
+__weak void canRecvTask(void const * argument)
+{
+  /* USER CODE BEGIN canRecvTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1000);
+  }
+  /* USER CODE END canRecvTask */
 }
 
 /* Private application code --------------------------------------------------*/

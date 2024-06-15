@@ -29,7 +29,7 @@
 /* USER CODE BEGIN Includes */
 #include "can_zbw.h"
 #include "uart_zbw.h"
-//#include "trace.h"
+#include "trace.h"
 #include "RcDriver.h"
 #include "wd.h"
 /* USER CODE END Includes */
@@ -90,7 +90,6 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -105,10 +104,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	can_filter_init();
 	__HAL_TIM_ENABLE(&htim2);
-//	trace_init();
 	usart_dma_init();
 //	usart_init();
 	wd_init();
+	trace_init();
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */

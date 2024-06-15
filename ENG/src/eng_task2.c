@@ -51,7 +51,7 @@ void DataSyncAnCTask(void const * argument){
   for(;;)
   {
 		data_sync_uart();
-    osDelay(1); 
+    osDelay(10); 
   }
 }
 
@@ -177,15 +177,15 @@ void RotationSlowTask(void const * argument){
 				sync_data_to_c.data.theta3 = yaw_slow;
 			}
 			else{
-				if(sync_data_to_c.data.theta1 > pitch_slow + 40) sync_data_to_c.data.theta1-=20;
-				if(sync_data_to_c.data.theta2 > roll_slow + 40) sync_data_to_c.data.theta2-=20;
-				if(sync_data_to_c.data.theta3 > yaw_slow + 40) sync_data_to_c.data.theta3-=20;
-				if(sync_data_to_c.data.theta1 < pitch_slow - 40) sync_data_to_c.data.theta1+=20;
-				if(sync_data_to_c.data.theta2 < roll_slow - 40) sync_data_to_c.data.theta2+=20;
-				if(sync_data_to_c.data.theta3 < yaw_slow - 40) sync_data_to_c.data.theta3+=20;
+				if(sync_data_to_c.data.theta1 > pitch_slow + 3) sync_data_to_c.data.theta1-=1;
+				if(sync_data_to_c.data.theta2 > roll_slow + 3) sync_data_to_c.data.theta2-=1;
+				if(sync_data_to_c.data.theta3 > yaw_slow + 3) sync_data_to_c.data.theta3-=1;
+				if(sync_data_to_c.data.theta1 < pitch_slow - 3) sync_data_to_c.data.theta1+=1;
+				if(sync_data_to_c.data.theta2 < roll_slow - 3) sync_data_to_c.data.theta2+=1;
+				if(sync_data_to_c.data.theta3 < yaw_slow - 3) sync_data_to_c.data.theta3+=1;
 			}
 		}
-		osDelay(1);
+		osDelay(20);
 	}
 }
 
@@ -690,7 +690,7 @@ void ModePoseTask(void const * argument){
 				}
 			} break;
 		}
-		osDelay(1);
+		osDelay(10);
 	}
 }
 // 一键金矿模式
@@ -699,9 +699,8 @@ void VirtualLinkTask(void const * argument){
 		if(virtual_link_flag){
 			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
 		}
-		osDelay(1);
+		osDelay(100);
 	}
-
 }
 
 
@@ -709,84 +708,84 @@ void VirtualLinkTask(void const * argument){
 
 // 机器调试模式（检录用）
 bool debug_mode = false;
-void DebugModeTask(void const * argument){
-	for(;;){
-		//ctrl+shift+r防误触进入调试模式
-		if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Hold(&Keys.KEY_SHIFT) && Key_Check_Press(&Keys.KEY_R)){
-			debug_mode = !debug_mode;
-		}
-		
-		if(debug_mode == true){
-			//改ui
-			if(Key_Check_Hold(&Keys.KEY_W)) MotoState[4].angle_desired += 1950/5;
-			if(Key_Check_Hold(&Keys.KEY_S)) MotoState[4].angle_desired -= 1950/5;
-			if(Key_Check_Hold(&Keys.KEY_A))	sync_data_to_c.data.hy_pos += 400/5;
-			if(Key_Check_Hold(&Keys.KEY_D))	sync_data_to_c.data.hy_pos -=	400/5;
-			if(Key_Check_Hold(&Keys.KEY_Q)) sync_data_to_c.data.qs_pos +=	780/5;			
-			if(Key_Check_Hold(&Keys.KEY_E)) sync_data_to_c.data.qs_pos -=	780/5;
-			if(Key_Check_Hold(&Keys.KEY_X)) 
-			{
-				pump_top_open();
-				xipan_top_open();
-			}
-			else{
-				pump_top_close();
-				xipan_top_close();
-			}
-			
-			if(Key_Check_Hold(&Keys.KEY_Z)) 
-			{
-				pump_bottom_open();
-				xipan_left_open();
-			}
-			else{
-				xipan_left_close();
-			}
-			
-			if(Key_Check_Hold(&Keys.KEY_C)) 
-			{
-				pump_bottom_open();
-				xipan_right_open();
-			}
-			else{
-				xipan_right_close();
-			}
-			
-			if((!Key_Check_Hold(&Keys.KEY_C)) && (!Key_Check_Hold(&Keys.KEY_Z)))
-				pump_bottom_close();
-		}
-		osDelay(1);
-	}
-}
+//void DebugModeTask(void const * argument){
+//	for(;;){
+//		//ctrl+shift+r防误触进入调试模式
+//		if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Hold(&Keys.KEY_SHIFT) && Key_Check_Press(&Keys.KEY_R)){
+//			debug_mode = !debug_mode;
+//		}
+//		
+//		if(debug_mode == true){
+//			//改ui
+//			if(Key_Check_Hold(&Keys.KEY_W)) MotoState[4].angle_desired += 1950/5;
+//			if(Key_Check_Hold(&Keys.KEY_S)) MotoState[4].angle_desired -= 1950/5;
+//			if(Key_Check_Hold(&Keys.KEY_A))	sync_data_to_c.data.hy_pos += 400/5;
+//			if(Key_Check_Hold(&Keys.KEY_D))	sync_data_to_c.data.hy_pos -=	400/5;
+//			if(Key_Check_Hold(&Keys.KEY_Q)) sync_data_to_c.data.qs_pos +=	780/5;			
+//			if(Key_Check_Hold(&Keys.KEY_E)) sync_data_to_c.data.qs_pos -=	780/5;
+//			if(Key_Check_Hold(&Keys.KEY_X)) 
+//			{
+//				pump_top_open();
+//				xipan_top_open();
+//			}
+//			else{
+//				pump_top_close();
+//				xipan_top_close();
+//			}
+//			
+//			if(Key_Check_Hold(&Keys.KEY_Z)) 
+//			{
+//				pump_bottom_open();
+//				xipan_left_open();
+//			}
+//			else{
+//				xipan_left_close();
+//			}
+//			
+//			if(Key_Check_Hold(&Keys.KEY_C)) 
+//			{
+//				pump_bottom_open();
+//				xipan_right_open();
+//			}
+//			else{
+//				xipan_right_close();
+//			}
+//			
+//			if((!Key_Check_Hold(&Keys.KEY_C)) && (!Key_Check_Hold(&Keys.KEY_Z)))
+//				pump_bottom_close();
+//		}
+//		osDelay(1);
+//	}
+//}
 
-void PosLimitTask(void const * argument){
-	
-	for(;;){
-		if(sync_data_to_c.data.theta1 > ARM_ANGLE_MAX_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MAX_1;
-		if(sync_data_to_c.data.theta1 < ARM_ANGLE_MIN_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MIN_1;
-		if(sync_data_to_c.data.theta2 > ARM_ANGLE_MAX_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MAX_2;
-		if(sync_data_to_c.data.theta2 < ARM_ANGLE_MIN_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MIN_2;
-		if(sync_data_to_c.data.theta3 > ARM_ANGLE_MAX_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MAX_3;
-		if(sync_data_to_c.data.theta3 < ARM_ANGLE_MIN_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MIN_3;
-		if(sync_data_to_c.data.qs_pos > QS_ANGLE_MAX) sync_data_to_c.data.qs_pos = QS_ANGLE_MAX;
-		if(sync_data_to_c.data.qs_pos < QS_ANGLE_MIN) sync_data_to_c.data.qs_pos = QS_ANGLE_MIN;
-		if(sync_data_to_c.data.hy_pos > HY_ANGLE_MAX) sync_data_to_c.data.hy_pos = HY_ANGLE_MAX;
-		if(sync_data_to_c.data.hy_pos < HY_ANGLE_MIN) sync_data_to_c.data.hy_pos = HY_ANGLE_MIN;
-		if(MotoState[4].angle_desired > LIFT_MAX) MotoState[4].angle_desired = LIFT_MAX;
-		if(MotoState[4].angle_desired < LIFT_MIN) MotoState[4].angle_desired = LIFT_MIN;
-		
-		if(MotoState[5].angle_desired > FLIP_MAX) MotoState[5].angle_desired = FLIP_MAX;
-		if(MotoState[5].angle_desired < FLIP_MIN) MotoState[5].angle_desired = FLIP_MIN;
-		
-		if(MotoState[6].angle_desired > SMALL_LIFT_MAX) MotoState[6].angle_desired = SMALL_LIFT_MAX;
-		if(MotoState[6].angle_desired < SMALL_LIFT_MIN) MotoState[6].angle_desired = SMALL_LIFT_MIN;
-		
-		if(MotoState[7].angle_desired > EXPAND_MAX) MotoState[7].angle_desired = EXPAND_MAX;
-		if(MotoState[7].angle_desired < EXPAND_MIN) MotoState[7].angle_desired = EXPAND_MIN;
-		osDelay(1);
-	}
+//void PosLimitTask(void const * argument){
+//	
+//	for(;;){
+//		if(sync_data_to_c.data.theta1 > ARM_ANGLE_MAX_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MAX_1;
+//		if(sync_data_to_c.data.theta1 < ARM_ANGLE_MIN_1) sync_data_to_c.data.theta1 = ARM_ANGLE_MIN_1;
+//		if(sync_data_to_c.data.theta2 > ARM_ANGLE_MAX_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MAX_2;
+//		if(sync_data_to_c.data.theta2 < ARM_ANGLE_MIN_2) sync_data_to_c.data.theta2 = ARM_ANGLE_MIN_2;
+//		if(sync_data_to_c.data.theta3 > ARM_ANGLE_MAX_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MAX_3;
+//		if(sync_data_to_c.data.theta3 < ARM_ANGLE_MIN_3) sync_data_to_c.data.theta3 = ARM_ANGLE_MIN_3;
+//		if(sync_data_to_c.data.qs_pos > QS_ANGLE_MAX) sync_data_to_c.data.qs_pos = QS_ANGLE_MAX;
+//		if(sync_data_to_c.data.qs_pos < QS_ANGLE_MIN) sync_data_to_c.data.qs_pos = QS_ANGLE_MIN;
+//		if(sync_data_to_c.data.hy_pos > HY_ANGLE_MAX) sync_data_to_c.data.hy_pos = HY_ANGLE_MAX;
+//		if(sync_data_to_c.data.hy_pos < HY_ANGLE_MIN) sync_data_to_c.data.hy_pos = HY_ANGLE_MIN;
+//		if(MotoState[4].angle_desired > LIFT_MAX) MotoState[4].angle_desired = LIFT_MAX;
+//		if(MotoState[4].angle_desired < LIFT_MIN) MotoState[4].angle_desired = LIFT_MIN;
+//		
+//		if(MotoState[5].angle_desired > FLIP_MAX) MotoState[5].angle_desired = FLIP_MAX;
+//		if(MotoState[5].angle_desired < FLIP_MIN) MotoState[5].angle_desired = FLIP_MIN;
+//		
+//		if(MotoState[6].angle_desired > SMALL_LIFT_MAX) MotoState[6].angle_desired = SMALL_LIFT_MAX;
+//		if(MotoState[6].angle_desired < SMALL_LIFT_MIN) MotoState[6].angle_desired = SMALL_LIFT_MIN;
+//		
+//		if(MotoState[7].angle_desired > EXPAND_MAX) MotoState[7].angle_desired = EXPAND_MAX;
+//		if(MotoState[7].angle_desired < EXPAND_MIN) MotoState[7].angle_desired = EXPAND_MIN;
+//		osDelay(1);
+//	}
 
-}
+//}
 
 
 
@@ -826,6 +825,6 @@ void OffsetTask(void const * argument){
 			if(Key_Check_Press(&Keys.KEY_Q)) pose_offest.qs += QS_STEP;
 			if(Key_Check_Press(&Keys.KEY_E)) pose_offest.qs -= QS_STEP;
 		}
-		osDelay(1);
+		osDelay(200);
 	}
 }
