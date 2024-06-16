@@ -392,7 +392,3 @@ int32_t virtual_link(int32_t x){
 		return 0;
 }
 
-
-void onekey_fetch_test(){
-
-}

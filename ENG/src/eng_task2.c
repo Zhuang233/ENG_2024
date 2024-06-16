@@ -48,10 +48,12 @@ void LiftTask(void const * argument){
 
 void DataSyncAnCTask(void const * argument){
 	osDelay(500);
+	sync_data_to_c.data.head = 0x55;
+	sync_data_to_c.data.tail = 0xaa;
   for(;;)
   {
 		data_sync_uart();
-    osDelay(10); 
+    osDelay(30); 
   }
 }
 
@@ -166,12 +168,6 @@ void RotationSlowTask(void const * argument){
 	for(;;){
 		if(rotateslow_flag){
 			if(rotatesfaster){
-//				if(sync_data_to_c.data.theta1 > pitch_slow + 80) sync_data_to_c.data.theta1-=40;
-//				if(sync_data_to_c.data.theta2 > roll_slow + 80) sync_data_to_c.data.theta2-=40;
-//				if(sync_data_to_c.data.theta3 > yaw_slow + 80) sync_data_to_c.data.theta3-=40;
-//				if(sync_data_to_c.data.theta1 < pitch_slow - 80) sync_data_to_c.data.theta1+=40;
-//				if(sync_data_to_c.data.theta2 < roll_slow - 80) sync_data_to_c.data.theta2+=40;
-//				if(sync_data_to_c.data.theta3 < yaw_slow - 80) sync_data_to_c.data.theta3+=40;	
 				sync_data_to_c.data.theta1 = pitch_slow;
 				sync_data_to_c.data.theta2 = roll_slow;
 				sync_data_to_c.data.theta3 = yaw_slow;
@@ -195,8 +191,8 @@ extern uint8_t key_2_last;
 extern float gx,gy,gz;
 // 姿态控制任务，所有固定姿态由此处理,UI需要显示
 void ModePoseTask(void const * argument){
-	int32_t* qs = &(sync_data_to_c.data.qs_pos);
-	int32_t* hy = &(sync_data_to_c.data.hy_pos);
+__packed int32_t* qs = &(sync_data_to_c.data.qs_pos);
+__packed int32_t* hy = &(sync_data_to_c.data.hy_pos);
 	int32_t* lift = &(MotoState[4].angle_desired);
 //	uint16_t* pitch = &(sync_data_to_c.data.theta1);
 //	uint16_t* roll = &(sync_data_to_c.data.theta2);
@@ -209,8 +205,6 @@ void ModePoseTask(void const * argument){
 	int32_t* expand = &(MotoState[7].angle_desired);
 	
 	rotateslow_flag = true;
-//	bool first_time_fetch_sliver_flip = true;
-//	bool first_time_fetch_sliver_back = true;
 	bool first_time_fetch_sliver_store_left = true;
 	
 	RoboArm_Pos_Init();
@@ -706,6 +700,44 @@ void VirtualLinkTask(void const * argument){
 
 
 
+#define NEED_LIFT_OFFSET (posemod == FETCH_GOLD_INIT \
+											 || posemod == FETCH_GOLD_INDEEP \
+										 	 || posemod == FETCH_GOLD_INDEEP_UP \
+											 || posemod == FETCH_GOLD_OUT \
+)
+
+#define NEED_HY_OFFSET (posemod == FETCH_GOLD_INIT \
+											 || posemod == FETCH_GOLD_INDEEP \
+										 	 || posemod == FETCH_GOLD_INDEEP_UP \
+											 || posemod == FETCH_GOLD_OUT \
+)
+
+#define NEED_QS_OFFSET (posemod == FETCH_GOLD_INIT \
+											 || posemod == FETCH_GOLD_INDEEP \
+											 || posemod == FETCH_GOLD_INDEEP_UP \
+											 || posemod == FETCH_GOLD_OUT \
+)
+
+
+
+void OffsetTask(void const * argument){
+	for(;;){
+		if(NEED_LIFT_OFFSET){
+			if(Key_Check_Press(&Keys.KEY_W)) pose_offest.lift += LIFT_STEP;
+			if(Key_Check_Press(&Keys.KEY_S)) pose_offest.lift -= LIFT_STEP;
+		}
+		if(NEED_HY_OFFSET){
+			if(Key_Check_Press(&Keys.KEY_A)) pose_offest.hy += HY_STEP;
+			if(Key_Check_Press(&Keys.KEY_D)) pose_offest.hy -= HY_STEP;
+		}
+		if(NEED_QS_OFFSET){
+			if(Key_Check_Press(&Keys.KEY_Q)) pose_offest.qs += QS_STEP;
+			if(Key_Check_Press(&Keys.KEY_E)) pose_offest.qs -= QS_STEP;
+		}
+		osDelay(200);
+	}
+}
+
 // 机器调试模式（检录用）
 bool debug_mode = false;
 //void DebugModeTask(void const * argument){
@@ -786,45 +818,3 @@ bool debug_mode = false;
 //	}
 
 //}
-
-
-
-
-
-#define NEED_LIFT_OFFSET (posemod == FETCH_GOLD_INIT \
-											 || posemod == FETCH_GOLD_INDEEP \
-										 	 || posemod == FETCH_GOLD_INDEEP_UP \
-											 || posemod == FETCH_GOLD_OUT \
-)
-
-#define NEED_HY_OFFSET (posemod == FETCH_GOLD_INIT \
-											 || posemod == FETCH_GOLD_INDEEP \
-										 	 || posemod == FETCH_GOLD_INDEEP_UP \
-											 || posemod == FETCH_GOLD_OUT \
-)
-
-#define NEED_QS_OFFSET (posemod == FETCH_GOLD_INIT \
-											 || posemod == FETCH_GOLD_INDEEP \
-											 || posemod == FETCH_GOLD_INDEEP_UP \
-											 || posemod == FETCH_GOLD_OUT \
-)
-
-
-
-void OffsetTask(void const * argument){
-	for(;;){
-		if(NEED_LIFT_OFFSET){
-			if(Key_Check_Press(&Keys.KEY_W)) pose_offest.lift += LIFT_STEP;
-			if(Key_Check_Press(&Keys.KEY_S)) pose_offest.lift -= LIFT_STEP;
-		}
-		if(NEED_HY_OFFSET){
-			if(Key_Check_Press(&Keys.KEY_A)) pose_offest.hy += HY_STEP;
-			if(Key_Check_Press(&Keys.KEY_D)) pose_offest.hy -= HY_STEP;
-		}
-		if(NEED_QS_OFFSET){
-			if(Key_Check_Press(&Keys.KEY_Q)) pose_offest.qs += QS_STEP;
-			if(Key_Check_Press(&Keys.KEY_E)) pose_offest.qs -= QS_STEP;
-		}
-		osDelay(200);
-	}
-}

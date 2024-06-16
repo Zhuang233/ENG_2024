@@ -51,34 +51,14 @@ void can_filter_init(void)
   HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO1_MSG_PENDING);
 }
 
-volatile bool can1_recv_flag = false;
-volatile bool can2_recv_flag = false;
-
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	SaveMotoMsg(&hcan1,CAN_RX_FIFO0);
-		can1_recv_flag = true;
 }
 
 		
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	SaveMotoMsg(&hcan2,CAN_RX_FIFO1);
-	can2_recv_flag = true;
 }
   
-//void canRecvTask(void const * argument)
-//{
-//  for(;;)
-//  {
-//		if(can1_recv_flag){
-//			can1_recv_flag = false;
-//			SaveMotoMsg(&hcan1,CAN_RX_FIFO0);
-//		}
-//		else if(can2_recv_flag){
-//			can2_recv_flag = false;
-//			SaveMotoMsg(&hcan2,CAN_RX_FIFO1);
-//		}
-//    osDelay(1);
-//  }
-//}

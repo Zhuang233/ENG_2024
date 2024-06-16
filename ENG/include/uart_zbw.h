@@ -38,12 +38,15 @@ typedef union{
 	uint8_t bytes[sizeof(MyCtrlTD)];
 }MyCtrlUnion;
 
-typedef struct {
+typedef struct __attribute__((packed)){
+	uint8_t head;
 	int32_t qs_pos;
 	int32_t hy_pos;
 	uint16_t theta1;
 	uint16_t theta2;
 	uint16_t theta3;
+	uint16_t zero;
+	uint8_t tail;
 }FiveJointCtrlDataTD;
 
 typedef struct __attribute__((packed)){
