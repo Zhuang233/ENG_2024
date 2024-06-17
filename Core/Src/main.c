@@ -110,6 +110,9 @@ int main(void)
 	trace_init();
   /* USER CODE END 2 */
 
+  /* Init scheduler */
+  osKernelInitialize();
+
   /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
 

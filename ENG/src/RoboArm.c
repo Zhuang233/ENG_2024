@@ -216,31 +216,6 @@ void RoboArm_RC_Ctrl(){
 	}
 }
 
-
-uint8_t stage = 0;
-void one_key_fetch_sliver(){
-	bool fetch_finish = false;
-	stage = 0;
-	
-	while(!fetch_finish){
-		// 翻开到达拟合终点
-		if(stage == 0 && RC_CtrlData.rc.sw2 == 1){
-			stage = 1;
-			MotoState[5].angle_desired = -200000;
-			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
-		}
-		if(stage == 1 && MotoState[5].angle < -195000){
-			
-		}
-	
-	}
-
-	
-
-}
-
-
-
 float gx=280,gy=350.0,gz=500.0;
 float theta_real_1 = 0.0,theta_real_2 = 0.0,theta_real_3 = 0.0;
 float c1,c2,c3,s1,s2,s3;

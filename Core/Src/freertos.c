@@ -47,68 +47,166 @@
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-osThreadId defaultTaskHandle;
-osThreadId TestHandle;
-osThreadId MotoHandle;
-osThreadId DataSyncAnCHandle;
-osThreadId FlipHandle;
-osThreadId CtrlLockHandle;
-osThreadId AutoFetchHandle;
-osThreadId TimeCtrlHandle;
-osThreadId UIHandle;
-osThreadId ChassisKeyHandle;
-osThreadId ChassisMotoHandle;
-osThreadId ModePoseHandle;
-osThreadId RotationSlowHandle;
-osThreadId LiftHandle;
-osThreadId VirtualLinkHandle;
-osThreadId DebugModeHandle;
-osThreadId PosLimitHandle;
-osThreadId OffsetHandle;
-osThreadId canRecvHandle;
+/* Definitions for defaultTask */
+osThreadId_t defaultTaskHandle;
+const osThreadAttr_t defaultTask_attributes = {
+  .name = "defaultTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for Test */
+osThreadId_t TestHandle;
+const osThreadAttr_t Test_attributes = {
+  .name = "Test",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for Moto */
+osThreadId_t MotoHandle;
+const osThreadAttr_t Moto_attributes = {
+  .name = "Moto",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for DataSyncAnC */
+osThreadId_t DataSyncAnCHandle;
+const osThreadAttr_t DataSyncAnC_attributes = {
+  .name = "DataSyncAnC",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Flip */
+osThreadId_t FlipHandle;
+const osThreadAttr_t Flip_attributes = {
+  .name = "Flip",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for CtrlLock */
+osThreadId_t CtrlLockHandle;
+const osThreadAttr_t CtrlLock_attributes = {
+  .name = "CtrlLock",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for AutoFetch */
+osThreadId_t AutoFetchHandle;
+const osThreadAttr_t AutoFetch_attributes = {
+  .name = "AutoFetch",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for TimeCtrl */
+osThreadId_t TimeCtrlHandle;
+const osThreadAttr_t TimeCtrl_attributes = {
+  .name = "TimeCtrl",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for UI */
+osThreadId_t UIHandle;
+const osThreadAttr_t UI_attributes = {
+  .name = "UI",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for ChassisKey */
+osThreadId_t ChassisKeyHandle;
+const osThreadAttr_t ChassisKey_attributes = {
+  .name = "ChassisKey",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for ChassisMoto */
+osThreadId_t ChassisMotoHandle;
+const osThreadAttr_t ChassisMoto_attributes = {
+  .name = "ChassisMoto",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for ModePose */
+osThreadId_t ModePoseHandle;
+const osThreadAttr_t ModePose_attributes = {
+  .name = "ModePose",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for RotationSlow */
+osThreadId_t RotationSlowHandle;
+const osThreadAttr_t RotationSlow_attributes = {
+  .name = "RotationSlow",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Lift */
+osThreadId_t LiftHandle;
+const osThreadAttr_t Lift_attributes = {
+  .name = "Lift",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for VirtualLink */
+osThreadId_t VirtualLinkHandle;
+const osThreadAttr_t VirtualLink_attributes = {
+  .name = "VirtualLink",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for DebugMode */
+osThreadId_t DebugModeHandle;
+const osThreadAttr_t DebugMode_attributes = {
+  .name = "DebugMode",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for PosLimit */
+osThreadId_t PosLimitHandle;
+const osThreadAttr_t PosLimit_attributes = {
+  .name = "PosLimit",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Offset */
+osThreadId_t OffsetHandle;
+const osThreadAttr_t Offset_attributes = {
+  .name = "Offset",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for canRecv */
+osThreadId_t canRecvHandle;
+const osThreadAttr_t canRecv_attributes = {
+  .name = "canRecv",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void const * argument);
-void TestTask(void const * argument);
-void MotoTask(void const * argument);
-void DataSyncAnCTask(void const * argument);
-void FlipTask(void const * argument);
-void CtrlLockTask(void const * argument);
-void AutoFetchTask(void const * argument);
-void TimeCtrlTask(void const * argument);
-void UITask(void const * argument);
-void ChassisKeyTask(void const * argument);
-void ChassisMotoTask(void const * argument);
-void ModePoseTask(void const * argument);
-void RotationSlowTask(void const * argument);
-void LiftTask(void const * argument);
-void VirtualLinkTask(void const * argument);
-void DebugModeTask(void const * argument);
-void PosLimitTask(void const * argument);
-void OffsetTask(void const * argument);
-void canRecvTask(void const * argument);
+void StartDefaultTask(void *argument);
+void TestTask(void *argument);
+void MotoTask(void *argument);
+void DataSyncAnCTask(void *argument);
+void FlipTask(void *argument);
+void CtrlLockTask(void *argument);
+void AutoFetchTask(void *argument);
+void TimeCtrlTask(void *argument);
+void UITask(void *argument);
+void ChassisKeyTask(void *argument);
+void ChassisMotoTask(void *argument);
+void ModePoseTask(void *argument);
+void RotationSlowTask(void *argument);
+void LiftTask(void *argument);
+void VirtualLinkTask(void *argument);
+void DebugModeTask(void *argument);
+void PosLimitTask(void *argument);
+void OffsetTask(void *argument);
+void canRecvTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
-
-/* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
-
-/* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
-static StaticTask_t xIdleTaskTCBBuffer;
-static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
-
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
-{
-  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
-  *ppxIdleTaskStackBuffer = &xIdleStack[0];
-  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
-  /* place for user code */
-}
-/* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /**
   * @brief  FreeRTOS initialization
@@ -137,85 +235,70 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  /* creation of defaultTask */
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* definition and creation of Test */
-  osThreadDef(Test, TestTask, osPriorityHigh, 0, 128);
-  TestHandle = osThreadCreate(osThread(Test), NULL);
+  /* creation of Test */
+  TestHandle = osThreadNew(TestTask, NULL, &Test_attributes);
 
-  /* definition and creation of Moto */
-  osThreadDef(Moto, MotoTask, osPriorityHigh, 0, 128);
-  MotoHandle = osThreadCreate(osThread(Moto), NULL);
+  /* creation of Moto */
+  MotoHandle = osThreadNew(MotoTask, NULL, &Moto_attributes);
 
-  /* definition and creation of DataSyncAnC */
-  osThreadDef(DataSyncAnC, DataSyncAnCTask, osPriorityNormal, 0, 128);
-  DataSyncAnCHandle = osThreadCreate(osThread(DataSyncAnC), NULL);
+  /* creation of DataSyncAnC */
+  DataSyncAnCHandle = osThreadNew(DataSyncAnCTask, NULL, &DataSyncAnC_attributes);
 
-  /* definition and creation of Flip */
-  osThreadDef(Flip, FlipTask, osPriorityHigh, 0, 128);
-  FlipHandle = osThreadCreate(osThread(Flip), NULL);
+  /* creation of Flip */
+  FlipHandle = osThreadNew(FlipTask, NULL, &Flip_attributes);
 
-  /* definition and creation of CtrlLock */
-  osThreadDef(CtrlLock, CtrlLockTask, osPriorityNormal, 0, 128);
-  CtrlLockHandle = osThreadCreate(osThread(CtrlLock), NULL);
+  /* creation of CtrlLock */
+  CtrlLockHandle = osThreadNew(CtrlLockTask, NULL, &CtrlLock_attributes);
 
-  /* definition and creation of AutoFetch */
-  osThreadDef(AutoFetch, AutoFetchTask, osPriorityNormal, 0, 128);
-  AutoFetchHandle = osThreadCreate(osThread(AutoFetch), NULL);
+  /* creation of AutoFetch */
+  AutoFetchHandle = osThreadNew(AutoFetchTask, NULL, &AutoFetch_attributes);
 
-  /* definition and creation of TimeCtrl */
-  osThreadDef(TimeCtrl, TimeCtrlTask, osPriorityNormal, 0, 128);
-  TimeCtrlHandle = osThreadCreate(osThread(TimeCtrl), NULL);
+  /* creation of TimeCtrl */
+  TimeCtrlHandle = osThreadNew(TimeCtrlTask, NULL, &TimeCtrl_attributes);
 
-  /* definition and creation of UI */
-  osThreadDef(UI, UITask, osPriorityNormal, 0, 128);
-  UIHandle = osThreadCreate(osThread(UI), NULL);
+  /* creation of UI */
+  UIHandle = osThreadNew(UITask, NULL, &UI_attributes);
 
-  /* definition and creation of ChassisKey */
-  osThreadDef(ChassisKey, ChassisKeyTask, osPriorityNormal, 0, 128);
-  ChassisKeyHandle = osThreadCreate(osThread(ChassisKey), NULL);
+  /* creation of ChassisKey */
+  ChassisKeyHandle = osThreadNew(ChassisKeyTask, NULL, &ChassisKey_attributes);
 
-  /* definition and creation of ChassisMoto */
-  osThreadDef(ChassisMoto, ChassisMotoTask, osPriorityNormal, 0, 128);
-  ChassisMotoHandle = osThreadCreate(osThread(ChassisMoto), NULL);
+  /* creation of ChassisMoto */
+  ChassisMotoHandle = osThreadNew(ChassisMotoTask, NULL, &ChassisMoto_attributes);
 
-  /* definition and creation of ModePose */
-  osThreadDef(ModePose, ModePoseTask, osPriorityHigh, 0, 128);
-  ModePoseHandle = osThreadCreate(osThread(ModePose), NULL);
+  /* creation of ModePose */
+  ModePoseHandle = osThreadNew(ModePoseTask, NULL, &ModePose_attributes);
 
-  /* definition and creation of RotationSlow */
-  osThreadDef(RotationSlow, RotationSlowTask, osPriorityNormal, 0, 128);
-  RotationSlowHandle = osThreadCreate(osThread(RotationSlow), NULL);
+  /* creation of RotationSlow */
+  RotationSlowHandle = osThreadNew(RotationSlowTask, NULL, &RotationSlow_attributes);
 
-  /* definition and creation of Lift */
-  osThreadDef(Lift, LiftTask, osPriorityNormal, 0, 128);
-  LiftHandle = osThreadCreate(osThread(Lift), NULL);
+  /* creation of Lift */
+  LiftHandle = osThreadNew(LiftTask, NULL, &Lift_attributes);
 
-  /* definition and creation of VirtualLink */
-  osThreadDef(VirtualLink, VirtualLinkTask, osPriorityNormal, 0, 128);
-  VirtualLinkHandle = osThreadCreate(osThread(VirtualLink), NULL);
+  /* creation of VirtualLink */
+  VirtualLinkHandle = osThreadNew(VirtualLinkTask, NULL, &VirtualLink_attributes);
 
-  /* definition and creation of DebugMode */
-  osThreadDef(DebugMode, DebugModeTask, osPriorityNormal, 0, 128);
-  DebugModeHandle = osThreadCreate(osThread(DebugMode), NULL);
+  /* creation of DebugMode */
+  DebugModeHandle = osThreadNew(DebugModeTask, NULL, &DebugMode_attributes);
 
-  /* definition and creation of PosLimit */
-  osThreadDef(PosLimit, PosLimitTask, osPriorityNormal, 0, 128);
-  PosLimitHandle = osThreadCreate(osThread(PosLimit), NULL);
+  /* creation of PosLimit */
+  PosLimitHandle = osThreadNew(PosLimitTask, NULL, &PosLimit_attributes);
 
-  /* definition and creation of Offset */
-  osThreadDef(Offset, OffsetTask, osPriorityNormal, 0, 128);
-  OffsetHandle = osThreadCreate(osThread(Offset), NULL);
+  /* creation of Offset */
+  OffsetHandle = osThreadNew(OffsetTask, NULL, &Offset_attributes);
 
-  /* definition and creation of canRecv */
-  osThreadDef(canRecv, canRecvTask, osPriorityHigh, 0, 128);
-  canRecvHandle = osThreadCreate(osThread(canRecv), NULL);
+  /* creation of canRecv */
+  canRecvHandle = osThreadNew(canRecvTask, NULL, &canRecv_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
 
 }
 
@@ -226,7 +309,7 @@ void MX_FREERTOS_Init(void) {
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument)
+void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
@@ -244,7 +327,7 @@ void StartDefaultTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_TestTask */
-__weak void TestTask(void const * argument)
+__weak void TestTask(void *argument)
 {
   /* USER CODE BEGIN TestTask */
   /* Infinite loop */
@@ -262,7 +345,7 @@ __weak void TestTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_MotoTask */
-__weak void MotoTask(void const * argument)
+__weak void MotoTask(void *argument)
 {
   /* USER CODE BEGIN MotoTask */
   /* Infinite loop */
@@ -280,7 +363,7 @@ __weak void MotoTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_DataSyncAnCTask */
-__weak void DataSyncAnCTask(void const * argument)
+__weak void DataSyncAnCTask(void *argument)
 {
   /* USER CODE BEGIN DataSyncAnCTask */
   /* Infinite loop */
@@ -298,7 +381,7 @@ __weak void DataSyncAnCTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_FlipTask */
-__weak void FlipTask(void const * argument)
+__weak void FlipTask(void *argument)
 {
   /* USER CODE BEGIN FlipTask */
   /* Infinite loop */
@@ -316,7 +399,7 @@ __weak void FlipTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_CtrlLockTask */
-__weak void CtrlLockTask(void const * argument)
+__weak void CtrlLockTask(void *argument)
 {
   /* USER CODE BEGIN CtrlLockTask */
   /* Infinite loop */
@@ -334,7 +417,7 @@ __weak void CtrlLockTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_AutoFetchTask */
-__weak void AutoFetchTask(void const * argument)
+__weak void AutoFetchTask(void *argument)
 {
   /* USER CODE BEGIN AutoFetchTask */
   /* Infinite loop */
@@ -352,7 +435,7 @@ __weak void AutoFetchTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_TimeCtrlTask */
-__weak void TimeCtrlTask(void const * argument)
+__weak void TimeCtrlTask(void *argument)
 {
   /* USER CODE BEGIN TimeCtrlTask */
   /* Infinite loop */
@@ -370,7 +453,7 @@ __weak void TimeCtrlTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_UITask */
-__weak void UITask(void const * argument)
+__weak void UITask(void *argument)
 {
   /* USER CODE BEGIN UITask */
   /* Infinite loop */
@@ -388,7 +471,7 @@ __weak void UITask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_ChassisKeyTask */
-__weak void ChassisKeyTask(void const * argument)
+__weak void ChassisKeyTask(void *argument)
 {
   /* USER CODE BEGIN ChassisKeyTask */
   /* Infinite loop */
@@ -406,7 +489,7 @@ __weak void ChassisKeyTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_ChassisMotoTask */
-__weak void ChassisMotoTask(void const * argument)
+__weak void ChassisMotoTask(void *argument)
 {
   /* USER CODE BEGIN ChassisMotoTask */
   /* Infinite loop */
@@ -424,7 +507,7 @@ __weak void ChassisMotoTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_ModePoseTask */
-__weak void ModePoseTask(void const * argument)
+__weak void ModePoseTask(void *argument)
 {
   /* USER CODE BEGIN ModePoseTask */
   /* Infinite loop */
@@ -442,7 +525,7 @@ __weak void ModePoseTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_RotationSlowTask */
-__weak void RotationSlowTask(void const * argument)
+__weak void RotationSlowTask(void *argument)
 {
   /* USER CODE BEGIN RotationSlowTask */
   /* Infinite loop */
@@ -460,7 +543,7 @@ __weak void RotationSlowTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_LiftTask */
-__weak void LiftTask(void const * argument)
+__weak void LiftTask(void *argument)
 {
   /* USER CODE BEGIN LiftTask */
   /* Infinite loop */
@@ -478,7 +561,7 @@ __weak void LiftTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_VirtualLinkTask */
-__weak void VirtualLinkTask(void const * argument)
+__weak void VirtualLinkTask(void *argument)
 {
   /* USER CODE BEGIN VirtualLinkTask */
   /* Infinite loop */
@@ -496,7 +579,7 @@ __weak void VirtualLinkTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_DebugModeTask */
-__weak void DebugModeTask(void const * argument)
+__weak void DebugModeTask(void *argument)
 {
   /* USER CODE BEGIN DebugModeTask */
   /* Infinite loop */
@@ -514,7 +597,7 @@ __weak void DebugModeTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_PosLimitTask */
-__weak void PosLimitTask(void const * argument)
+__weak void PosLimitTask(void *argument)
 {
   /* USER CODE BEGIN PosLimitTask */
   /* Infinite loop */
@@ -532,7 +615,7 @@ __weak void PosLimitTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_OffsetTask */
-__weak void OffsetTask(void const * argument)
+__weak void OffsetTask(void *argument)
 {
   /* USER CODE BEGIN OffsetTask */
   /* Infinite loop */
@@ -550,7 +633,7 @@ __weak void OffsetTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_canRecvTask */
-__weak void canRecvTask(void const * argument)
+__weak void canRecvTask(void *argument)
 {
   /* USER CODE BEGIN canRecvTask */
   /* Infinite loop */
@@ -565,3 +648,4 @@ __weak void canRecvTask(void const * argument)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
+

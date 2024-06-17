@@ -90,27 +90,6 @@ typedef __packed struct //0003
   uint16_t blue_base_HP;
 } ext_game_robot_HP_t;
 
-typedef __packed struct //0005
-{ 
-  uint8_t F1_zone_status:1; 
-  uint8_t F1_zone_buff_debuff_status:3; 
-  uint8_t F2_zone_status:1; 
-  uint8_t F2_zone_buff_debuff_status:3; 
-  uint8_t F3_zone_status:1; 
-  uint8_t F3_zone_buff_debuff_status:3;
-  uint8_t F4_zone_status:1; 
-  uint8_t F4_zone_buff_debuff_status:3; 
-  uint8_t F5_zone_status:1; 
-  uint8_t F5_zone_buff_debuff_status:3; 
-  uint8_t F6_zone_status:1; 
-  uint8_t F6_zone_buff_debuff_status:3; 
-  
-  uint16_t red1_bullet_left;
-  uint16_t red2_bullet_left;
-  uint16_t blue1_bullet_left;
-  uint16_t blue2_bullet_left;
-} ext_ICRA_buff_debuff_zone_status_t;
-
 typedef __packed struct //0101
 {
   uint32_t event_type;
@@ -118,47 +97,39 @@ typedef __packed struct //0101
 
 typedef __packed struct //0x0102
 {
-  uint8_t supply_projectile_id;
+  uint8_t reserved;
   uint8_t supply_robot_id;
   uint8_t supply_projectile_step;
   uint8_t supply_projectile_num;
 } ext_supply_projectile_action_t;
 
-typedef __packed struct	//0104
-{
-  uint8_t level;
-  uint8_t foul_robot_id;
-} ext_referee_warning_t;
+typedef __packed struct //0104
+{ 
+  uint8_t level; 
+  uint8_t offending_robot_id; 
+  uint8_t count; 
+}referee_warning_t; 
 
 
 typedef __packed struct //0105
 { 
   uint8_t dart_remaining_time; 
-} ext_dart_remaining_time_t;
+  uint16_t dart_info; 
+}dart_info_t;
 
-typedef __packed struct //0x0201
-{
-  uint8_t robot_id;
-  uint8_t robot_level;
-  uint16_t remain_HP;
-  uint16_t max_HP;
-  uint16_t shooter_id1_17mm_cooling_rate;
-  uint16_t shooter_id1_17mm_cooling_limit;
-  uint16_t shooter_id1_17mm_speed_limit;
-
-  uint16_t shooter_id2_17mm_cooling_rate;
-  uint16_t shooter_id2_17mm_cooling_limit;
-  uint16_t shooter_id2_17mm_speed_limit;
-
-  uint16_t shooter_id1_42mm_cooling_rate;
-  uint16_t shooter_id1_42mm_cooling_limit;
-  uint16_t shooter_id1_42mm_speed_limit;
-
-  uint16_t chassis_power_limit;
-  uint8_t mains_power_gimbal_output : 1;
-  uint8_t mains_power_chassis_output : 1;
-  uint8_t mains_power_shooter_output : 1;
-} ext_game_robot_state_t;
+typedef __packed struct //0201
+{ 
+  uint8_t robot_id; 
+  uint8_t robot_level; 
+  uint16_t current_HP;  
+  uint16_t maximum_HP; 
+  uint16_t shooter_barrel_cooling_value; 
+  uint16_t shooter_barrel_heat_limit; 
+  uint16_t chassis_power_limit;  
+  uint8_t power_management_gimbal_output : 1; 
+  uint8_t power_management_chassis_output : 1;  
+  uint8_t power_management_shooter_output : 1; 
+}robot_status_t; 
 
 
 typedef __packed struct //0x0202
@@ -172,23 +143,27 @@ typedef __packed struct //0x0202
   uint16_t shooter_id1_42mm_cooling_heat;
 } ext_power_heat_data_t;
 
-typedef __packed struct //0x0203
-{
-  float x;
-  float y;
-  float z;
-  float yaw;
-} ext_game_robot_pos_t;
+typedef __packed struct //0203
+{ 
+  float x; 
+  float y; 
+  float angle; 
+}robot_pos_t; 
 
-typedef __packed struct //0x0204
-{
-  uint8_t power_rune_buff;
-} ext_buff_t;
+typedef __packed struct //0204
+{ 
+  uint8_t recovery_buff;  
+  uint8_t cooling_buff;  
+  uint8_t defence_buff;  
+  uint8_t vulnerability_buff; 
+  uint16_t attack_buff; 
+}ext_buff_t; 
 
-typedef __packed struct //0x0205
-{
-   uint8_t attack_time;
-} aerial_robot_energy_t;
+typedef __packed struct //0205
+{ 
+  uint8_t airforce_status; 
+  uint8_t time_remain; 
+}air_support_data_t; 
 
 typedef __packed struct //0x0206
 {
@@ -217,20 +192,13 @@ typedef __packed struct //0209
 	uint32_t rfid_status;
 } ext_rfid_status_t;
 
-typedef __packed struct //020A
+typedef __packed struct //0301
 { 
-  uint8_t dart_launch_opening_status;
-  uint8_t dart_attack_target;
-  uint16_t target_change_time;
-  uint16_t operate_launch_cmd_time;
-} ext_dart_client_cmd_t;
-
-typedef __packed struct //0x0301
-{
-  uint16_t data_cmd_id;
-  uint16_t sender_ID;
-  uint16_t receiver_ID;
-} ext_student_interactive_header_data_t;
+  uint16_t data_cmd_id; 
+  uint16_t sender_id; 
+  uint16_t receiver_id; 
+  uint8_t user_data[112]; 
+}robot_interaction_data_t; 
 
 typedef __packed struct
 {
@@ -345,10 +313,8 @@ typedef __packed struct
 	uint8_t undefine[26];
 } custom_controller_t;
 
-extern uint8_t referee_tx_buf[REF_PROTOCOL_FRAME_MAX_SIZE];
 extern custom_controller_t custom_controller_data_t;
 
-extern void init_referee_struct_data(void);
 extern void referee_data_solve(uint8_t *frame);
 extern uint8_t get_robot_id(void);
 void draw_character(uint32_t opre_type);
