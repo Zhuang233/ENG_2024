@@ -1,0 +1,528 @@
+{
+  "name": "Eng_2024",
+  "type": "ARM",
+  "dependenceList": [],
+  "srcDirs": [
+    "Drivers/CMSIS/DSP"
+  ],
+  "virtualFolder": {
+    "name": "<virtual_root>",
+    "files": [],
+    "folders": [
+      {
+        "name": "::CMSIS",
+        "files": [],
+        "folders": []
+      },
+      {
+        "name": "::Compiler",
+        "files": [],
+        "folders": []
+      },
+      {
+        "name": "Application",
+        "files": [],
+        "folders": [
+          {
+            "name": "MDK-ARM",
+            "files": [
+              {
+                "path": "MDK-ARM/startup_stm32f427xx.s"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "User",
+            "files": [],
+            "folders": [
+              {
+                "name": "Core",
+                "files": [
+                  {
+                    "path": "Core/Src/main.c"
+                  },
+                  {
+                    "path": "Core/Src/gpio.c"
+                  },
+                  {
+                    "path": "Core/Src/freertos.c"
+                  },
+                  {
+                    "path": "Core/Src/can.c"
+                  },
+                  {
+                    "path": "Core/Src/dma.c"
+                  },
+                  {
+                    "path": "Core/Src/tim.c"
+                  },
+                  {
+                    "path": "Core/Src/usart.c"
+                  },
+                  {
+                    "path": "Core/Src/stm32f4xx_it.c"
+                  },
+                  {
+                    "path": "Core/Src/stm32f4xx_hal_msp.c"
+                  },
+                  {
+                    "path": "Core/Src/stm32f4xx_hal_timebase_tim.c"
+                  }
+                ],
+                "folders": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Drivers",
+        "files": [],
+        "folders": [
+          {
+            "name": "STM32F4xx_HAL_Driver",
+            "files": [
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c"
+              },
+              {
+                "path": "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c"
+              }
+            ],
+            "folders": []
+          },
+          {
+            "name": "CMSIS",
+            "files": [
+              {
+                "path": "Core/Src/system_stm32f4xx.c"
+              }
+            ],
+            "folders": []
+          }
+        ]
+      },
+      {
+        "name": "ENG",
+        "files": [
+          {
+            "path": "ENG/src/chassis.c"
+          },
+          {
+            "path": "ENG/src/can_zbw.c"
+          },
+          {
+            "path": "ENG/src/DJIMotoDriver.c"
+          },
+          {
+            "path": "ENG/src/eng_task.c"
+          },
+          {
+            "path": "ENG/src/LKMotoDriver.c"
+          },
+          {
+            "path": "ENG/src/pid.c"
+          },
+          {
+            "path": "ENG/src/RcDriver.c"
+          },
+          {
+            "path": "ENG/src/test.c"
+          },
+          {
+            "path": "ENG/src/wd.c"
+          },
+          {
+            "path": "ENG/src/uart_zbw.c"
+          },
+          {
+            "path": "ENG/src/JointReset.c"
+          },
+          {
+            "path": "ENG/src/RoboArm.c"
+          },
+          {
+            "path": "ENG/src/time.c"
+          },
+          {
+            "path": "ENG/src/relay.c"
+          },
+          {
+            "path": "ENG/src/CRC8_CRC16.c"
+          },
+          {
+            "path": "ENG/src/referee.c"
+          },
+          {
+            "path": "ENG/UI/ui_gold_island_middle_0.c"
+          },
+          {
+            "path": "ENG/UI/ui_interface.c"
+          },
+          {
+            "path": "ENG/src/Key.c"
+          },
+          {
+            "path": "ENG/src/eng_task2.c"
+          },
+          {
+            "path": "ENG/UI/ui_gold_island_sliver_0.c"
+          },
+          {
+            "path": "ENG/UI/ui_gold_island_Ungroup_0.c"
+          },
+          {
+            "path": "ENG/src/trace.c"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "Middlewares",
+        "files": [],
+        "folders": [
+          {
+            "name": "FreeRTOS",
+            "files": [
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/croutine.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/event_groups.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/list.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/queue.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/tasks.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/timers.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c"
+              },
+              {
+                "path": "Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c"
+              }
+            ],
+            "folders": []
+          }
+        ]
+      },
+      {
+        "name": "Traceanlyzer",
+        "files": [
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/SEGGER_RTT.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcAssert.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcCounter.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcDependency.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcDiagnostics.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcEntryTable.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcError.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcEvent.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcEventBuffer.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcExtension.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcHardwarePort.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcHeap.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcInternalEventBuffer.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcInterval.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcISR.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcKernelPort.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcMultiCoreEventBuffer.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcObject.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcPrint.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcRunnable.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcSnapshotRecorder.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcStackMonitor.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcStateMachine.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcStaticBuffer.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcStreamingRecorder.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcStreamPort.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcString.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcTask.c"
+          },
+          {
+            "path": "Middlewares/Third_Party/TraceRecorder/trcTimestamp.c"
+          }
+        ],
+        "folders": []
+      }
+    ]
+  },
+  "outDir": "build",
+  "deviceName": null,
+  "packDir": null,
+  "miscInfo": {
+    "uid": "697acb121d67d96cca5f5038d95e0142"
+  },
+  "targets": {
+    "ENG_2024": {
+      "excludeList": [],
+      "toolchain": "AC6",
+      "compileConfig": {
+        "cpuType": "Cortex-M4",
+        "floatingPointHardware": "single",
+        "scatterFilePath": "",
+        "useCustomScatterFile": false,
+        "storageLayout": {
+          "RAM": [
+            {
+              "tag": "RAM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "noInit": false
+            },
+            {
+              "tag": "RAM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "noInit": false
+            },
+            {
+              "tag": "RAM",
+              "id": 3,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "noInit": false
+            },
+            {
+              "tag": "IRAM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x20000000",
+                "size": "0x30000"
+              },
+              "isChecked": true,
+              "noInit": false
+            },
+            {
+              "tag": "IRAM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x10000000",
+                "size": "0x10000"
+              },
+              "isChecked": true,
+              "noInit": false
+            }
+          ],
+          "ROM": [
+            {
+              "tag": "ROM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            },
+            {
+              "tag": "ROM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            },
+            {
+              "tag": "ROM",
+              "id": 3,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            },
+            {
+              "tag": "IROM",
+              "id": 1,
+              "mem": {
+                "startAddr": "0x8000000",
+                "size": "0x200000"
+              },
+              "isChecked": true,
+              "isStartup": true
+            },
+            {
+              "tag": "IROM",
+              "id": 2,
+              "mem": {
+                "startAddr": "0x0",
+                "size": "0x0"
+              },
+              "isChecked": false,
+              "isStartup": false
+            }
+          ]
+        },
+        "options": "null"
+      },
+      "uploader": "JLink",
+      "uploadConfig": {
+        "bin": "E:/RMCore/ENG_2024/build/ENG_2024/Eng_2024.bin",
+        "baseAddr": "",
+        "cpuInfo": {
+          "vendor": "ST",
+          "cpuName": "STM32F427II"
+        },
+        "proType": 1,
+        "speed": 8000,
+        "otherCmds": ""
+      },
+      "uploadConfigMap": {},
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          "Core/Inc",
+          "Drivers/STM32F4xx_HAL_Driver/Inc",
+          "Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+          "Middlewares/Third_Party/FreeRTOS/Source/include",
+          "Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F",
+          "Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+          "Drivers/CMSIS/Include",
+          "Middlewares/Third_Party/TraceRecorder/include",
+          "Middlewares/Third_Party/TraceRecorder/config",
+          "ENG/include",
+          "ENG/UI",
+          "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
+          ".cmsis/include",
+          "MDK-ARM/RTE/_ENG_2024",
+          "Drivers/CMSIS/DSP/Include"
+        ],
+        "libList": [],
+        "defineList": [
+          "USE_HAL_DRIVER",
+          "STM32F427xx",
+          "ARM_MATH_CM4"
+        ]
+      }
+    }
+  },
+  "version": "3.4"
+}
