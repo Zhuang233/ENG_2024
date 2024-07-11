@@ -37,15 +37,12 @@ typedef struct
 	int16_t 	given_current;
 	int32_t  	angle_desired;
 	uint16_t 	angle_actual;
-//	uint16_t	angle_vague;
 	uint16_t 	angle_last;
 	int32_t		angle;							//总角度
 	int16_t 	turns;							//转过的圈数
 	int8_t		temperature;
 	int16_t		original_position;
-  bool      first_run;
-//	bool 		whe_use_pid;
-//	TIME 		time;
+	bool        first_run;
 }MotoStateTD;
 
 extern MotoStateTD MotoState[16];// 电机状态结构体

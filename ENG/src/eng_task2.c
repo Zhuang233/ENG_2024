@@ -10,6 +10,7 @@
 #include "JointReset.h"
 #include "relay.h"
 #include "referee.h"
+#include "trace.h"
 
 int8_t zbw_test = 0;
 
@@ -80,6 +81,7 @@ void ChassisMotoTask(void const * argument){
 	 chassis_pid_init();
 	 for(;;)
   {
+		trace_angle(MotoState[7].angle);
 		chassis_control_RC();
 		for(int i=0;i<4;i++){
 			pid_calculate(&chassis_pid_spd_moto[i], MotoState[i].speed_desired, MotoState[i].speed_actual);
@@ -693,7 +695,7 @@ void VirtualLinkTask(void const * argument){
 		if(virtual_link_flag){
 			MotoState[6].angle_desired = virtual_link(MotoState[5].angle);
 		}
-		osDelay(100);
+		osDelay(10);
 	}
 }
 

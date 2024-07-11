@@ -1,10 +1,6 @@
 #include "can_zbw.h"
-#include "cmsis_os.h"
-#include "main.h"
 #include "can.h"
 #include "DJIMotoDriver.h"
-#include "LKMotoDriver.h"
-#include "LKMotoDriver.h"
 
 
 

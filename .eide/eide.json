@@ -515,7 +515,10 @@
           "MDK-ARM/RTE/_ENG_2024",
           "Drivers/CMSIS/DSP/Include"
         ],
-        "libList": [],
+        "libList": [
+          "d:/Keil_v5/ARM/ArmCompilerforEmbedded6.22/include",
+          "d:/Keil_v5/ARM/ArmCompilerforEmbedded6.22/include/libcxx"
+        ],
         "defineList": [
           "USE_HAL_DRIVER",
           "STM32F427xx",

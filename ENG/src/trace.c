@@ -22,6 +22,8 @@ traceString OutIChannel;
 #define outChannel "out"
 traceString OutChannel;
 
+#define angleChannel "angle"
+traceString AngleChannel;
 
 void trace_init(void){
 	
@@ -29,13 +31,14 @@ void trace_init(void){
 	
 	
 	// 注册中断追踪（注意需要在vTraceEnable之后，否则相关结构体未初始化，上位名字显示如ISR #1的名字）
-	xTraceISRRegister(CAN1_RX0_ISR_NAME, CAN1_RX0_ISR_PRIORITY, &Can1Rx0ISRHandle);
-	xTraceISRRegister(CAN2_RX1_ISR_NAME, CAN2_RX1_ISR_PRIORITY, &Can2Rx1ISRHandle);
+//	xTraceISRRegister(CAN1_RX0_ISR_NAME, CAN1_RX0_ISR_PRIORITY, &Can1Rx0ISRHandle);
+//	xTraceISRRegister(CAN2_RX1_ISR_NAME, CAN2_RX1_ISR_PRIORITY, &Can2Rx1ISRHandle);
 	
 //	MotoChannel = xTraceRegisterString(MotoCurrentChannel);
 //	MotospdChannel = xTraceRegisterString(MotoSpeedChannel);
 //	OutIChannel = xTraceRegisterString(outIChannel);
 //	OutChannel = xTraceRegisterString(outChannel);
+		AngleChannel = xTraceRegisterString(angleChannel);
 }
 
 void trace_current(int current){
@@ -49,4 +52,8 @@ void trace_speed(int speed){
 void trace_pid(PidTD* pid){
 	vTracePrintF(OutChannel, "%d", (int32_t)pid->outPID);
 	vTracePrintF(OutIChannel, "%d", (int32_t)pid->outI);
+}
+
+void trace_angle(int angle){
+	vTracePrintF(AngleChannel, "angle = %d", angle);
 }

@@ -8,4 +8,5 @@ void trace_init(void);
 void trace_current(int current);
 void trace_speed(int speed);
 void trace_pid(PidTD* pid);
+void trace_angle(int angle);
 #endif
