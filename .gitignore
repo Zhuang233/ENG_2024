@@ -16,3 +16,4 @@
 MDK-ARM/JLinkLog.txt
 MDK-ARM/JLinkSettings.ini
 build
+build/*
