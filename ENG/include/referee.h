@@ -308,9 +308,13 @@ typedef __packed struct //0x0304
 
 typedef __packed struct
 {
-	int16_t encoder;
-	uint16_t adc_value;
-	uint8_t undefine[26];
+	int16_t encoder1;
+	int16_t encoder2;
+	int16_t encoder3;
+	uint16_t adc_value1;
+	uint16_t adc_value2;
+	uint16_t adc_value3;
+	uint8_t undefine[18];
 } custom_controller_t;
 
 extern custom_controller_t custom_controller_data_t;

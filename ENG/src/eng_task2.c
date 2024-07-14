@@ -54,7 +54,7 @@ void DataSyncAnCTask(void const * argument){
   for(;;)
   {
 		data_sync_uart();
-    osDelay(30); 
+    osDelay(10); 
   }
 }
 
@@ -572,7 +572,8 @@ __packed int32_t* hy = &(sync_data_to_c.data.hy_pos);
 					// 兑换循环	
 					gx=280,gy=350.0,gz=500.0;
 					for(;;){
-						RoboArm_RC_Ctrl_Fixed_Point(); 
+						// RoboArm_RC_Ctrl_Fixed_Point(); 
+						SubArm_Ctrl();
 						if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S)) {
 							rotateslow_flag = true;
 							break; 

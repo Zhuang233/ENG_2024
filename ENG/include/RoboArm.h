@@ -40,6 +40,7 @@
 void RoboArm_Pos_Init(void);
 void RoboArm_RC_Ctrl(void);
 void RoboArm_RC_Ctrl_Fixed_Point(void);
+void SubArm_Ctrl(void);
 void lift_init(void);
 void expand_init(void);
 void flip_init(void);

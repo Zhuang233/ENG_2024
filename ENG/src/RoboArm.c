@@ -264,7 +264,7 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //				gz += custom_controller_data_t.vz * suofang;
 //				gy -= custom_controller_data_t.vx * suofang;
 //				gx += custom_controller_data_t.vy * suofang;
-					gy = ((float)custom_controller_data_t.encoder + 32768.0f) * 600.0f / 65536.0f  ; //gy 0 ~ 600 encoder -32768 ~ 32767
+					gy = ((float)custom_controller_data_t.encoder1 + 32768.0f) * 600.0f / 65536.0f  ; //gy 0 ~ 600 encoder -32768 ~ 32767
 //			}
 			
 
@@ -309,7 +309,7 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 //			sync_data_to_c.data.theta1  = 28492 - pitch * 16384.0 / 90.0;
 //			sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2 - roll * 16384.0 / 90.0;
 //			sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3 - yaw * 16384.0 / 90.0;
-			sync_data_to_c.data.theta3 = (uint16_t)( ((float)custom_controller_data_t.adc_value - 400.0f) * ((40754.0f-7986.0f)/(1830.0f-400.0f)) + 7986.0f ); // yaw 7986 ~ 40754 adc 400~1830
+			sync_data_to_c.data.theta3 = (uint16_t)( ((float)custom_controller_data_t.adc_value1 - 400.0f) * ((40754.0f-7986.0f)/(1830.0f-400.0f)) + 7986.0f ); // yaw 7986 ~ 40754 adc 400~1830
 			
 			
 			
@@ -350,7 +350,68 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 	
 }
 
+// 单位换算函数
+// 抬升mm转编码器总角度
+int32_t mm2angle_Lift(int32_t pos_mm){
 
+
+}
+
+// 前伸mm转编码器总角度
+int32_t mm2angle_Qs(int32_t pos_mm){
+
+
+}
+
+// 横移mm转编码器总角度
+int32_t mm2angle_Hy(int32_t pos_mm){
+
+
+}
+
+// 抬升自定义控制器编码器转编码器总角度映射
+int32_t AngleMap_Lift(int16_t InputAngle){
+	// h = 619.0;
+	// return (int32_t)((h - 973.0f)*500000.0f/175.0f);
+	return 1950000.0f/6240.0f * InputAngle - 800000.0f;
+}
+
+// 横移自定义控制器编码器转编码器总角度映射
+int32_t AngleMap_Hy(int16_t InputAngle){
+	// gy = 600.0f - ((float)InputAngle * 600.0f / 4700.0f)  ; //gy 0 ~ 600 encoder 0 ~ 4700
+	// return (int32_t)(gy *390000.0f/600.0f -390000.0f);
+	return (4700.0f - InputAngle) * 390000.0f/4700.0f - 390000.0f;
+}
+
+// 前伸自定义控制器编码器转编码器总角度映射
+int32_t AngleMap_Qs(int16_t InputAngle){
+	return InputAngle * 780000.0f/3120.0f;
+}
+
+// 自定义控制器电位计yaw映射
+int32_t AngleMap_Yaw(int16_t InputAngle){
+	return (7986.0f - 40754.0f)/(3250.0f - 700.0f) * InputAngle + (700.0f * 7986.0f - 3250.0f * 40754.0f)/(700.0f - 3250.0f);
+}
+
+// 自定义控制器电位计pitch映射
+int32_t AngleMap_Pitch(int16_t InputAngle){
+	return (12590.0f - 44950.0f)/(3300.0f - 690.0f) * InputAngle + (3300.0f * 44950.0f - 12590.0f * 690.0f)/(3300.0f - 690.0f);
+}
+
+// 自定义控制器电位计roll映射
+int32_t AngleMap_Roll(int16_t InputAngle){
+	return (42207.0f - 9439.0f)/(3200.0f - 710.0f) * InputAngle + (3200.0f * 9439.0f - 42207.0f * 710.0f)/(3200.0f - 710.0f);
+}
+
+
+void SubArm_Ctrl(){
+	MotoState[4].angle_desired = AngleMap_Lift(custom_controller_data_t.encoder3);
+	sync_data_to_c.data.hy_pos = AngleMap_Hy(custom_controller_data_t.encoder1);
+	sync_data_to_c.data.qs_pos = AngleMap_Qs(custom_controller_data_t.encoder2);
+	sync_data_to_c.data.theta1 = AngleMap_Pitch(custom_controller_data_t.adc_value3);
+	sync_data_to_c.data.theta2 = AngleMap_Roll(custom_controller_data_t.adc_value2);
+	sync_data_to_c.data.theta3 = AngleMap_Yaw(custom_controller_data_t.adc_value1);
+}
 
 
 int32_t virtual_link(int32_t x){
