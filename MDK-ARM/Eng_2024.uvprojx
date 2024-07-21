@@ -771,6 +771,11 @@
               <FileType>1</FileType>
               <FilePath>..\ENG\src\trace.c</FilePath>
             </File>
+            <File>
+              <FileName>pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\src\pwm.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

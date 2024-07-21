@@ -32,6 +32,7 @@
 #include "trace.h"
 #include "RcDriver.h"
 #include "wd.h"
+#include "pwm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -101,6 +102,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_UART7_Init();
   MX_USART6_UART_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 	can_filter_init();
 	__HAL_TIM_ENABLE(&htim2);
@@ -108,6 +110,7 @@ int main(void)
 //	usart_init();
 	wd_init();
 	trace_init();
+	PWM_Start();
   /* USER CODE END 2 */
 
   /* Init scheduler */
