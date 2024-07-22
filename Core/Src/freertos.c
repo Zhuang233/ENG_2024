@@ -180,6 +180,13 @@ const osThreadAttr_t canRecv_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
+/* Definitions for SecondArm */
+osThreadId_t SecondArmHandle;
+const osThreadAttr_t SecondArm_attributes = {
+  .name = "SecondArm",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -205,6 +212,7 @@ void DebugModeTask(void *argument);
 void PosLimitTask(void *argument);
 void OffsetTask(void *argument);
 void canRecvTask(void *argument);
+void SecondArmTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -291,6 +299,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of canRecv */
   canRecvHandle = osThreadNew(canRecvTask, NULL, &canRecv_attributes);
+
+  /* creation of SecondArm */
+  SecondArmHandle = osThreadNew(SecondArmTask, NULL, &SecondArm_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -642,6 +653,24 @@ __weak void canRecvTask(void *argument)
     osDelay(1000);
   }
   /* USER CODE END canRecvTask */
+}
+
+/* USER CODE BEGIN Header_SecondArmTask */
+/**
+* @brief Function implementing the SecondArm thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_SecondArmTask */
+__weak void SecondArmTask(void *argument)
+{
+  /* USER CODE BEGIN SecondArmTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END SecondArmTask */
 }
 
 /* Private application code --------------------------------------------------*/

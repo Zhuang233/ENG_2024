@@ -48,6 +48,7 @@ void LiftTask(void const * argument){
 }
 
 void DataSyncAnCTask(void const * argument){
+	sync_data_to_c_init();
 	osDelay(500);
 	sync_data_to_c.data.head = 0x55;
 	sync_data_to_c.data.tail = 0xaa;
@@ -57,22 +58,6 @@ void DataSyncAnCTask(void const * argument){
     osDelay(10); 
   }
 }
-
-# ifdef OLD_CAR
-void FlipTask(void const * argument){
-	expand_init();
-  small_lift_init();
-	flip_init();
-	reset_expand();
-	for(;;)
-  {
-		Update_Flip_Pos();
-		Update_Small_Lift_Pos();
-		Update_Expand_Pos();
-    osDelay(1); 
-  }
-}
-#endif
 
 // 底盘任务
 //1.控制数据接收与处理
@@ -195,6 +180,21 @@ extern float gx,gy,gz;
 
 # ifdef OLD_CAR
 bool virtual_link_flag = true;
+void FlipTask(void const * argument){
+	expand_init();
+  small_lift_init();
+	flip_init();
+	reset_expand();
+	for(;;)
+  {
+		Update_Flip_Pos();
+		Update_Small_Lift_Pos();
+		Update_Expand_Pos();
+    osDelay(1); 
+  }
+}
+
+
 // 姿态控制任务，所有固定姿态由此处理,UI需要显示
 void ModePoseTask(void const * argument){
 __packed int32_t* qs = &(sync_data_to_c.data.qs_pos);
@@ -705,6 +705,22 @@ void VirtualLinkTask(void const * argument){
 		osDelay(10);
 	}
 }
+#else
+void SecondArmTask(void *argument)
+{
+	osDelay(3000); //复位得等3s 2006上电没那么快工作
+	reset_small_yaw();
+	reset_small_lift();
+	reset_small_qs();
+  for(;;)
+  {
+		Update_Small_Qs_Pos();
+		Update_Small_Lift_Pos();
+		Update_Small_Yaw_Pos();
+    osDelay(1);
+  }
+}
+
 #endif
 
 

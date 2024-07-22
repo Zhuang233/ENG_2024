@@ -151,6 +151,98 @@ void Update_Flip_Pos(){
 }
 
 //翻转-------------------------------------------------------
+
+#else
+//小yaw-------------------------------------------------------
+#define SMALL_YAW_POS_P 0.5
+#define SMALL_YAW_POS_I 0
+#define SMALL_YAW_POS_D 0
+#define SMALL_YAW_SPD_P 10
+#define SMALL_YAW_SPD_I 1
+#define SMALL_YAW_SPD_D 0
+
+PidTD pid_small_yaw_spd;
+PidTD pid_small_yaw_pos;
+
+void small_yaw_init(){
+	pidInit(&pid_small_yaw_pos, 2000, 6000, SMALL_YAW_POS_P, SMALL_YAW_POS_I, SMALL_YAW_POS_D);
+	pidInit(&pid_small_yaw_spd, 2000, 10000, SMALL_YAW_SPD_P, SMALL_YAW_SPD_I, SMALL_YAW_SPD_D);
+	MotoStateInit(&MotoState[7]);
+}
+
+
+void Update_Small_Yaw_Pos(){
+	if(small_yaw_inited){
+		pid_calculate(&pid_small_yaw_pos, (float)MotoState[7].angle_desired , (float)MotoState[7].angle);
+		MotoState[7].speed_desired = (int)pid_small_yaw_pos.outPID;
+		pid_calculate(&pid_small_yaw_spd, MotoState[7].speed_desired , MotoState[7].speed_actual);
+		dji_moto_current_to_send[2] = pid_small_yaw_spd.outPID;
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+	}
+}
+
+//小yaw-------------------------------------------------------
+
+//小抬升-------------------------------------------------------
+#define SMALL_LIFT_POS_P 0.5
+#define SMALL_LIFT_POS_I 0
+#define SMALL_LIFT_POS_D 0
+#define SMALL_LIFT_SPD_P 10
+#define SMALL_LIFT_SPD_I 1
+#define SMALL_LIFT_SPD_D 0
+
+PidTD pid_small_lift_spd;
+PidTD pid_small_lift_pos;
+
+void small_lift_init(){
+	pidInit(&pid_small_lift_pos, 2000, 6000, SMALL_LIFT_POS_P, SMALL_LIFT_POS_I, SMALL_LIFT_POS_D);
+	pidInit(&pid_small_lift_spd, 2000, 10000, SMALL_LIFT_SPD_P, SMALL_LIFT_SPD_I, SMALL_LIFT_SPD_D);
+	MotoStateInit(&MotoState[6]);
+}
+
+
+void Update_Small_Lift_Pos(){
+	if(small_lift_inited){
+		pid_calculate(&pid_small_lift_pos, (float)MotoState[6].angle_desired , (float)MotoState[6].angle);
+		MotoState[6].speed_desired = (int)pid_small_lift_pos.outPID;
+		pid_calculate(&pid_small_lift_spd, MotoState[6].speed_desired , MotoState[6].speed_actual);
+		dji_moto_current_to_send[1] = pid_small_lift_spd.outPID;
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+	}
+}
+
+//小抬升-------------------------------------------------------
+
+//小前伸-------------------------------------------------------
+#define SMALL_QS_POS_P 0.5
+#define SMALL_QS_POS_I 0
+#define SMALL_QS_POS_D 0
+#define SMALL_QS_SPD_P 10
+#define SMALL_QS_SPD_I 1
+#define SMALL_QS_SPD_D 0
+
+PidTD pid_small_qs_spd;
+PidTD pid_small_qs_pos;
+
+void small_qs_init(){
+	pidInit(&pid_small_qs_pos, 2000, 6000, SMALL_QS_POS_P, SMALL_QS_POS_I, SMALL_QS_POS_D);
+	pidInit(&pid_small_qs_spd, 2000, 10000, SMALL_QS_SPD_P, SMALL_QS_SPD_I, SMALL_QS_SPD_D);
+	MotoStateInit(&MotoState[5]);
+}
+
+
+void Update_Small_Qs_Pos(){
+	if(small_qs_inited){
+		pid_calculate(&pid_small_qs_pos, (float)MotoState[5].angle_desired , (float)MotoState[5].angle);
+		MotoState[5].speed_desired = (int)pid_small_qs_pos.outPID;
+		pid_calculate(&pid_small_qs_spd, MotoState[5].speed_desired , MotoState[5].speed_actual);
+		dji_moto_current_to_send[0] = pid_small_qs_spd.outPID;
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+	}
+}
+
+//小前伸-------------------------------------------------------
+
 #endif
 
 void RoboArm_Pos_Init(){

@@ -45,7 +45,7 @@ void reset_lift(){
 		}
 		osDelay(1);	
 	}
-	MotoState[4].angle_desired = -1850000;
+	MotoState[4].angle_desired = -1273474;
 }
 // 抬升----------------------------------------------
 
@@ -116,4 +116,183 @@ void reset_expand(){
 }
 
 // 缩张----------------------------------------------
+#else
+
+void duzhuan_TimeInit(TimeTD *time){
+	TimeInit(time);
+}
+
+// 小yaw----------------------------------------------
+#define SMALL_YAW_RESET_SPD_P 1
+#define SMALL_YAW_RESET_SPD_I 0
+#define SMALL_YAW_RESET_SPD_D 0
+
+bool small_yaw_inited = false;
+PidTD pid_small_yaw_reset_spd;
+TimeTD t_duzhuan;
+float detect_time = 0;
+int last_detect_angle = 0;
+int detect_angle = 0;
+uint8_t start_stage = 1;
+
+
+void small_yaw_init_reset_stage(){
+	pidInit(&pid_small_yaw_reset_spd, 3000, 10000, SMALL_YAW_RESET_SPD_P, SMALL_YAW_RESET_SPD_I, SMALL_YAW_RESET_SPD_D);
+	MotoStateInit(&MotoState[7]);
+}
+
+// 小yaw位置初始化 堵转检测
+void reset_small_yaw(){
+	float small_yaw_reset_speed = 3000;
+	small_yaw_init_reset_stage();
+	duzhuan_TimeInit(&t_duzhuan);
+	GetDt(&t_duzhuan,MILLISECOND);
+	while(small_yaw_inited == false){
+		// 判断堵转
+		GetDt(&t_duzhuan,MILLISECOND);
+		detect_time +=t_duzhuan.dt;
+		if (detect_time > 300){
+			detect_time = 0;
+			last_detect_angle =  detect_angle;
+			detect_angle = MotoState[7].angle;
+			start_stage = 0;
+		}
+		
+		// 不转了
+		if((MotoState[7].angle - last_detect_angle < -8000) || start_stage){
+				// 速度环
+				pid_calculate(&pid_small_yaw_reset_spd, -small_yaw_reset_speed, MotoState[7].speed_actual);
+				dji_moto_current_to_send[2] = pid_small_yaw_reset_spd.outPID;
+				SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+			
+		}
+		else{
+			dji_moto_current_to_send[2] = 0;
+			SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+			osDelay(20);
+			small_yaw_init();
+			MotoStateInit(&MotoState[7]);
+			small_yaw_inited = true;
+		}
+		osDelay(1);
+	}
+}
+
+// 小yaw----------------------------------------------
+
+// 小抬升----------------------------------------------
+#define SMALL_LIFT_RESET_SPD_P 1
+#define SMALL_LIFT_RESET_SPD_I 0
+#define SMALL_LIFT_RESET_SPD_D 0
+
+bool small_lift_inited = false;
+PidTD pid_small_lift_reset_spd;
+TimeTD t_duzhuan_small_lift;
+float detect_time_small_lift = 0;
+int last_detect_angle_small_lift = 0;
+int detect_angle_small_lift = 0;
+uint8_t start_stage_small_lift = 1;
+
+
+void small_lift_init_reset_stage(){
+	pidInit(&pid_small_lift_reset_spd, 3000, 10000, SMALL_LIFT_RESET_SPD_P, SMALL_LIFT_RESET_SPD_I, SMALL_LIFT_RESET_SPD_D);
+	MotoStateInit(&MotoState[6]);
+}
+
+// 小抬升位置初始化 堵转检测
+void reset_small_lift(){
+	float small_lift_reset_speed = 3000;
+	small_lift_init_reset_stage();
+	duzhuan_TimeInit(&t_duzhuan_small_lift);
+	GetDt(&t_duzhuan_small_lift,MILLISECOND);
+	while(small_lift_inited == false){
+		// 判断堵转
+		GetDt(&t_duzhuan_small_lift,MILLISECOND);
+		detect_time_small_lift +=t_duzhuan_small_lift.dt;
+		if (detect_time_small_lift > 300){
+			detect_time_small_lift = 0;
+			last_detect_angle_small_lift =  detect_angle_small_lift;
+			detect_angle_small_lift = MotoState[6].angle;
+			start_stage_small_lift = 0;
+		}
+		
+		// 不转了
+		if((MotoState[6].angle - last_detect_angle_small_lift < -8000) || start_stage_small_lift){
+				// 速度环
+				pid_calculate(&pid_small_lift_reset_spd, -small_lift_reset_speed, MotoState[6].speed_actual);
+				dji_moto_current_to_send[1] = pid_small_lift_reset_spd.outPID;
+				SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+			
+		}
+		else{
+			dji_moto_current_to_send[1] = 0;
+			SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+			osDelay(20);
+			small_lift_init();
+			MotoStateInit(&MotoState[6]);
+			small_lift_inited = true;
+		}
+		osDelay(1);
+	}
+}
+
+// 小抬升----------------------------------------------
+
+// 小前伸----------------------------------------------
+#define SMALL_QS_RESET_SPD_P 1
+#define SMALL_QS_RESET_SPD_I 0
+#define SMALL_QS_RESET_SPD_D 0
+
+bool small_qs_inited = false;
+PidTD pid_small_qs_reset_spd;
+TimeTD t_duzhuan_small_qs;
+float detect_time_small_qs = 0;
+int last_detect_angle_small_qs = 0;
+int detect_angle_small_qs = 0;
+uint8_t start_stage_small_qs = 1;
+
+
+void small_qs_init_reset_stage(){
+	pidInit(&pid_small_qs_reset_spd, 3000, 10000, SMALL_QS_RESET_SPD_P, SMALL_QS_RESET_SPD_I, SMALL_QS_RESET_SPD_D);
+	MotoStateInit(&MotoState[5]);
+}
+
+// 小前伸位置初始化 堵转检测
+void reset_small_qs(){
+	float small_qs_reset_speed = 3000;
+	small_qs_init_reset_stage();
+	duzhuan_TimeInit(&t_duzhuan_small_qs);
+	GetDt(&t_duzhuan_small_qs,MILLISECOND);
+	while(small_qs_inited == false){
+		// 判断堵转
+		GetDt(&t_duzhuan_small_qs,MILLISECOND);
+		detect_time_small_qs +=t_duzhuan_small_qs.dt;
+		if (detect_time_small_qs > 300){
+			detect_time_small_qs = 0;
+			last_detect_angle_small_qs =  detect_angle_small_qs;
+			detect_angle_small_qs = MotoState[5].angle;
+			start_stage_small_qs = 0;
+		}
+		
+		// 不转了
+		if((MotoState[5].angle - last_detect_angle_small_qs < -8000) || start_stage_small_qs){
+				// 速度环
+				pid_calculate(&pid_small_qs_reset_spd, -small_qs_reset_speed, MotoState[5].speed_actual);
+				dji_moto_current_to_send[0] = pid_small_qs_reset_spd.outPID;
+				SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+			
+		}
+		else{
+			dji_moto_current_to_send[0] = 0;
+			SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+			osDelay(20);
+			small_qs_init();
+			MotoStateInit(&MotoState[5]);
+			small_qs_inited = true;
+		}
+		osDelay(1);
+	}
+}
+
+// 小前伸----------------------------------------------
 #endif

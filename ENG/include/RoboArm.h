@@ -37,6 +37,14 @@
 #define EXPAND_MAX 0
 #define EXPAND_MIN -427240
 
+void expand_init(void);
+void flip_init(void);
+void small_lift_init(void);
+
+void Update_Expand_Pos(void);
+void Update_Small_Lift_Pos(void);
+void Update_Flip_Pos(void);
+int32_t virtual_link(int32_t x);
 #else
 
 //pitch
@@ -45,12 +53,12 @@
 #define ARM_ANGLE_STD_1 1
 
 //roll
-#define ARM_ANGLE_MAX_2 50000
+#define ARM_ANGLE_MAX_2 62600
 #define ARM_ANGLE_MIN_2 1
-#define ARM_ANGLE_STD_2 33000
+#define ARM_ANGLE_STD_2 33500
 
 //yall
-#define ARM_ANGLE_MAX_3 32767
+#define ARM_ANGLE_MAX_3 32300
 #define ARM_ANGLE_MIN_3 1
 #define ARM_ANGLE_STD_3 16000
 
@@ -59,19 +67,28 @@
 
 
 #define HY_ANGLE_MAX 0
-#define HY_ANGLE_MIN -390000
+#define HY_ANGLE_MIN -389000
 
 #define LIFT_MAX 0
 #define LIFT_MIN -1950000
 
-#define FLIP_MAX 0
-#define FLIP_MIN -220000
+#define SMALL_YAW_MAX 465000
+#define SMALL_YAW_MIN 0
 
-#define SMALL_LIFT_MAX 410000
+#define SMALL_LIFT_MAX 452000
 #define SMALL_LIFT_MIN 0
 
-#define EXPAND_MAX 0
-#define EXPAND_MIN -427240
+#define SMALL_QS_MAX 442000
+#define SMALL_QS_MIN 0
+
+void small_yaw_init(void);
+void Update_Small_Yaw_Pos(void);
+
+void small_lift_init(void);
+void Update_Small_Lift_Pos(void);
+
+void small_qs_init(void);
+void Update_Small_Qs_Pos(void);
 #endif
 
 void RoboArm_Pos_Init(void);
@@ -79,12 +96,6 @@ void RoboArm_RC_Ctrl(void);
 void RoboArm_RC_Ctrl_Fixed_Point(void);
 void SubArm_Ctrl(void);
 void lift_init(void);
-void expand_init(void);
-void flip_init(void);
-void small_lift_init(void);
 void Update_Lift_Pos(void);
-void Update_Expand_Pos(void);
-void Update_Small_Lift_Pos(void);
-void Update_Flip_Pos(void);
-int32_t virtual_link(int32_t x);
+
 #endif
