@@ -765,6 +765,35 @@ void OffsetTask(void const * argument){
 
 // 机器调试模式（检录用）
 bool debug_mode = false;
+void DebugModeTask(void const * argument){
+	for(;;){
+		if(Key_Check_Hold(&Keys.KEY_Z)){
+			xipan_left_open();
+		}
+		else{
+			xipan_left_close();
+		}
+		if(Key_Check_Hold(&Keys.KEY_X)){
+			xipan_right_open();
+		}
+		else{
+			xipan_right_close();
+		}
+		if(Key_Check_Hold(&Keys.KEY_C)){
+			xipan_top_open();
+		}
+		else{
+			xipan_top_close();
+		}
+		if(Key_Check_Hold(&Keys.KEY_V)){
+			xipan_bottom_open();
+		}
+		else{
+			xipan_bottom_close();
+		}
+		osDelay(1);
+	}
+}
 //void DebugModeTask(void const * argument){
 //	for(;;){
 //		//ctrl+shift+r防误触进入调试模式
