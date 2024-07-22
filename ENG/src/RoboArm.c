@@ -177,7 +177,7 @@ void Update_Small_Yaw_Pos(){
 		MotoState[7].speed_desired = (int)pid_small_yaw_pos.outPID;
 		pid_calculate(&pid_small_yaw_spd, MotoState[7].speed_desired , MotoState[7].speed_actual);
 		dji_moto_current_to_send[2] = pid_small_yaw_spd.outPID;
-		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], dji_moto_current_to_send[3]);
 	}
 }
 
@@ -207,7 +207,7 @@ void Update_Small_Lift_Pos(){
 		MotoState[6].speed_desired = (int)pid_small_lift_pos.outPID;
 		pid_calculate(&pid_small_lift_spd, MotoState[6].speed_desired , MotoState[6].speed_actual);
 		dji_moto_current_to_send[1] = pid_small_lift_spd.outPID;
-		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], dji_moto_current_to_send[3]);
 	}
 }
 
@@ -237,11 +237,41 @@ void Update_Small_Qs_Pos(){
 		MotoState[5].speed_desired = (int)pid_small_qs_pos.outPID;
 		pid_calculate(&pid_small_qs_spd, MotoState[5].speed_desired , MotoState[5].speed_actual);
 		dji_moto_current_to_send[0] = pid_small_qs_spd.outPID;
-		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], dji_moto_current_to_send[3]);
 	}
 }
 
 //小前伸-------------------------------------------------------
+
+//云台抬升-------------------------------------------------------
+#define LIFT_CAMERA_POS_P 0.5
+#define LIFT_CAMERA_POS_I 0
+#define LIFT_CAMERA_POS_D 0
+#define LIFT_CAMERA_SPD_P 10
+#define LIFT_CAMERA_SPD_I 1
+#define LIFT_CAMERA_SPD_D 0
+
+PidTD pid_lift_camera_spd;
+PidTD pid_lift_camera_pos;
+
+void lift_camera_init(){
+	pidInit(&pid_lift_camera_pos, 2000, 6000, LIFT_CAMERA_POS_P, LIFT_CAMERA_POS_I, LIFT_CAMERA_POS_D);
+	pidInit(&pid_lift_camera_spd, 2000, 10000, LIFT_CAMERA_SPD_P, LIFT_CAMERA_SPD_I, LIFT_CAMERA_SPD_D);
+	MotoStateInit(&MotoState[8]);
+}
+
+
+void Update_Lift_Camera_Pos(){
+	if(lift_camera_inited){
+		pid_calculate(&pid_lift_camera_pos, (float)MotoState[8].angle_desired , (float)MotoState[8].angle);
+		MotoState[8].speed_desired = (int)pid_lift_camera_pos.outPID;
+		pid_calculate(&pid_lift_camera_spd, MotoState[8].speed_desired , MotoState[8].speed_actual);
+		dji_moto_current_to_send[3] = pid_lift_camera_spd.outPID;
+		SetMotoCurrent(&hcan2, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], dji_moto_current_to_send[3]);
+	}
+}
+
+//云台抬升-------------------------------------------------------
 
 #endif
 

@@ -709,14 +709,16 @@ void VirtualLinkTask(void const * argument){
 void SecondArmTask(void *argument)
 {
 	osDelay(3000); //复位得等3s 2006上电没那么快工作
-	reset_small_yaw();
-	reset_small_lift();
 	reset_small_qs();
+	reset_small_lift();
+	reset_small_yaw();
+	reset_lift_camera();
   for(;;)
   {
 		Update_Small_Qs_Pos();
 		Update_Small_Lift_Pos();
 		Update_Small_Yaw_Pos();
+		Update_Lift_Camera_Pos();
     osDelay(1);
   }
 }

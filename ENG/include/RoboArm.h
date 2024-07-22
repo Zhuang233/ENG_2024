@@ -81,6 +81,9 @@ int32_t virtual_link(int32_t x);
 #define SMALL_QS_MAX 442000
 #define SMALL_QS_MIN 0
 
+#define LIFT_CAMERA_MAX 1788000
+#define LIFT_CAMERA_MIN 0
+
 void small_yaw_init(void);
 void Update_Small_Yaw_Pos(void);
 
@@ -89,6 +92,9 @@ void Update_Small_Lift_Pos(void);
 
 void small_qs_init(void);
 void Update_Small_Qs_Pos(void);
+
+void lift_camera_init(void);
+void Update_Lift_Camera_Pos(void);
 #endif
 
 void RoboArm_Pos_Init(void);
