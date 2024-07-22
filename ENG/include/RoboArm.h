@@ -1,6 +1,7 @@
 #ifndef __ROBOARM_H__
 #define __ROBOARM_H__
 #include "main.h"
+# ifdef OLD_CAR
 //pitch
 #define ARM_ANGLE_MAX_1 45077
 #define ARM_ANGLE_MIN_1 12650
@@ -36,6 +37,42 @@
 #define EXPAND_MAX 0
 #define EXPAND_MIN -427240
 
+#else
+
+//pitch
+#define ARM_ANGLE_MAX_1 32767
+#define ARM_ANGLE_MIN_1 1
+#define ARM_ANGLE_STD_1 1
+
+//roll
+#define ARM_ANGLE_MAX_2 50000
+#define ARM_ANGLE_MIN_2 1
+#define ARM_ANGLE_STD_2 33000
+
+//yall
+#define ARM_ANGLE_MAX_3 32767
+#define ARM_ANGLE_MIN_3 1
+#define ARM_ANGLE_STD_3 16000
+
+#define QS_ANGLE_MAX 780000
+#define QS_ANGLE_MIN 0
+
+
+#define HY_ANGLE_MAX 0
+#define HY_ANGLE_MIN -390000
+
+#define LIFT_MAX 0
+#define LIFT_MIN -1950000
+
+#define FLIP_MAX 0
+#define FLIP_MIN -220000
+
+#define SMALL_LIFT_MAX 410000
+#define SMALL_LIFT_MIN 0
+
+#define EXPAND_MAX 0
+#define EXPAND_MIN -427240
+#endif
 
 void RoboArm_Pos_Init(void);
 void RoboArm_RC_Ctrl(void);

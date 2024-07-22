@@ -46,6 +46,8 @@ void Update_Lift_Pos(){
 //抬升-------------------------------------------------------
 
 
+# ifdef OLD_CAR
+
 //缩张-------------------------------------------------------
 #define EXPAND_POS_P 0.5
 #define EXPAND_POS_I 0
@@ -133,6 +135,7 @@ void flip_init(){
 }
 
 
+
 void Update_Flip_Pos(){
 	if(flip_inited){
 		pid_calculate(&pid_flip_pos, (float)MotoState[5].angle_desired , (float)MotoState[5].angle);
@@ -148,7 +151,7 @@ void Update_Flip_Pos(){
 }
 
 //翻转-------------------------------------------------------
-
+#endif
 
 void RoboArm_Pos_Init(){
 	sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1;

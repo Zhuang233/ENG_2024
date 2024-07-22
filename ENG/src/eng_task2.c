@@ -58,6 +58,7 @@ void DataSyncAnCTask(void const * argument){
   }
 }
 
+# ifdef OLD_CAR
 void FlipTask(void const * argument){
 	expand_init();
   small_lift_init();
@@ -71,7 +72,7 @@ void FlipTask(void const * argument){
     osDelay(1); 
   }
 }
-
+#endif
 
 // 底盘任务
 //1.控制数据接收与处理
@@ -175,22 +176,25 @@ void RotationSlowTask(void const * argument){
 				sync_data_to_c.data.theta3 = yaw_slow;
 			}
 			else{
-				if(sync_data_to_c.data.theta1 > pitch_slow + 3) sync_data_to_c.data.theta1-=1;
-				if(sync_data_to_c.data.theta2 > roll_slow + 3) sync_data_to_c.data.theta2-=1;
-				if(sync_data_to_c.data.theta3 > yaw_slow + 3) sync_data_to_c.data.theta3-=1;
-				if(sync_data_to_c.data.theta1 < pitch_slow - 3) sync_data_to_c.data.theta1+=1;
-				if(sync_data_to_c.data.theta2 < roll_slow - 3) sync_data_to_c.data.theta2+=1;
-				if(sync_data_to_c.data.theta3 < yaw_slow - 3) sync_data_to_c.data.theta3+=1;
+				if(sync_data_to_c.data.theta1 > pitch_slow + 30) sync_data_to_c.data.theta1-=10;
+				if(sync_data_to_c.data.theta2 > roll_slow + 30) sync_data_to_c.data.theta2-=10;
+				if(sync_data_to_c.data.theta3 > yaw_slow + 30) sync_data_to_c.data.theta3-=10;
+				if(sync_data_to_c.data.theta1 < pitch_slow - 30) sync_data_to_c.data.theta1+=10;
+				if(sync_data_to_c.data.theta2 < roll_slow - 30) sync_data_to_c.data.theta2+=10;
+				if(sync_data_to_c.data.theta3 < yaw_slow - 30) sync_data_to_c.data.theta3+=10;
 			}
 		}
-		osDelay(20);
+		osDelay(1);
 	}
 }
 
 
-bool virtual_link_flag = true;
+
 extern uint8_t key_2_last;
 extern float gx,gy,gz;
+
+# ifdef OLD_CAR
+bool virtual_link_flag = true;
 // 姿态控制任务，所有固定姿态由此处理,UI需要显示
 void ModePoseTask(void const * argument){
 __packed int32_t* qs = &(sync_data_to_c.data.qs_pos);
@@ -690,6 +694,8 @@ __packed int32_t* hy = &(sync_data_to_c.data.hy_pos);
 		osDelay(10);
 	}
 }
+
+
 // 一键金矿模式
 void VirtualLinkTask(void const * argument){
 	for(;;){
@@ -699,7 +705,7 @@ void VirtualLinkTask(void const * argument){
 		osDelay(10);
 	}
 }
-
+#endif
 
 
 
