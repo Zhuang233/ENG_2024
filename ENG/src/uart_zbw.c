@@ -1,4 +1,5 @@
 #include "uart_zbw.h"
+#include "RoboArm.h"
 #include "usart.h"
 #include <stdbool.h>
 #include "cmsis_os.h"
@@ -15,6 +16,13 @@ uint8_t		UART7_Rx_Buffer[USART6_RX_BUFFER_SIZE] = {0};
 
 DataUnion sync_data_to_c;
 uint8_t sync_data_from_c[SYNC_FROM_C_SIZE] = {0};
+void sync_data_to_c_init(){
+	sync_data_to_c.data.hy_pos = -194951;
+	sync_data_to_c.data.qs_pos = 0;
+	sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1;
+	sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2;
+	sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3;
+}
 
 void data_sync_uart(){
 	HAL_UART_Transmit_DMA(&huart6, sync_data_to_c.bytes, SYNC_TO_C_SIZE);

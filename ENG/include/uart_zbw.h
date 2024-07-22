@@ -100,4 +100,5 @@ void usart_init(void);
 int uart_receive_dma_no_it(UART_HandleTypeDef* huart, uint8_t* pData, uint32_t Size);
 void usart_dma_init(void);
 void data_sync_uart(void);
+void sync_data_to_c_init(void);
 #endif
