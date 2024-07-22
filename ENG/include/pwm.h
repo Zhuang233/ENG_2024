@@ -2,32 +2,18 @@
 #define __PWM_H
 #include "main.h"
 
+// 2600左 中1580 右800 云台yaw G脚 PD13 tim4ch2
+// 下1100 中1500 上1850 云台pitch H脚 PD12 tim4ch1 
+#define CAMERA_YAW_MAX 2600
+#define CAMERA_YAW_MIN 800
+#define CAMERA_YAW_STD 1580
 
-#define RESCUE_L TIM4->CCR3
-#define RESCUE_R TIM4->CCR4
-#define RESCUE_DOWN_L 810
-#define RESCUE_DOWN_R 770
-#define RESCUE_UP_L 1250
-#define RESCUE_UP_R 300
+#define CAMERA_PITCH_MAX 1850
+#define CAMERA_PITCH_MIN 1100
+#define CAMERA_PITCH_STD 1500
 
-
-#define BARRIAR_R TIM4->CCR1
-#define BARRIAR_L TIM4->CCR2
-#define BARRIAR_DEAUULT_L 650
-#define BARRIAR_DEAUULT_R 900
-#define BARRIAR_DOWN_L 1230
-#define BARRIAR_DOWN_R 330
-#define BARRIAR_UP_L 800
-#define BARRIAR_UP_R 760
-
-
-#define CAMERA TIM8->CCR1
-#define DEFAULT_CAMERA_ANGEL 850
-#define HOLE_CAMERA_ANGEL 850
-#define RESCUE_CAMERA_ANGEL 600
-#define CARD_CAMERA_ANGEL 600
-#define SCREEN_CAMERA_ANGEL 400//tochange
-#define GND_CAMERA_ANGEL 600
+#define CAMERA_PITCH TIM4->CCR1
+#define CAMERA_YAW TIM4->CCR2
 
 void PWM_Start(void);
 
