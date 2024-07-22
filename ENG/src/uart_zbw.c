@@ -1,5 +1,6 @@
 #include "uart_zbw.h"
 #include "RoboArm.h"
+#include "JointReset.h"
 #include "usart.h"
 #include <stdbool.h>
 #include "cmsis_os.h"
@@ -22,9 +23,17 @@ void sync_data_to_c_init(){
 	sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1;
 	sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2;
 	sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3;
+	sync_data_to_c.data.resetable = 0;
 }
 
 void data_sync_uart(){
+	if(lift_inited && LIFT_READ > LIFT_MIN_ANGLE_ALLOW_FIVE_JOINT_RESET){
+		sync_data_to_c.data.resetable = 1;
+	}
+	else{
+		sync_data_to_c.data.resetable = 0;
+	} 
+		
 	HAL_UART_Transmit_DMA(&huart6, sync_data_to_c.bytes, SYNC_TO_C_SIZE);
 }
 

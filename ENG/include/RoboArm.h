@@ -1,6 +1,13 @@
 #ifndef __ROBOARM_H__
 #define __ROBOARM_H__
 #include "main.h"
+#include "DJIMotoDriver.h"
+
+#define LIFT (MotoState[4].angle_desired)
+#define LIFT_READ (MotoState[4].angle)
+#define LIFT_STD (-1273474)
+#define LIFT_MIN_ANGLE_ALLOW_FIVE_JOINT_RESET LIFT_STD
+
 # ifdef OLD_CAR
 //pitch
 #define ARM_ANGLE_MAX_1 45077
@@ -46,6 +53,18 @@ void Update_Small_Lift_Pos(void);
 void Update_Flip_Pos(void);
 int32_t virtual_link(int32_t x);
 #else
+
+#define SMALL_QS (MotoState[5].angle_desired)
+#define SMALL_QS_READ (MotoState[5].angle)
+
+#define SMALL_LIFT (MotoState[6].angle_desired)
+#define SMALL_LIFT_READ (MotoState[6].angle)
+
+#define SMALL_YAW (MotoState[7].angle_desired)
+#define SMALL_YAW_READ (MotoState[7].angle)
+
+#define LIFT_CAMERA (MotoState[8].angle_desired)
+#define LIFT_CAMERA_READ (MotoState[8].angle)
 
 //pitch
 #define ARM_ANGLE_MAX_1 32767
