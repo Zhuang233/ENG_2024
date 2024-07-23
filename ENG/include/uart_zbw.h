@@ -46,7 +46,7 @@ typedef struct __attribute__((packed)){
 	uint16_t theta2;
 	uint16_t theta3;
 	uint8_t resetable;
-	uint8_t zero;
+	uint8_t power_less_flag;
 	uint8_t tail;
 }FiveJointCtrlDataTD;
 

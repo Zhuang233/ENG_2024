@@ -31,6 +31,7 @@
 #include "uart_zbw.h"
 #include "trace.h"
 #include "RcDriver.h"
+#include "key.h"
 #include "wd.h"
 #include "pwm.h"
 /* USER CODE END Includes */
@@ -111,6 +112,7 @@ int main(void)
 	wd_init();
 	trace_init();
 	PWM_Start();
+	Key_Init();
   /* USER CODE END 2 */
 
   /* Init scheduler */

@@ -54,13 +54,6 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for Test */
-osThreadId_t TestHandle;
-const osThreadAttr_t Test_attributes = {
-  .name = "Test",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
-};
 /* Definitions for Moto */
 osThreadId_t MotoHandle;
 const osThreadAttr_t Moto_attributes = {
@@ -74,13 +67,6 @@ const osThreadAttr_t DataSyncAnC_attributes = {
   .name = "DataSyncAnC",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for Flip */
-osThreadId_t FlipHandle;
-const osThreadAttr_t Flip_attributes = {
-  .name = "Flip",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for CtrlLock */
 osThreadId_t CtrlLockHandle;
@@ -107,13 +93,6 @@ const osThreadAttr_t TimeCtrl_attributes = {
 osThreadId_t UIHandle;
 const osThreadAttr_t UI_attributes = {
   .name = "UI",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for ChassisKey */
-osThreadId_t ChassisKeyHandle;
-const osThreadAttr_t ChassisKey_attributes = {
-  .name = "ChassisKey",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -159,13 +138,6 @@ const osThreadAttr_t DebugMode_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for PosLimit */
-osThreadId_t PosLimitHandle;
-const osThreadAttr_t PosLimit_attributes = {
-  .name = "PosLimit",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
 /* Definitions for Offset */
 osThreadId_t OffsetHandle;
 const osThreadAttr_t Offset_attributes = {
@@ -187,6 +159,20 @@ const osThreadAttr_t SecondArm_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
+/* Definitions for ModeManage */
+osThreadId_t ModeManageHandle;
+const osThreadAttr_t ModeManage_attributes = {
+  .name = "ModeManage",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for ModeExec */
+osThreadId_t ModeExecHandle;
+const osThreadAttr_t ModeExec_attributes = {
+  .name = "ModeExec",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -194,25 +180,23 @@ const osThreadAttr_t SecondArm_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
-void TestTask(void *argument);
 void MotoTask(void *argument);
 void DataSyncAnCTask(void *argument);
-void FlipTask(void *argument);
 void CtrlLockTask(void *argument);
 void AutoFetchTask(void *argument);
 void TimeCtrlTask(void *argument);
 void UITask(void *argument);
-void ChassisKeyTask(void *argument);
 void ChassisMotoTask(void *argument);
 void ModePoseTask(void *argument);
 void RotationSlowTask(void *argument);
 void LiftTask(void *argument);
 void VirtualLinkTask(void *argument);
 void DebugModeTask(void *argument);
-void PosLimitTask(void *argument);
 void OffsetTask(void *argument);
 void canRecvTask(void *argument);
 void SecondArmTask(void *argument);
+void ModeManageTask(void *argument);
+void ModeExecTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -246,17 +230,11 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* creation of Test */
-  TestHandle = osThreadNew(TestTask, NULL, &Test_attributes);
-
   /* creation of Moto */
   MotoHandle = osThreadNew(MotoTask, NULL, &Moto_attributes);
 
   /* creation of DataSyncAnC */
   DataSyncAnCHandle = osThreadNew(DataSyncAnCTask, NULL, &DataSyncAnC_attributes);
-
-  /* creation of Flip */
-  FlipHandle = osThreadNew(FlipTask, NULL, &Flip_attributes);
 
   /* creation of CtrlLock */
   CtrlLockHandle = osThreadNew(CtrlLockTask, NULL, &CtrlLock_attributes);
@@ -269,9 +247,6 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of UI */
   UIHandle = osThreadNew(UITask, NULL, &UI_attributes);
-
-  /* creation of ChassisKey */
-  ChassisKeyHandle = osThreadNew(ChassisKeyTask, NULL, &ChassisKey_attributes);
 
   /* creation of ChassisMoto */
   ChassisMotoHandle = osThreadNew(ChassisMotoTask, NULL, &ChassisMoto_attributes);
@@ -291,9 +266,6 @@ void MX_FREERTOS_Init(void) {
   /* creation of DebugMode */
   DebugModeHandle = osThreadNew(DebugModeTask, NULL, &DebugMode_attributes);
 
-  /* creation of PosLimit */
-  PosLimitHandle = osThreadNew(PosLimitTask, NULL, &PosLimit_attributes);
-
   /* creation of Offset */
   OffsetHandle = osThreadNew(OffsetTask, NULL, &Offset_attributes);
 
@@ -302,6 +274,12 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of SecondArm */
   SecondArmHandle = osThreadNew(SecondArmTask, NULL, &SecondArm_attributes);
+
+  /* creation of ModeManage */
+  ModeManageHandle = osThreadNew(ModeManageTask, NULL, &ModeManage_attributes);
+
+  /* creation of ModeExec */
+  ModeExecHandle = osThreadNew(ModeExecTask, NULL, &ModeExec_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -329,24 +307,6 @@ void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
-}
-
-/* USER CODE BEGIN Header_TestTask */
-/**
-* @brief Function implementing the Test thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_TestTask */
-__weak void TestTask(void *argument)
-{
-  /* USER CODE BEGIN TestTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
-  }
-  /* USER CODE END TestTask */
 }
 
 /* USER CODE BEGIN Header_MotoTask */
@@ -383,24 +343,6 @@ __weak void DataSyncAnCTask(void *argument)
     osDelay(1000);
   }
   /* USER CODE END DataSyncAnCTask */
-}
-
-/* USER CODE BEGIN Header_FlipTask */
-/**
-* @brief Function implementing the Flip thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_FlipTask */
-__weak void FlipTask(void *argument)
-{
-  /* USER CODE BEGIN FlipTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
-  }
-  /* USER CODE END FlipTask */
 }
 
 /* USER CODE BEGIN Header_CtrlLockTask */
@@ -473,24 +415,6 @@ __weak void UITask(void *argument)
     osDelay(1000);
   }
   /* USER CODE END UITask */
-}
-
-/* USER CODE BEGIN Header_ChassisKeyTask */
-/**
-* @brief Function implementing the ChassisKey thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_ChassisKeyTask */
-__weak void ChassisKeyTask(void *argument)
-{
-  /* USER CODE BEGIN ChassisKeyTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
-  }
-  /* USER CODE END ChassisKeyTask */
 }
 
 /* USER CODE BEGIN Header_ChassisMotoTask */
@@ -601,24 +525,6 @@ __weak void DebugModeTask(void *argument)
   /* USER CODE END DebugModeTask */
 }
 
-/* USER CODE BEGIN Header_PosLimitTask */
-/**
-* @brief Function implementing the PosLimit thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_PosLimitTask */
-__weak void PosLimitTask(void *argument)
-{
-  /* USER CODE BEGIN PosLimitTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
-  }
-  /* USER CODE END PosLimitTask */
-}
-
 /* USER CODE BEGIN Header_OffsetTask */
 /**
 * @brief Function implementing the Offset thread.
@@ -671,6 +577,42 @@ __weak void SecondArmTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END SecondArmTask */
+}
+
+/* USER CODE BEGIN Header_ModeManageTask */
+/**
+* @brief Function implementing the ModeManage thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_ModeManageTask */
+__weak void ModeManageTask(void *argument)
+{
+  /* USER CODE BEGIN ModeManageTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END ModeManageTask */
+}
+
+/* USER CODE BEGIN Header_ModeExecTask */
+/**
+* @brief Function implementing the ModeExec thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_ModeExecTask */
+__weak void ModeExecTask(void *argument)
+{
+  /* USER CODE BEGIN ModeExecTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END ModeExecTask */
 }
 
 /* Private application code --------------------------------------------------*/

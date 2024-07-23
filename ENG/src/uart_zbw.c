@@ -14,6 +14,7 @@
 uint8_t		USART6_Rx_Buffer[USART6_RX_BUFFER_SIZE] = {0};
 uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE] = {0};
 uint8_t		UART7_Rx_Buffer[USART6_RX_BUFFER_SIZE] = {0};
+extern uint8_t power_less_flag;
 
 DataUnion sync_data_to_c;
 uint8_t sync_data_from_c[SYNC_FROM_C_SIZE] = {0};
@@ -33,7 +34,7 @@ void data_sync_uart(){
 	else{
 		sync_data_to_c.data.resetable = 0;
 	} 
-		
+	sync_data_to_c.data.power_less_flag = power_less_flag;
 	HAL_UART_Transmit_DMA(&huart6, sync_data_to_c.bytes, SYNC_TO_C_SIZE);
 }
 

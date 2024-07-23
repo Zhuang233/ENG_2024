@@ -9,6 +9,7 @@
 #include "referee.h"
 #include "math.h"
 
+uint8_t power_less_flag = 0;
 
 
 int32_t virtual_link(int32_t x);
@@ -34,10 +35,16 @@ void lift_init(){
 
 void Update_Lift_Pos(){
 	if(lift_inited){
-		pid_calculate(&pid_lift_pos, (float)MotoState[4].angle_desired , (float)MotoState[4].angle);
-		MotoState[4].speed_desired = (int)pid_lift_pos.outPID;
-		pid_calculate(&pid_lift_spd, MotoState[4].speed_desired , MotoState[4].speed_actual);
-		SetMotoCurrent(&hcan1, Back, pid_lift_spd.outPID + 2000, 0, 0 ,0);
+		if(!power_less_flag){
+			pid_calculate(&pid_lift_pos, (float)MotoState[4].angle_desired , (float)MotoState[4].angle);
+			MotoState[4].speed_desired = (int)pid_lift_pos.outPID;
+			pid_calculate(&pid_lift_spd, MotoState[4].speed_desired , MotoState[4].speed_actual);
+			SetMotoCurrent(&hcan1, Back, pid_lift_spd.outPID + 2000, 0, 0 ,0);
+		}
+		else{
+			SetMotoCurrent(&hcan1, Back, 0, 0, 0 ,0);
+		}
+
 	}
 		
 }

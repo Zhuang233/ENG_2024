@@ -8,6 +8,13 @@
 #define LIFT_STD (-1273474)
 #define LIFT_MIN_ANGLE_ALLOW_FIVE_JOINT_RESET LIFT_STD
 
+#define QS (sync_data_to_c.data.qs_pos)
+#define HY (sync_data_to_c.data.hy_pos)
+#define PITCH (sync_data_to_c.data.theta1)
+#define ROLL (sync_data_to_c.data.theta2)
+#define YAW (sync_data_to_c.data.theta3)
+
+
 # ifdef OLD_CAR
 //pitch
 #define ARM_ANGLE_MAX_1 45077
@@ -70,16 +77,24 @@ int32_t virtual_link(int32_t x);
 #define ARM_ANGLE_MAX_1 32767
 #define ARM_ANGLE_MIN_1 1
 #define ARM_ANGLE_STD_1 1
+#define PITCH_DOWN ARM_ANGLE_MAX_1
+#define PITCH_UP ARM_ANGLE_MIN_1
 
 //roll
 #define ARM_ANGLE_MAX_2 62600
 #define ARM_ANGLE_MIN_2 1
 #define ARM_ANGLE_STD_2 33500
+//#define ROLL_LEFT 
+//#define ROLL_RIGHT 
+#define ROLL_STD ARM_ANGLE_STD_2 
 
-//yall
+//yaw
 #define ARM_ANGLE_MAX_3 32300
 #define ARM_ANGLE_MIN_3 1
 #define ARM_ANGLE_STD_3 16000
+#define YAW_LEFT ARM_ANGLE_MAX_3
+#define YAW_RIGHT ARM_ANGLE_MIN_3
+#define YAW_STD ARM_ANGLE_STD_3
 
 #define QS_ANGLE_MAX 780000
 #define QS_ANGLE_MIN 0

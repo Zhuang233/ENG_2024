@@ -10,6 +10,7 @@
 
 extern PidTD chassis_pid_spd_moto[4];
 extern int16_t vx,vy,vr;
+extern uint8_t chassis_auto_ctrl_flag;
 void chassis_pid_init(void);
 void chassis_control_RC(void);
 void ChassisTask(void);

@@ -13,7 +13,6 @@
 #include "trace.h"
 
 int8_t zbw_test = 0;
-
 extern uint8_t pump_flag;
 void UITask(void const * argument){
 	 for(;;)
@@ -109,7 +108,11 @@ typedef enum{
 //	FREE_ARM,// 自由机械臂,(最大限位，用于取地矿拨到合适姿态或者救援)
 	PARA_FIND,  // 啥都不干，选手动参数用
 	SINGEL_SLIVER_INIT,
-	SINGEL_SLIVER_BACK
+	SINGEL_SLIVER_BACK,
+	
+	
+	FETCH_GOLD_AUTO,
+	DEBUG
 }PoseMode;
 
 struct Pose_offest{
@@ -125,6 +128,7 @@ struct Pose_offest{
 }pose_offest;
 
 PoseMode posemod = NONE;
+PoseMode last_posemod = NONE;
 bool pose_auto = false; // 给其他任务的通知全局变量
 
 #define HY_STEP 2000
@@ -146,28 +150,27 @@ void pose_offest_clear(void){
 
 
 
-bool rotateslow_flag = false;
+bool pitch_rotate_slow_flag = false;
+bool roll_rotate_slow_flag = false;
+bool yaw_rotate_slow_flag = false;
+
 uint16_t pitch_slow =  ARM_ANGLE_STD_1;
 uint16_t roll_slow = ARM_ANGLE_STD_2;
 uint16_t yaw_slow = ARM_ANGLE_STD_3;
-bool rotatesfaster = false;
 
 void RotationSlowTask(void const * argument){
 	for(;;){
-		if(rotateslow_flag){
-			if(rotatesfaster){
-				sync_data_to_c.data.theta1 = pitch_slow;
-				sync_data_to_c.data.theta2 = roll_slow;
-				sync_data_to_c.data.theta3 = yaw_slow;
-			}
-			else{
-				if(sync_data_to_c.data.theta1 > pitch_slow + 30) sync_data_to_c.data.theta1-=10;
-				if(sync_data_to_c.data.theta2 > roll_slow + 30) sync_data_to_c.data.theta2-=10;
-				if(sync_data_to_c.data.theta3 > yaw_slow + 30) sync_data_to_c.data.theta3-=10;
-				if(sync_data_to_c.data.theta1 < pitch_slow - 30) sync_data_to_c.data.theta1+=10;
-				if(sync_data_to_c.data.theta2 < roll_slow - 30) sync_data_to_c.data.theta2+=10;
-				if(sync_data_to_c.data.theta3 < yaw_slow - 30) sync_data_to_c.data.theta3+=10;
-			}
+		if(pitch_rotate_slow_flag){
+				if(sync_data_to_c.data.theta1 > pitch_slow + 65) sync_data_to_c.data.theta1-=30;
+				if(sync_data_to_c.data.theta1 < pitch_slow - 65) sync_data_to_c.data.theta1+=30;
+		}
+		if(roll_rotate_slow_flag){
+			if(sync_data_to_c.data.theta2 > roll_slow + 65) sync_data_to_c.data.theta2-=30;
+			if(sync_data_to_c.data.theta2 < roll_slow - 65) sync_data_to_c.data.theta2+=30;
+		}
+		if(yaw_rotate_slow_flag){
+			if(sync_data_to_c.data.theta3 > yaw_slow + 65) sync_data_to_c.data.theta3-=30;
+			if(sync_data_to_c.data.theta3 < yaw_slow - 65) sync_data_to_c.data.theta3+=30;
 		}
 		osDelay(1);
 	}
@@ -767,32 +770,33 @@ void OffsetTask(void const * argument){
 
 // 机器调试模式（检录用）
 bool debug_mode = false;
+int xipan_mode = 0;
 void DebugModeTask(void const * argument){
 	for(;;){
-		if(Key_Check_Hold(&Keys.KEY_Z)){
-			xipan_left_open();
-		}
-		else{
-			xipan_left_close();
-		}
-		if(Key_Check_Hold(&Keys.KEY_X)){
-			xipan_right_open();
-		}
-		else{
-			xipan_right_close();
-		}
-		if(Key_Check_Hold(&Keys.KEY_C)){
-			xipan_top_open();
-		}
-		else{
-			xipan_top_close();
-		}
-		if(Key_Check_Hold(&Keys.KEY_V)){
-			xipan_bottom_open();
-		}
-		else{
-			xipan_bottom_close();
-		}
+//		if(Key_Check_Hold(&Keys.KEY_Z)){
+//			xipan_left_open();
+//		}
+//		else{
+//			xipan_left_close();
+//		}
+//		if(Key_Check_Hold(&Keys.KEY_X) || xipan_mode == 2){
+//			xipan_right_open();
+//		}
+//		else{
+//			xipan_right_close();
+//		}
+//		if(Key_Check_Hold(&Keys.KEY_C) || xipan_mode == 3){
+//			xipan_top_open();
+//		}
+//		else{
+//			xipan_top_close();
+//		}
+//		if(Key_Check_Hold(&Keys.KEY_V) || xipan_mode == 4){
+//			xipan_bottom_open();
+//		}
+//		else{
+//			xipan_bottom_close();
+//		}
 		osDelay(1);
 	}
 }
@@ -874,3 +878,231 @@ void DebugModeTask(void const * argument){
 //	}
 
 //}
+
+extern uint8_t power_less_flag;
+bool posemode_change_flag = false;
+	
+	
+void NONE_loop(){
+
+}
+
+void FETCH_GOLD_INIT_loop(){
+
+}
+
+void FETCH_GOLD_AUTO_loop(){
+
+}
+
+void DEBUG_loop(){
+
+}
+
+void FETCH_SLIVER_INIT_loop(){
+
+}
+
+void Before_Next_Mode(){
+	if(posemod == last_posemod) return;
+	if(posemod == FETCH_GOLD_INIT){
+		// 双臂摆到合适位置
+
+		LIFT = -1720000;
+		sync_data_to_c.data.hy_pos = -330000;
+		SMALL_LIFT = 80000;
+		SMALL_YAW = 50000;
+		osDelay(1000);
+		sync_data_to_c.data.theta1 = 16000;
+		//怼上 
+	}
+
+	if(posemod == FETCH_GOLD_AUTO){
+		sync_data_to_c.data.qs_pos = 480000;
+		SMALL_QS = 400000;
+		xipan_top_open();
+		xipan_bottom_open();
+		osDelay(1000);
+		SMALL_LIFT = 300000;
+		LIFT = -1580000;
+		osDelay(500);
+		sync_data_to_c.data.qs_pos = 0;
+		SMALL_QS = 0;
+		osDelay(500);
+		// 自动后退
+		chassis_auto_ctrl_flag = 1;
+		vy = -2000;
+		osDelay(800);
+		vy = 0;
+		chassis_auto_ctrl_flag = 0;
+		xipan_top_close();
+		xipan_bottom_close();
+	}
+	
+	if(posemod == DEBUG){
+		power_less_flag = 1;
+	}
+	if(posemod == FETCH_SLIVER_INIT){
+		SMALL_YAW = SMALL_YAW_MAX;
+		LIFT = -80000;
+		// 自动后退,摆好位置
+		chassis_auto_ctrl_flag = 1;
+		vy = -500;
+		osDelay(550);
+		vy = 0;
+		chassis_auto_ctrl_flag = 0;
+		osDelay(500);
+		QS = 570000;
+		HY = -11200;
+		PITCH = PITCH_DOWN;
+		ROLL = ROLL_STD;
+		YAW = YAW_STD;
+		
+		osDelay(300);
+		
+		//下降，吸
+		LIFT = -722000;
+		xipan_top_open();
+		osDelay(1500);
+		LIFT = -80000;
+		osDelay(750);
+		
+		QS = 409000;
+		HY = -193000;
+//		YAW = YAW_RIGHT;
+		yaw_rotate_slow_flag = true;
+		yaw_slow = YAW_RIGHT;
+		xipan_right_open();
+		osDelay(1000);
+		yaw_rotate_slow_flag = false;
+		
+		xipan_top_close();
+		
+		osDelay(700);
+			
+		// 摆第二个位置
+		YAW = YAW_STD;
+		HY = -364000;
+		QS = 570000;
+		
+		osDelay(300);
+		
+		//下降，吸
+		LIFT = -722000;
+		xipan_top_open();
+		osDelay(1500);
+		LIFT = -80000;
+		osDelay(750);
+		
+		QS = 427000;
+		HY = -189000;
+//		YAW = YAW_LEFT;
+		yaw_rotate_slow_flag = true;
+		yaw_slow = YAW_LEFT;
+		xipan_left_open();
+		osDelay(1000);
+		yaw_rotate_slow_flag = false;
+		
+		xipan_top_close();
+		
+		osDelay(700);
+		
+		// 摆第三个位置
+		YAW = YAW_STD;
+		HY = -186000;
+		QS = 570000;
+		
+		osDelay(300);
+		
+		//下降，吸
+		LIFT = -722000;
+		xipan_top_open();
+		osDelay(1500);
+		LIFT = -80000;
+		osDelay(750);
+		
+		chassis_auto_ctrl_flag = 1;
+		vy = -1000;
+		osDelay(550);
+		vy = 0;
+		chassis_auto_ctrl_flag = 0;
+//		PITCH = PITCH_UP;
+		pitch_rotate_slow_flag = true;
+		pitch_slow = PITCH_UP;
+		QS = 0;
+		LIFT = -1273474;
+		osDelay(1000);
+		pitch_rotate_slow_flag = false;
+	}
+}
+
+
+void Exit_Last_Mode(){
+	if(last_posemod == NONE) return;
+	else if(last_posemod == FETCH_GOLD_INIT) {
+		if(posemod == NONE){
+			// 取金矿退回NONE
+		}
+		else if(posemod == DEBUG){
+			power_less_flag = 0;
+		}
+	};
+}
+void ModeManageTask(void const * argument){
+	for(;;){
+		
+		if(Key_Check_Hold(&Keys.KEY_CTRL) && (RC_CtrlData.key.info != Keys.KEY_CTRL.code)){ //按下ctrl且还按了其他的
+			if(Key_Check_Press(&Keys.KEY_Z)){
+				last_posemod = posemod;
+				posemod = FETCH_GOLD_INIT;
+				posemode_change_flag = true;
+			}
+			if(Key_Check_Press(&Keys.KEY_X)){
+				last_posemod = posemod;
+				posemod = FETCH_SLIVER_INIT;
+				posemode_change_flag = true;
+			}
+			
+			if(Key_Check_Press(&Keys.KEY_B)){
+				last_posemod = posemod;
+				posemod = NONE;
+				posemode_change_flag = true;
+			}
+			if(Key_Check_Press(&Keys.KEY_Q)){
+				last_posemod = posemod;
+				posemod = DEBUG;
+				posemode_change_flag = true;
+			}
+			
+		}
+		if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
+			if(posemod == FETCH_GOLD_INIT){
+				last_posemod = posemod;
+				posemod = FETCH_GOLD_AUTO;
+				posemode_change_flag = true;
+			}
+		}
+		
+		osDelay(1);
+	}
+}
+
+void ModeExecTask(void const * argument){
+	for(;;){
+		Before_Next_Mode();
+		
+		while(!posemode_change_flag){
+			if(posemod == NONE)										NONE_loop();
+			else if(posemod == FETCH_GOLD_INIT) 	FETCH_GOLD_INIT_loop();
+			else if(posemod == FETCH_SLIVER_INIT) FETCH_SLIVER_INIT_loop();
+			else if(posemod == FETCH_GOLD_AUTO) 	FETCH_GOLD_AUTO_loop();
+			else if(posemod == DEBUG) 						DEBUG_loop();
+			osDelay(1);
+		}
+		
+		posemode_change_flag = false;
+		Exit_Last_Mode();
+		
+	}		
+}
+

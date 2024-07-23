@@ -7,6 +7,9 @@
 
 
 int16_t vx = 0,vy = 0,vr = 0;
+uint8_t chassis_auto_ctrl_flag = 0;
+int16_t chassis_auto_ctrl_vy = 0;
+
 
 PidTD chassis_pid_spd_moto[4];
 void chassis_control_RC(void);
@@ -37,14 +40,15 @@ void ChassisTask(void)
 void chassis_control_RC(void)
 {
 	float norm = 0;
-	vx = 0,vy = 0,vr = 0;
 
 	arm_sqrt_f32(RC_CtrlData.rc.ch3 * RC_CtrlData.rc.ch3 + RC_CtrlData.rc.ch4 * RC_CtrlData.rc.ch4, &norm);
 	if(norm > 650.0f) norm = 650.0f;
 	norm /= 650.0f;
 	vx = (float)RC_CtrlData.rc.ch3 * norm * MAX_MOVE_RMP / 650.0f;	// 平移分量
-	vy = (float)RC_CtrlData.rc.ch4 * norm * MAX_MOVE_RMP / 650.0f;	// 前进分量
-
+	
+	if (!chassis_auto_ctrl_flag){
+		vy = (float)RC_CtrlData.rc.ch4 * norm * MAX_MOVE_RMP / 650.0f;	// 前进分量
+	}
 	vr = (float)RC_CtrlData.rc.ch1 * MAX_ROTATE_RMP / 650.0f;
 	if(RC_CtrlData.mouse.x!=0)   
 	{
