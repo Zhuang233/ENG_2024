@@ -1,6 +1,8 @@
 #ifndef __RELAY_H__
 #define __RELAY_H__
 
+#define NO_PUMP
+
 #ifdef OLD_CAR
 void pump_top_open(void);
 void pump_top_close(void);

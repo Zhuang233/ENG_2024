@@ -70,29 +70,52 @@ void xipan_top_close(){
 // Y I7 小臂吸盘
 // Z I2 大臂吸盘
 
+#ifndef NO_PUMP
 void xipan_left_open(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_SET);
 }
-void xipan_left_close(){
-	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_RESET);
-}
+
 void xipan_right_open(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_6, GPIO_PIN_SET);
 }
-void xipan_right_close(){
-	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_6, GPIO_PIN_RESET);
-}
+
 void xipan_top_open(){
 	pump_flag = 1;
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_SET);
 }
+
+void xipan_bottom_open(){
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_7, GPIO_PIN_SET);
+}
+#else
+void xipan_left_open(){
+}
+
+void xipan_right_open(){
+}
+
+void xipan_top_open(){
+	pump_flag = 1;
+}
+
+void xipan_bottom_open(){
+}
+
+#endif
+
+void xipan_right_close(){
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_6, GPIO_PIN_RESET);
+}
+
+void xipan_left_close(){
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_5, GPIO_PIN_RESET);
+}
+
 void xipan_top_close(){
 	pump_flag = 0;
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_RESET);
 }
-void xipan_bottom_open(){
-	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_7, GPIO_PIN_SET);
-}
+
 void xipan_bottom_close(){
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_7, GPIO_PIN_RESET);
 }
