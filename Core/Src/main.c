@@ -104,6 +104,7 @@ int main(void)
   MX_UART7_Init();
   MX_USART6_UART_Init();
   MX_TIM4_Init();
+  MX_UART8_Init();
   /* USER CODE BEGIN 2 */
 	can_filter_init();
 	__HAL_TIM_ENABLE(&htim2);

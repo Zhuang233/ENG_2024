@@ -14,17 +14,18 @@
 
 uint8_t		USART6_Rx_Buffer[USART6_RX_BUFFER_SIZE] = {0};
 uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE] = {0};
-uint8_t		UART7_Rx_Buffer[USART6_RX_BUFFER_SIZE] = {0};
+uint8_t		UART7_Rx_Buffer[UART7_RX_BUFFER_SIZE] = {0};
+uint8_t		UART8_Rx_Buffer[UART8_RX_BUFFER_SIZE] = {0};
 extern uint8_t power_less_flag;
 
 DataUnion sync_data_to_c;
 BackDataUnion sync_data_from_c;
 void sync_data_to_c_init(){
-	sync_data_to_c.data.hy_pos = -194951;
-	sync_data_to_c.data.qs_pos = 0;
-	sync_data_to_c.data.theta1 = ARM_ANGLE_STD_1;
-	sync_data_to_c.data.theta2 = ARM_ANGLE_STD_2;
-	sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3;
+	HY = HY_STD;
+	QS = QS_STD;
+	PITCH = ARM_ANGLE_STD_1;
+	ROLL = ARM_ANGLE_STD_2;
+	YAW = ARM_ANGLE_STD_3;
 	sync_data_to_c.data.resetable = 0;
 }
 
@@ -84,12 +85,15 @@ void usart_dma_init(void)
 	__HAL_UART_CLEAR_IDLEFLAG(&huart6);
 	__HAL_UART_CLEAR_IDLEFLAG(&huart1);
 	__HAL_UART_CLEAR_IDLEFLAG(&huart7);
+	__HAL_UART_CLEAR_IDLEFLAG(&huart8);
 	__HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
 	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
 	__HAL_UART_ENABLE_IT(&huart7, UART_IT_IDLE);
+	__HAL_UART_ENABLE_IT(&huart8, UART_IT_IDLE);
   
 	
 	uart_receive_dma_no_it(&huart6, USART6_Rx_Buffer, USART6_RX_BUFFER_SIZE);
 	uart_receive_dma_no_it(&huart1, USART1_Rx_Buffer, USART1_RX_BUFFER_SIZE);
 	uart_receive_dma_no_it(&huart7, UART7_Rx_Buffer, UART7_RX_BUFFER_SIZE);
+	uart_receive_dma_no_it(&huart8, UART8_Rx_Buffer, UART8_RX_BUFFER_SIZE);
 }

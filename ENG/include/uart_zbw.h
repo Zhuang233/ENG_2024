@@ -18,9 +18,11 @@
 # define USART6_RX_BUFFER_SIZE 128
 # define USART1_RX_BUFFER_SIZE 128
 # define UART7_RX_BUFFER_SIZE 128
+# define UART8_RX_BUFFER_SIZE 128
 extern uint8_t		USART6_Rx_Buffer[USART6_RX_BUFFER_SIZE];
 extern uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE];
 extern uint8_t		UART7_Rx_Buffer[UART7_RX_BUFFER_SIZE];
+extern uint8_t		UART8_Rx_Buffer[UART8_RX_BUFFER_SIZE];
 
 typedef struct __attribute__((packed)) {
 	uint8_t key1;
