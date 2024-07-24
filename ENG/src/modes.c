@@ -1,4 +1,5 @@
 #include "modes.h"
+#include "Key.h"
 #include "cmsis_os2.h"
 #include "main.h"
 #include <stdbool.h>
@@ -76,6 +77,12 @@ bool lift_greater(int target){
 bool qs_greater(int target){
 	return QS_READ > target;
 }
+bool pitch_less(int target){
+	return PITCH_READ < target;
+}
+bool small_yaw_less(int target){
+	return SMALL_YAW_READ < target;
+}
 
 void wait_until(bool (*condition)(int), int arg){
 	while(!condition(arg)){
@@ -91,13 +98,49 @@ void chassis_back(uint16_t ms, int16_t speed){
 		vy = 0;
 		chassis_auto_ctrl_flag = 0;
 }
+void camera_reset(){
+	CAMERA_PITCH = CAMERA_PITCH_STD;
+	CAMERA_YAW = CAMERA_YAW_STD;
+	LIFT_CAMERA = 0;
+}
 
 void NONE_loop(){
 //	ui_init_default_Menu();
 }
 
 void FETCH_GOLD_INIT_loop(){
+	if (Key_Check_Press(&Keys.KEY_V)) {
+		if(select_stage == 0){
+			ui_default_menu3_select->color = 6;
+			_ui_update_default_menu3_2();
+		}
+		else if (select_stage == 1) {
+			ui_default_menu2_select->color = 6;
+			_ui_update_default_menu2_2();
+		}
+		select_stage++;
+	}
 
+	if(select_stage == 0){
+		if(Key_Check_Press(&Keys.KEY_F)){
+			fetch_sliver_num = 1;
+			select_singel_ore();
+		}
+		else if(Key_Check_Press(&Keys.KEY_G)){
+			fetch_sliver_num = 3;
+			select_more_ore();
+		}
+	}
+	else if (select_stage == 1) {
+		if(Key_Check_Press(&Keys.KEY_F)){
+			fetch_sliver_mode = AUTO_MODE;
+			select_auto_mode();
+		}
+		else if(Key_Check_Press(&Keys.KEY_G)){
+			fetch_sliver_mode = BY_HAND;
+			select_by_hand();
+		}
+	}
 }
 
 void FETCH_GOLD_AUTO_loop(){
@@ -147,26 +190,59 @@ void FETCH_SLIVER_INIT_loop(){
 	}
 }
 
+void EXCHANGE_INIT_loop(){
+
+}
+
+void EXCHANGE_loop(){
+	SubArm_Ctrl();
+	if(Key_Check_Press(&Keys.KEY_Q)){
+		xipan_top_close();
+	}
+}
 
 void Before_NONE_INIT(){
 	// 显示none模式
 	_ui_init_default_Menu_0();
 
 }
+
 void Before_FETCH_GOLD_INIT(){
-	ui_init_gold_island_middle();
+	//金矿对齐UI
+	ui_init_default_GOLD();
 	// 双臂摆到合适位置
-	LIFT = -1720000;
-	HY = -330000;
 	SMALL_LIFT = 80000;
 	SMALL_YAW = 50000;
+	wait_until(small_yaw_less, 70000);
+	LIFT = -1720000;
+	HY = -330000;
+	ROLL = ROLL_STD;
 	osDelay(1000);
 	sync_data_to_c.data.theta1 = 16000;
+
+	// 显示菜单ui
+	strcpy(ui_default_Menu_ModeText->string, "GOLD  ");
+	ui_default_Menu_ModeText->str_length = 6;
+	ui_update_default_Menu();
+	ui_init_default_menu2();
+	ui_init_default_menu3();
+	if(fetch_sliver_num == 1){
+		select_singel_ore();
+	}
+	else{
+		select_more_ore();
+	}
+	select_stage = 0;
+
+	// 双金相机视角
+	CAMERA_PITCH = CAMERA_PITCH_GOLD;
+	CAMERA_YAW = CAMERA_YAW_GOLD;
+	LIFT_CAMERA = LIFT_CAMERA_GOLD_DOBULE;
 }
 
 void Before_FETCH_GOLD_AUTO(){
-	sync_data_to_c.data.qs_pos = 480000;
-	SMALL_QS = 400000;
+	sync_data_to_c.data.qs_pos = 550000;
+	SMALL_QS = 450000;
 	xipan_top_open();
 	xipan_bottom_open();
 	osDelay(1000);
@@ -178,9 +254,19 @@ void Before_FETCH_GOLD_AUTO(){
 	osDelay(500);
 	// 自动后退
 	chassis_back(800,2000);
+	SMALL_YAW = SMALL_YAW_MAX;
+	HY = HY_STD;
+	LIFT = LIFT_STD;
+	pitch_rotate_slow_flag = true;
+	pitch_slow = 0;
+	wait_until(pitch_less, 1000);
+	pitch_rotate_slow_flag = false;
+
+	// 自动退出
+	last_posemod = posemod;
+	posemod = NONE;
+	posemode_change_flag = true;
 }
-
-
 
 void Before_FETCH_SLIVER_INIT(){
 		// 显示小资源岛对齐ui
@@ -203,8 +289,6 @@ void Before_FETCH_SLIVER_INIT(){
 		CAMERA_YAW = CAMERA_YAW_SLIVER;
 		LIFT_CAMERA = LIFT_CAMERA_SLIVER;
 }
-
-
 void Before_FETCH_SLIVER_AUTO(){
 		SMALL_YAW = SMALL_YAW_MAX;
 		LIFT = -350000;
@@ -294,6 +378,17 @@ void Before_FETCH_SLIVER_AUTO(){
 		posemode_change_flag = true;
 }
 
+void Before_EXCHANGE_INIT(){
+	strcpy(ui_default_Menu_ModeText->string, "EXCANG");
+	ui_default_Menu_ModeText->str_length = 6;
+	ui_update_default_Menu();
+}
+
+void Before_EXCHANGE(){
+	// 初始化同步映射
+	// wait_until(bool (*condition)(int), int arg)
+}
+
 // 模式入口单次函数
 void Before_Next_Mode(){
 	if(posemod == last_posemod) return;
@@ -303,10 +398,9 @@ void Before_Next_Mode(){
 	if(posemod == FETCH_GOLD_AUTO) Before_FETCH_GOLD_AUTO();	
 	if(posemod == FETCH_SLIVER_INIT) Before_FETCH_SLIVER_INIT();
 	if(posemod == FETCH_SLIVER_AUTO) Before_FETCH_SLIVER_AUTO();
+	if(posemod == EXCHANGE_INIT) Before_EXCHANGE_INIT();
+	if(posemod == EXCHANGE) Before_EXCHANGE();
 }
-
-
-
 
 // 模式出口清理函数
 void Exit_Last_Mode(){
@@ -316,9 +410,23 @@ void Exit_Last_Mode(){
 	}
 	else if(last_posemod == FETCH_GOLD_INIT) {
 		if(posemod == NONE){
-			// 取金矿退回NONE
-			ui_remove_gold_island_middle();
+			// 取金矿菜单退回NONE
+			ui_remove_default_GOLD();
+			camera_reset();
 
+		}
+	}
+	else if(last_posemod == FETCH_GOLD_AUTO) {
+		if(posemod == NONE){
+			// 取金矿退回NONE，清理金UI
+			ui_remove_default_GOLD();
+			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
+			ui_default_Menu_ModeText->str_length = 6;
+			ui_update_default_Menu();
+
+			ui_remove_default_menu2();
+			ui_remove_default_menu3();
+			camera_reset();
 		}
 	}
 	else if(last_posemod == FETCH_SLIVER_INIT) {
@@ -330,7 +438,7 @@ void Exit_Last_Mode(){
 			ui_update_default_Menu();
 			ui_remove_default_menu2();
 			ui_remove_default_menu3();
-
+			camera_reset();
 		}
 	}
 	else if(last_posemod == FETCH_SLIVER_AUTO) {
@@ -343,6 +451,37 @@ void Exit_Last_Mode(){
 
 			ui_remove_default_menu2();
 			ui_remove_default_menu3();
+			camera_reset();
+		}
+	}
+	else if(last_posemod == EXCHANGE) {
+		if(posemod == NONE){
+			LIFT = LIFT_STD;
+			PITCH = PITCH_UP;
+			ROLL = ROLL_STD;
+			YAW = YAW_STD;
+			HY = HY_STD;
+			QS = QS_STD;
+
+			camera_reset();
+
+			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
+			ui_default_Menu_ModeText->str_length = 6;
+			ui_update_default_Menu();
+
+			ui_remove_default_menu2();
+			ui_remove_default_menu3();
+		}
+	}
+	else if(last_posemod == EXCHANGE_INIT) {
+		if(posemod == NONE){
+				strcpy(ui_default_Menu_ModeText->string, "NONE  ");
+				ui_default_Menu_ModeText->str_length = 6;
+				ui_update_default_Menu();
+
+				ui_remove_default_menu2();
+				ui_remove_default_menu3();
+				camera_reset();
 		}
 	}
 }
@@ -373,6 +512,12 @@ void ModeManageTask(void const * argument){
 				posemod = DEBUG;
 				posemode_change_flag = true;
 			}
+
+			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_C)){
+				last_posemod = posemod;
+				posemod = EXCHANGE_INIT;
+				posemode_change_flag = true;
+			}
 		
 		//左键确认
 		if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
@@ -386,7 +531,22 @@ void ModeManageTask(void const * argument){
 				posemod = FETCH_SLIVER_AUTO;
 				posemode_change_flag = true;
 			}
+			if(posemod == EXCHANGE_INIT){
+				last_posemod = posemod;
+				posemod = EXCHANGE;
+				posemode_change_flag = true;
+			}
 		}
+
+		if(posemod == NONE){
+			if(Key_Check_Hold(&Keys.KEY_Q) && Key_Check_Hold(&Keys.KEY_W)){
+				xipan_top_close();
+				xipan_bottom_close();
+				xipan_left_close();
+				xipan_right_close();
+			}
+		}
+
 		osDelay(1);
 	}
 }
@@ -399,11 +559,13 @@ void ModeExecTask(void const * argument){
 		
 		while(!posemode_change_flag){
 			if(posemod == FETCH_GOLD_INIT) 	FETCH_GOLD_INIT_loop();
-			else if(posemod == FETCH_SLIVER_INIT) FETCH_SLIVER_INIT_loop();
-			else if(posemod == FETCH_SLIVER_AUTO) FETCH_SLIVER_AUTO_loop();
+			else if(posemod == FETCH_SLIVER_INIT) 	FETCH_SLIVER_INIT_loop();
+			else if(posemod == FETCH_SLIVER_AUTO) 	FETCH_SLIVER_AUTO_loop();
 			else if(posemod == FETCH_GOLD_AUTO) 	FETCH_GOLD_AUTO_loop();
-			else if(posemod == DEBUG) 						DEBUG_loop();
-			else if(posemod == NONE)										NONE_loop();
+			else if(posemod == EXCHANGE_INIT) 		EXCHANGE_INIT_loop();
+			else if(posemod == EXCHANGE) 			EXCHANGE_loop();
+			else if(posemod == DEBUG) 				DEBUG_loop();
+			else if(posemod == NONE)				NONE_loop();
 			osDelay(1);
 		}
 		
