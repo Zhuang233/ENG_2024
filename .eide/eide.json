@@ -152,10 +152,13 @@
         "name": "ENG",
         "files": [
           {
+            "path": "ENG/src/can_zbw.c"
+          },
+          {
             "path": "ENG/src/chassis.c"
           },
           {
-            "path": "ENG/src/can_zbw.c"
+            "path": "ENG/src/CRC8_CRC16.c"
           },
           {
             "path": "ENG/src/DJIMotoDriver.c"
@@ -164,52 +167,79 @@
             "path": "ENG/src/eng_task.c"
           },
           {
-            "path": "ENG/src/LKMotoDriver.c"
-          },
-          {
-            "path": "ENG/src/pid.c"
-          },
-          {
-            "path": "ENG/src/RcDriver.c"
-          },
-          {
-            "path": "ENG/src/test.c"
-          },
-          {
-            "path": "ENG/src/wd.c"
-          },
-          {
-            "path": "ENG/src/uart_zbw.c"
+            "path": "ENG/src/eng_task2.c"
           },
           {
             "path": "ENG/src/JointReset.c"
           },
           {
-            "path": "ENG/src/RoboArm.c"
+            "path": "ENG/src/Key.c"
           },
           {
-            "path": "ENG/src/time.c"
+            "path": "ENG/src/LKMotoDriver.c"
           },
           {
-            "path": "ENG/src/relay.c"
+            "path": "ENG/src/modes.c"
           },
           {
-            "path": "ENG/src/CRC8_CRC16.c"
+            "path": "ENG/src/pid.c"
+          },
+          {
+            "path": "ENG/src/pwm.c"
+          },
+          {
+            "path": "ENG/src/RcDriver.c"
           },
           {
             "path": "ENG/src/referee.c"
           },
           {
+            "path": "ENG/src/relay.c"
+          },
+          {
+            "path": "ENG/src/RoboArm.c"
+          },
+          {
+            "path": "ENG/src/test.c"
+          },
+          {
+            "path": "ENG/src/time.c"
+          },
+          {
+            "path": "ENG/src/trace.c"
+          },
+          {
+            "path": "ENG/src/uart_zbw.c"
+          },
+          {
+            "path": "ENG/src/wd.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_Menu_0.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_menu2_0.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_menu2_1.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_menu2_2.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_menu3_0.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_menu3_1.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_menu3_2.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_Sliver_0.c"
+          },
+          {
             "path": "ENG/UI/ui_gold_island_middle_0.c"
-          },
-          {
-            "path": "ENG/UI/ui_interface.c"
-          },
-          {
-            "path": "ENG/src/Key.c"
-          },
-          {
-            "path": "ENG/src/eng_task2.c"
           },
           {
             "path": "ENG/UI/ui_gold_island_sliver_0.c"
@@ -218,7 +248,7 @@
             "path": "ENG/UI/ui_gold_island_Ungroup_0.c"
           },
           {
-            "path": "ENG/src/trace.c"
+            "path": "ENG/UI/ui_interface.c"
           }
         ],
         "folders": []

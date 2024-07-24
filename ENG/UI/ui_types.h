@@ -92,4 +92,15 @@ typedef struct {
     uint16_t crc16;
 } MESSAGE_PACKED ui_string_frame_t;
 
+typedef struct 
+{ 
+uint8_t delete_type; 
+uint8_t layer; 
+}MESSAGE_PACKED interaction_layer_delete_t; 
+
+typedef struct {
+    ui_frame_header_t header;
+    interaction_layer_delete_t option;
+    uint16_t crc16;
+} MESSAGE_PACKED ui_delete_frame_t;
 #endif //SERIAL_TEST_UI_TYPES_H

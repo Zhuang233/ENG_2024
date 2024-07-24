@@ -781,6 +781,46 @@
               <FileType>1</FileType>
               <FilePath>..\ENG\src\modes.c</FilePath>
             </File>
+            <File>
+              <FileName>ui_default_Sliver_0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_Sliver_0.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_Menu_0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_Menu_0.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_menu2_0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_menu2_0.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_menu2_1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_menu2_1.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_menu2_2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_menu2_2.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_menu3_0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_menu3_0.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_menu3_1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_menu3_1.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_menu3_2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_menu3_2.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

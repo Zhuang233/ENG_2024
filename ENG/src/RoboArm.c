@@ -27,8 +27,8 @@ PidTD pid_lift_pos;
 
 
 void lift_init(){
-	pidInit(&pid_lift_pos, 2000, 6000, LIFT_POS_P, LIFT_POS_I, LIFT_POS_D);
-	pidInit(&pid_lift_spd, 2000, 10000, LIFT_SPD_P, LIFT_SPD_I, LIFT_SPD_D);
+	pidInit(&pid_lift_pos, 2000, 10000, LIFT_POS_P, LIFT_POS_I, LIFT_POS_D);
+	pidInit(&pid_lift_spd, 2000, 16380, LIFT_SPD_P, LIFT_SPD_I, LIFT_SPD_D);
 	MotoStateInit(&MotoState[4]);
 }
 

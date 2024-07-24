@@ -1,5 +1,6 @@
 #include "relay.h"
 #include "main.h"
+#include "ui.h"
 
 
 uint8_t pump_flag = 0;
@@ -81,6 +82,7 @@ void xipan_right_open(){
 
 void xipan_top_open(){
 	pump_flag = 1;
+	ui_init_gold_island_Ungroup();
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_SET);
 }
 
@@ -95,6 +97,7 @@ void xipan_right_open(){
 }
 
 void xipan_top_open(){
+	ui_init_gold_island_Ungroup();
 	pump_flag = 1;
 }
 
@@ -113,6 +116,7 @@ void xipan_left_close(){
 
 void xipan_top_close(){
 	pump_flag = 0;
+	ui_remove_gold_island_Ungroup();
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_2, GPIO_PIN_RESET);
 }
 

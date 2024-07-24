@@ -115,6 +115,20 @@ DEFINE_FRAME_PROC(2, 0x0102)
 DEFINE_FRAME_PROC(5, 0x0103)
 DEFINE_FRAME_PROC(7, 0x0104)
 
+
+// 填充帧信息（除目标删除图层信息）
+void ui_proc_delete_frame(ui_delete_frame_t *msg) {   \
+    msg->header.SOF = 0xA5;                                 \
+    msg->header.length = 6 + 2;                             \
+    msg->header.seq = seq++;                                \
+    msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        \
+    msg->header.cmd_id = 0x0301;                            \
+    msg->header.sub_id = 0x0100;                            \
+    msg->header.send_id = ui_self_id;                       \
+    msg->header.recv_id = ui_self_id + 256;                 \
+    msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 2);         \
+}
+
 void ui_proc_string_frame(ui_string_frame_t *msg) {
     msg->header.SOF = 0xA5;
     msg->header.length = 51;

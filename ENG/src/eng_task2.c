@@ -18,22 +18,8 @@ extern uint8_t pump_flag;
 void UITask(void const * argument){
 	 for(;;)
   {
-		if(pump_flag){
-			ui_init_gold_island_Ungroup();
-			osDelay(100);
-		}
-		else{
-			ui_remove_gold_island_Ungroup();
-			osDelay(100);
-		}
-		
-		ui_init_gold_island_middle();
 		osDelay(100);
-		ui_init_gold_island_sliver();
-		osDelay(100);
-		
-		
-	}
+}
 
 }
 
