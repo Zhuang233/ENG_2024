@@ -776,6 +776,11 @@
               <FileType>1</FileType>
               <FilePath>..\ENG\src\pwm.c</FilePath>
             </File>
+            <File>
+              <FileName>modes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\src\modes.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
