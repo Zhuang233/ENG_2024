@@ -500,6 +500,7 @@ int32_t mm2angle_Hy(int32_t pos_mm){
 
 }
 
+#ifdef OLD_CAR
 // 抬升自定义控制器编码器转编码器总角度映射
 int32_t AngleMap_Lift(int16_t InputAngle){
 	// h = 619.0;
@@ -533,15 +534,47 @@ int32_t AngleMap_Pitch(int16_t InputAngle){
 int32_t AngleMap_Roll(int16_t InputAngle){
 	return (42207.0f - 9439.0f)/(3200.0f - 710.0f) * InputAngle + (3200.0f * 9439.0f - 42207.0f * 710.0f)/(3200.0f - 710.0f);
 }
+#else
+// 抬升自定义控制器编码器转编码器总角度映射
+int32_t AngleMap_Lift(int16_t InputAngle){
+	return 1950000.0f/6240.0f * InputAngle - 800000.0f;
+}
 
+// 横移自定义控制器编码器转编码器总角度映射
+int32_t AngleMap_Hy(int16_t InputAngle){
+	return (4700.0f - InputAngle) * 389000.0f/4700.0f - 389000.0f;
+}
+
+// 前伸自定义控制器编码器转编码器总角度映射
+int32_t AngleMap_Qs(int16_t InputAngle){
+	return InputAngle * 442000.0f/3120.0f;
+}
+
+// 自定义控制器电位计yaw映射
+int32_t AngleMap_Yaw(int16_t InputAngle){
+	return (0.0f - 32300.0f)/(3250.0f - 700.0f) * InputAngle + (700.0f * 0.0f - 3250.0f * 32300.0f)/(700.0f - 3250.0f);
+}
+
+// 自定义控制器电位计pitch映射
+int32_t AngleMap_Pitch(int16_t InputAngle){
+	int32_t target = (0.0f - 32767.0f)/(3300.0f - 690.0f) * InputAngle + (3300.0f * 32767.0f - 0.0f * 690.0f)/(3300.0f - 690.0f);
+	if(target <0) target = 0;
+	return target;
+}
+
+// 自定义控制器电位计roll映射
+int32_t AngleMap_Roll(int16_t InputAngle){
+	return (33500.0f)/(3200.0f - 710.0f) * InputAngle + (3200.0f * 33500.0f/2.0f - (33500.0f*3.0f/2.0f) * 710.0f)/(3200.0f - 710.0f);
+}
+#endif
 
 void SubArm_Ctrl(){
-	MotoState[4].angle_desired = AngleMap_Lift(custom_controller_data_t.encoder3);
-	sync_data_to_c.data.hy_pos = AngleMap_Hy(custom_controller_data_t.encoder1);
-	sync_data_to_c.data.qs_pos = AngleMap_Qs(custom_controller_data_t.encoder2);
-	sync_data_to_c.data.theta1 = AngleMap_Pitch(custom_controller_data_t.adc_value3);
-	sync_data_to_c.data.theta2 = AngleMap_Roll(custom_controller_data_t.adc_value2);
-	sync_data_to_c.data.theta3 = AngleMap_Yaw(custom_controller_data_t.adc_value1);
+	LIFT = AngleMap_Lift(custom_controller_data_t.encoder3);
+	HY = AngleMap_Hy(custom_controller_data_t.encoder1);
+	QS = AngleMap_Qs(custom_controller_data_t.encoder2);
+	PITCH = AngleMap_Pitch(custom_controller_data_t.adc_value3);
+	ROLL = AngleMap_Roll(custom_controller_data_t.adc_value2);
+	YAW = AngleMap_Yaw(custom_controller_data_t.adc_value1);
 }
 
 

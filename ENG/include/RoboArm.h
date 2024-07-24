@@ -103,10 +103,11 @@ int32_t virtual_link(int32_t x);
 
 #define QS_ANGLE_MAX 780000
 #define QS_ANGLE_MIN 0
-
+#define QS_STD QS_ANGLE_MIN
 
 #define HY_ANGLE_MAX 0
 #define HY_ANGLE_MIN -389000
+#define HY_STD -194951
 
 #define LIFT_MAX 0
 #define LIFT_MIN -1950000
