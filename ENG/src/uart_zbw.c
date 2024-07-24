@@ -4,6 +4,7 @@
 #include "usart.h"
 #include <stdbool.h>
 #include "cmsis_os.h"
+#include "string.h"
 // AC板通信协议
 /*
 帧头 0x55
@@ -17,7 +18,7 @@ uint8_t		UART7_Rx_Buffer[USART6_RX_BUFFER_SIZE] = {0};
 extern uint8_t power_less_flag;
 
 DataUnion sync_data_to_c;
-uint8_t sync_data_from_c[SYNC_FROM_C_SIZE] = {0};
+BackDataUnion sync_data_from_c;
 void sync_data_to_c_init(){
 	sync_data_to_c.data.hy_pos = -194951;
 	sync_data_to_c.data.qs_pos = 0;
@@ -27,6 +28,11 @@ void sync_data_to_c_init(){
 	sync_data_to_c.data.resetable = 0;
 }
 
+void decode_five_jiont_back_data(){
+	if((USART6_Rx_Buffer[0] == 0x55) ){ // && (USART6_Rx_Buffer[] == 0xAA)
+		memcpy(&sync_data_from_c, &USART6_Rx_Buffer, sizeof(sync_data_from_c));
+	}
+}
 void data_sync_uart(){
 	if(lift_inited && LIFT_READ > LIFT_MIN_ANGLE_ALLOW_FIVE_JOINT_RESET){
 		sync_data_to_c.data.resetable = 1;

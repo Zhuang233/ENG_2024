@@ -387,7 +387,7 @@ void USART6_IRQHandler(void)
 		__HAL_DMA_DISABLE(&hdma_usart6_rx);
 
 		/* handle referee data from DMA */
-    referee_data_solve(USART6_Rx_Buffer);
+		decode_five_jiont_back_data();
 		/* restart dma transmission */
 		__HAL_DMA_SET_COUNTER(huart6.hdmarx, USART6_RX_BUFFER_SIZE);
 		__HAL_DMA_ENABLE(&hdma_usart6_rx);

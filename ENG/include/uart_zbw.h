@@ -51,6 +51,16 @@ typedef struct __attribute__((packed)){
 }FiveJointCtrlDataTD;
 
 typedef struct __attribute__((packed)){
+	uint8_t head;
+	int32_t qs_pos_read;
+	int32_t hy_pos_read;
+	uint16_t theta1_read;
+	uint16_t theta2_read;
+	uint16_t theta3_read;
+	uint8_t tail;
+}FiveJointBackDataTD;
+
+typedef struct __attribute__((packed)){
 	uint8_t key1;
 	uint8_t key2;
 	uint8_t temp[2];
@@ -69,23 +79,15 @@ typedef union{
 	uint8_t bytes[sizeof(MyCtrlDataTD)];
 }MyCtrlDataUnion;
 
-
-typedef struct {
-	int32_t a;
-	int32_t b;
-}TestDataTD;
-
-typedef union{
-	TestDataTD data;
-	uint8_t bytes[sizeof(TestDataTD)];
-}TestDataUnion;
-
-
-
 typedef union{
 	FiveJointCtrlDataTD data;
 	uint8_t bytes[sizeof(FiveJointCtrlDataTD)];
 }DataUnion;
+
+typedef union{
+	FiveJointBackDataTD data;
+	uint8_t bytes[sizeof(FiveJointBackDataTD)];
+}BackDataUnion;
 
 typedef union {
 	MyCtrlDataTD data;
@@ -94,7 +96,7 @@ typedef union {
 
 
 extern DataUnion sync_data_to_c;
-extern uint8_t sync_data_from_c[SYNC_FROM_C_SIZE];
+extern BackDataUnion sync_data_from_c;
 extern ControlData my_ctrl_data;
 
 void usart_init(void);
@@ -102,4 +104,5 @@ int uart_receive_dma_no_it(UART_HandleTypeDef* huart, uint8_t* pData, uint32_t S
 void usart_dma_init(void);
 void data_sync_uart(void);
 void sync_data_to_c_init(void);
+void decode_five_jiont_back_data(void);
 #endif
