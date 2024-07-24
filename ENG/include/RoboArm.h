@@ -14,6 +14,11 @@
 #define ROLL (sync_data_to_c.data.theta2)
 #define YAW (sync_data_to_c.data.theta3)
 
+#define QS_READ (sync_data_from_c.data.qs_pos_read)
+#define HY_READ (sync_data_from_c.data.hy_pos_read)
+#define PITCH_READ (sync_data_from_c.data.theta1_read)
+#define ROLL_READ (sync_data_from_c.data.theta2_read)
+#define YAW_READ (sync_data_from_c.data.theta3_read)
 
 # ifdef OLD_CAR
 //pitch
@@ -117,6 +122,9 @@ int32_t virtual_link(int32_t x);
 
 #define LIFT_CAMERA_MAX 1788000
 #define LIFT_CAMERA_MIN 0
+#define LIFT_CAMERA_SLIVER 1750000
+#define LIFT_CAMERA_GOLD_DOBULE 1500000
+
 
 void small_yaw_init(void);
 void Update_Small_Yaw_Pos(void);
