@@ -120,6 +120,17 @@ _ui_remove_default_menu3_0(); \
 _ui_remove_default_menu3_1(); \
 _ui_remove_default_menu3_2()
 
+#include "ui_default_GOLD_0.h"
+
+#define ui_init_default_GOLD() \
+_ui_init_default_GOLD_0()
+
+#define ui_update_default_GOLD() \
+_ui_update_default_GOLD_0()
+
+#define ui_remove_default_GOLD() \
+_ui_remove_default_GOLD_0()
+
 
 #ifdef __cplusplus
 }
