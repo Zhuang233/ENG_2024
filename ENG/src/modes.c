@@ -105,7 +105,7 @@ void camera_reset(){
 }
 
 void NONE_loop(){
-//	ui_init_default_Menu();
+	ui_init_default_Menu();
 }
 
 void FETCH_GOLD_INIT_loop(){
@@ -203,13 +203,15 @@ void EXCHANGE_loop(){
 
 void Before_NONE_INIT(){
 	// 显示none模式
-	_ui_init_default_Menu_0();
-
+	ui_init_default_Menu();
 }
 
 void Before_FETCH_GOLD_INIT(){
-	//金矿对齐UI
-	ui_init_default_GOLD();
+	// 双金相机视角
+	CAMERA_PITCH = CAMERA_PITCH_GOLD;
+	CAMERA_YAW = CAMERA_YAW_GOLD;
+	LIFT_CAMERA = LIFT_CAMERA_GOLD_DOBULE;
+
 	// 双臂摆到合适位置
 	SMALL_LIFT = 80000;
 	SMALL_YAW = 50000;
@@ -219,6 +221,9 @@ void Before_FETCH_GOLD_INIT(){
 	ROLL = ROLL_STD;
 	osDelay(1000);
 	sync_data_to_c.data.theta1 = 16000;
+
+	//金矿对齐UI
+	ui_init_default_GOLD();
 
 	// 显示菜单ui
 	strcpy(ui_default_Menu_ModeText->string, "GOLD  ");
@@ -233,11 +238,6 @@ void Before_FETCH_GOLD_INIT(){
 		select_more_ore();
 	}
 	select_stage = 0;
-
-	// 双金相机视角
-	CAMERA_PITCH = CAMERA_PITCH_GOLD;
-	CAMERA_YAW = CAMERA_YAW_GOLD;
-	LIFT_CAMERA = LIFT_CAMERA_GOLD_DOBULE;
 }
 
 void Before_FETCH_GOLD_AUTO(){
@@ -247,7 +247,7 @@ void Before_FETCH_GOLD_AUTO(){
 	xipan_bottom_open();
 	osDelay(1000);
 	SMALL_LIFT = 300000;
-	LIFT = -1580000;
+	LIFT = -1550000;
 	osDelay(500);
 	sync_data_to_c.data.qs_pos = 0;
 	SMALL_QS = 0;
@@ -269,6 +269,11 @@ void Before_FETCH_GOLD_AUTO(){
 }
 
 void Before_FETCH_SLIVER_INIT(){
+		// 调整图传视角
+		CAMERA_PITCH = CAMERA_PITCH_SLIVER;
+		CAMERA_YAW = CAMERA_YAW_SLIVER;
+		LIFT_CAMERA = LIFT_CAMERA_SLIVER;
+
 		// 显示小资源岛对齐ui
 		ui_init_default_Sliver();
 		// 显示菜单ui
@@ -284,10 +289,6 @@ void Before_FETCH_SLIVER_INIT(){
 			select_more_ore();
 		}
 		select_stage = 0;
-		// 调整图传视角
-		CAMERA_PITCH = CAMERA_PITCH_SLIVER;
-		CAMERA_YAW = CAMERA_YAW_SLIVER;
-		LIFT_CAMERA = LIFT_CAMERA_SLIVER;
 }
 void Before_FETCH_SLIVER_AUTO(){
 		SMALL_YAW = SMALL_YAW_MAX;
@@ -391,9 +392,9 @@ void Before_EXCHANGE(){
 
 // 模式入口单次函数
 void Before_Next_Mode(){
+	if(posemod == NONE) Before_NONE_INIT();
 	if(posemod == last_posemod) return;
 	if(posemod == DEBUG) power_less_flag = 1;
-	if(posemod == NONE) Before_NONE_INIT();
 	if(posemod == FETCH_GOLD_INIT) Before_FETCH_GOLD_INIT();
 	if(posemod == FETCH_GOLD_AUTO) Before_FETCH_GOLD_AUTO();	
 	if(posemod == FETCH_SLIVER_INIT) Before_FETCH_SLIVER_INIT();
@@ -410,14 +411,20 @@ void Exit_Last_Mode(){
 	}
 	else if(last_posemod == FETCH_GOLD_INIT) {
 		if(posemod == NONE){
+			camera_reset();
 			// 取金矿菜单退回NONE
 			ui_remove_default_GOLD();
-			camera_reset();
+			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
+			ui_default_Menu_ModeText->str_length = 6;
+			ui_update_default_Menu();
 
+			ui_remove_default_menu2();
+			ui_remove_default_menu3();
 		}
 	}
 	else if(last_posemod == FETCH_GOLD_AUTO) {
 		if(posemod == NONE){
+			camera_reset();
 			// 取金矿退回NONE，清理金UI
 			ui_remove_default_GOLD();
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
@@ -426,11 +433,12 @@ void Exit_Last_Mode(){
 
 			ui_remove_default_menu2();
 			ui_remove_default_menu3();
-			camera_reset();
+			
 		}
 	}
 	else if(last_posemod == FETCH_SLIVER_INIT) {
 		if(posemod == NONE){
+			camera_reset();
 			// 取银初始化退回NONE，清理银UI
 			ui_remove_default_Sliver();
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
@@ -438,11 +446,12 @@ void Exit_Last_Mode(){
 			ui_update_default_Menu();
 			ui_remove_default_menu2();
 			ui_remove_default_menu3();
-			camera_reset();
+			
 		}
 	}
 	else if(last_posemod == FETCH_SLIVER_AUTO) {
 		if(posemod == NONE){
+			camera_reset();
 			// 取银退回NONE，清理银UI
 			ui_remove_default_Sliver();
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
@@ -451,7 +460,7 @@ void Exit_Last_Mode(){
 
 			ui_remove_default_menu2();
 			ui_remove_default_menu3();
-			camera_reset();
+			
 		}
 	}
 	else if(last_posemod == EXCHANGE) {
@@ -468,20 +477,15 @@ void Exit_Last_Mode(){
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
 			ui_default_Menu_ModeText->str_length = 6;
 			ui_update_default_Menu();
-
-			ui_remove_default_menu2();
-			ui_remove_default_menu3();
 		}
 	}
 	else if(last_posemod == EXCHANGE_INIT) {
 		if(posemod == NONE){
-				strcpy(ui_default_Menu_ModeText->string, "NONE  ");
-				ui_default_Menu_ModeText->str_length = 6;
-				ui_update_default_Menu();
-
-				ui_remove_default_menu2();
-				ui_remove_default_menu3();
-				camera_reset();
+			camera_reset();
+			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
+			ui_default_Menu_ModeText->str_length = 6;
+			ui_update_default_Menu();
+				
 		}
 	}
 }
