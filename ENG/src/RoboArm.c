@@ -261,7 +261,7 @@ PidTD pid_lift_camera_spd;
 PidTD pid_lift_camera_pos;
 
 void lift_camera_init(){
-	pidInit(&pid_lift_camera_pos, 2000, 6000, LIFT_CAMERA_POS_P, LIFT_CAMERA_POS_I, LIFT_CAMERA_POS_D);
+	pidInit(&pid_lift_camera_pos, 2000, 10000, LIFT_CAMERA_POS_P, LIFT_CAMERA_POS_I, LIFT_CAMERA_POS_D);
 	pidInit(&pid_lift_camera_spd, 2000, 10000, LIFT_CAMERA_SPD_P, LIFT_CAMERA_SPD_I, LIFT_CAMERA_SPD_D);
 	MotoStateInit(&MotoState[8]);
 }
@@ -537,7 +537,9 @@ int32_t AngleMap_Roll(int16_t InputAngle){
 #else
 // 抬升自定义控制器编码器转编码器总角度映射
 int32_t AngleMap_Lift(int16_t InputAngle){
-	return 1950000.0f/6240.0f * InputAngle - 800000.0f;
+	int32_t target = 1950000.0f/6240.0f * InputAngle - 800000.0f;
+	if(target > 0) target = 0;
+	return target;
 }
 
 // 横移自定义控制器编码器转编码器总角度映射
