@@ -6,6 +6,7 @@
 #include "RoboArm.h"
 #include "time.h"
 #include "JointReset.h"
+#include "uart_zbw.h"
 
 int16_t dji_moto_current_to_send[4] = {0};
 
@@ -28,6 +29,10 @@ void lift_init_reset_stage(){
 
 // 抬升位置初始化
 void reset_lift(){
+	while((sync_data_from_c.data.reset_state & 0x01)  != 0x01){
+		osDelay(1);
+	}
+	
 	float speed = 3000;
 	lift_init_reset_stage();
 	while(lift_inited == false){

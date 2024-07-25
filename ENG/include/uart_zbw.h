@@ -59,6 +59,7 @@ typedef struct __attribute__((packed)){
 	uint16_t theta1_read;
 	uint16_t theta2_read;
 	uint16_t theta3_read;
+	uint8_t reset_state;
 	uint8_t tail;
 }FiveJointBackDataTD;
 

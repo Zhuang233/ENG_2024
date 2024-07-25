@@ -30,7 +30,7 @@ void sync_data_to_c_init(){
 }
 
 void decode_five_jiont_back_data(){
-	if((USART6_Rx_Buffer[0] == 0x55) ){ // && (USART6_Rx_Buffer[] == 0xAA)
+	if((USART6_Rx_Buffer[0] == 0x55) && (USART6_Rx_Buffer[16] == 0xAA)){ 
 		memcpy(&sync_data_from_c, &USART6_Rx_Buffer, sizeof(sync_data_from_c));
 	}
 }
