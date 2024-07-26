@@ -7,7 +7,8 @@
 
 uint8_t seq = 0;
 int ui_self_id = 102;
-
+QueueHandle_t ui_queue;
+ui_msg_t ui_msg_send_buf;
 //void print_message(const uint8_t *message, const int length) {
 //    for (int i = 0; i < length; i++) {
 //        printf("%02x ", message[i]);
@@ -140,4 +141,11 @@ void ui_proc_string_frame(ui_string_frame_t *msg) {
     msg->header.recv_id = ui_self_id + 256;
     msg->option.str_length = strlen(msg->option.string);
     msg->crc16 = calc_crc16((uint8_t *) msg, 58);
+}
+
+void hind_line(ui_interface_line_t* line){
+    line->start_x = 0;
+	line->start_y = 0;
+	line->end_x = 0;
+	line->end_y = 0;
 }

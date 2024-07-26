@@ -132,6 +132,18 @@ _ui_update_default_GOLD_0()
 _ui_remove_default_GOLD_0()
 
 
+#include "ui_default_exchange_0.h"
+
+#define ui_init_default_exchange() \
+_ui_init_default_exchange_0()
+
+#define ui_update_default_exchange() \
+_ui_update_default_exchange_0()
+
+#define ui_remove_default_exchange() \
+_ui_remove_default_exchange_0()
+
+
 #ifdef __cplusplus
 }
 #endif

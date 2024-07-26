@@ -76,6 +76,7 @@ void _ui_init_default_GOLD_0() {
 
     CAT(ui_proc_, CAT(FRAME_OBJ_NUM, _frame))(&ui_default_GOLD_0);
     SEND_MESSAGE((uint8_t *) &ui_default_GOLD_0, sizeof(ui_default_GOLD_0));
+    
 }
 
 void _ui_update_default_GOLD_0() {

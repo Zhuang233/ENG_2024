@@ -102,7 +102,7 @@ int32_t virtual_link(int32_t x);
 #define YAW_STD ARM_ANGLE_STD_3
 
 #define QS_ANGLE_MAX 780000
-#define QS_ANGLE_MIN 0
+#define QS_ANGLE_MIN 40000
 #define QS_STD QS_ANGLE_MIN
 
 #define HY_ANGLE_MAX 0
@@ -113,16 +113,16 @@ int32_t virtual_link(int32_t x);
 #define LIFT_MIN -1950000
 
 #define SMALL_YAW_MAX 465000
-#define SMALL_YAW_MIN 0
+#define SMALL_YAW_MIN 15000
 
 #define SMALL_LIFT_MAX 452000
-#define SMALL_LIFT_MIN 0
+#define SMALL_LIFT_MIN 15000
 
 #define SMALL_QS_MAX 442000
-#define SMALL_QS_MIN 0
+#define SMALL_QS_MIN 50000
 
 #define LIFT_CAMERA_MAX 1788000
-#define LIFT_CAMERA_MIN 0
+#define LIFT_CAMERA_MIN 40000
 #define LIFT_CAMERA_SLIVER 1750000
 #define LIFT_CAMERA_GOLD_DOBULE 1500000
 

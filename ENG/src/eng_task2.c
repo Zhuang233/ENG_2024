@@ -1,4 +1,5 @@
 #include "eng_task2.h"
+// #include "portmacro.h"
 #include "ui.h"
 #include "cmsis_os.h"
 #include "chassis.h"
@@ -12,15 +13,20 @@
 #include "referee.h"
 #include "trace.h"
 #include "modes.h"
+#include "FreeRTOS.h"
+#include "queue.h"
 
 int8_t zbw_test = 0;
 extern uint8_t pump_flag;
 void UITask(void const * argument){
-	 for(;;)
-  {
+	ui_queue = xQueueCreate(128, sizeof(ui_msg_t));
+	ui_msg_t ui_msg_buffer;
+	for(;;)
+  	{
+		// xQueueReceive(ui_queue, &ui_msg_buffer, portMAX_DELAY);
+		// HAL_UART_Transmit(&huart7, ui_msg_buffer.ui_msg, ui_msg_buffer.len, 100);
 		osDelay(100);
-}
-
+	}
 }
 
 void LiftTask(void const * argument){
@@ -66,12 +72,6 @@ void ChassisMotoTask(void const * argument){
 	}
 }
 
-
-
-
-
-
-
 struct Pose_offest{
 	int32_t qs;
 	int32_t hy;
@@ -85,12 +85,17 @@ struct Pose_offest{
 }pose_offest;
 
 
-
+#ifdef OLD_CAR
 #define HY_STEP 2000
-#define LIFT_STEP 8000 //(+12个)
+#define LIFT_STEP 8000
 #define QS_STEP 4000
 #define FLIP_STEP 2000
-
+#else
+#define HY_STEP 200
+#define LIFT_STEP 800
+#define QS_STEP 400
+#define FLIP_STEP 200
+#endif
 void pose_offest_clear(void){
 	pose_offest.hy = 0;
 	pose_offest.qs = 0;
@@ -684,7 +689,7 @@ void SecondArmTask(void *argument)
 #endif
 
 
-
+#ifdef OLD_CAR
 #define NEED_LIFT_OFFSET (posemod == FETCH_GOLD_INIT \
 											 || posemod == FETCH_GOLD_INDEEP \
 										 	 || posemod == FETCH_GOLD_INDEEP_UP \
@@ -702,11 +707,12 @@ void SecondArmTask(void *argument)
 											 || posemod == FETCH_GOLD_INDEEP_UP \
 											 || posemod == FETCH_GOLD_OUT \
 )
-
+#endif
 
 
 void OffsetTask(void const * argument){
 	for(;;){
+		#ifdef OLD_CAR
 		if(NEED_LIFT_OFFSET){
 			if(Key_Check_Press(&Keys.KEY_W)) pose_offest.lift += LIFT_STEP;
 			if(Key_Check_Press(&Keys.KEY_S)) pose_offest.lift -= LIFT_STEP;
@@ -719,7 +725,20 @@ void OffsetTask(void const * argument){
 			if(Key_Check_Press(&Keys.KEY_Q)) pose_offest.qs += QS_STEP;
 			if(Key_Check_Press(&Keys.KEY_E)) pose_offest.qs -= QS_STEP;
 		}
-		osDelay(200);
+		#else
+		if(posemod != NONE){
+			if(Key_Check_Hold(&Keys.KEY_W)) LIFT += LIFT_STEP;
+			if(LIFT > LIFT_MAX) LIFT = LIFT_MAX;
+			if(Key_Check_Hold(&Keys.KEY_S)) LIFT -= LIFT_STEP;
+			if(LIFT < LIFT_MIN) LIFT = LIFT_MIN;
+			if(Key_Check_Hold(&Keys.KEY_A)) HY += HY_STEP;
+			if(Key_Check_Hold(&Keys.KEY_D)) HY -= HY_STEP;
+			if(Key_Check_Hold(&Keys.KEY_Q)) QS += QS_STEP;
+			if(Key_Check_Hold(&Keys.KEY_E)) QS -= QS_STEP;
+		}
+
+		#endif
+		osDelay(20);
 	}
 }
 
