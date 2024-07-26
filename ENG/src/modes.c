@@ -13,6 +13,8 @@
 #include "RcDriver.h"
 #include "ui.h"
 #include "pwm.h"
+#include "ui_default_exchangeMenu_0.h"
+#include "ui_default_exchangeMenu_1.h"
 #include "ui_default_exchange_0.h"
 #include "ui_default_menu2_2.h"
 #include "ui_default_menu3_2.h"
@@ -58,7 +60,6 @@ void select_more_ore(){
 	ui_default_menu3_select->end_y = 882 +15;
 	_ui_update_default_menu3_2();
 }
-
 void select_singel_ore(){
 	ui_default_menu3_select->start_x = 99;
 	ui_default_menu3_select->start_y = 832 +15;
@@ -66,7 +67,6 @@ void select_singel_ore(){
 	ui_default_menu3_select->end_y = 882 +15;
 	_ui_update_default_menu3_2();
 }
-
 void select_auto_mode(){
 	ui_default_menu2_select->start_x = 99;
 	ui_default_menu2_select->start_y = 727 +15;
@@ -82,6 +82,30 @@ void select_by_hand(){
 	_ui_update_default_menu2_2();
 }
 
+void select_exchange_top(){
+	ui_default_exchangeMenu_selectexchange->start_x = 34;
+    ui_default_exchangeMenu_selectexchange->start_y = 755;
+    ui_default_exchangeMenu_selectexchange->end_x = 106;
+    ui_default_exchangeMenu_selectexchange->end_y = 755 + 50;
+}
+void select_exchange_right(){
+	ui_default_exchangeMenu_selectexchange->start_x = 118;
+	ui_default_exchangeMenu_selectexchange->start_y = 755;
+	ui_default_exchangeMenu_selectexchange->end_x =118 + 108;
+	ui_default_exchangeMenu_selectexchange->end_y =755 + 50;
+}
+void select_exchange_left(){
+	ui_default_exchangeMenu_selectexchange->start_x = 232;
+	ui_default_exchangeMenu_selectexchange->start_y = 755;
+	ui_default_exchangeMenu_selectexchange->end_x = 232 + 96;
+	ui_default_exchangeMenu_selectexchange->end_y = 755 + 50;
+}
+void select_exchange_side(){
+	ui_default_exchangeMenu_selectexchange->start_x = 330;
+	ui_default_exchangeMenu_selectexchange->start_y = 755;
+	ui_default_exchangeMenu_selectexchange->end_x = 330 + 96;
+	ui_default_exchangeMenu_selectexchange->end_y = 755 + 50;
+}
 bool lift_greater(int target){
 	return LIFT_READ > target;
 }
@@ -267,6 +291,25 @@ void FETCH_SLIVER_INIT_loop(){
 }
 
 void EXCHANGE_INIT_loop(){
+	if(Key_Check_Press(&Keys.KEY_G)){
+		if(to_exchange_pos == TO_EXCHANGE_TOP){
+			to_exchange_pos = TO_EXCHANGE_RIGHT;
+			select_exchange_right();
+		}
+		else if(to_exchange_pos == TO_EXCHANGE_RIGHT){
+			to_exchange_pos = TO_EXCHANGE_LEFT;
+			select_exchange_left();
+		}
+		else if(to_exchange_pos == TO_EXCHANGE_LEFT){
+			to_exchange_pos = TO_EXCHANGE_SIDE;
+			select_exchange_side();
+		}
+		else if(to_exchange_pos == TO_EXCHANGE_SIDE){
+			to_exchange_pos = TO_EXCHANGE_TOP;
+			select_exchange_top();
+		}
+		_ui_update_default_exchangeMenu_1();
+	}
 
 }
 
@@ -519,20 +562,33 @@ void Before_FETCH_SLIVER_AUTO(){
 void Before_EXCHANGE_INIT(){
 	CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
 	CAMERA_YAW = CAMERA_YAW_EXCHANGE;
+	LIFT_CAMERA = LIFT_CAMERA_MIN;
+
 	strcpy(ui_default_Menu_ModeText->string, "EXCANG");
 	ui_default_Menu_ModeText->str_length = 6;
 	ui_update_default_Menu();
 	ui_init_default_exchange();
+	ui_init_default_exchangeMenu();
+	if(to_exchange_pos != TO_EXCHANGE_TOP){
+		if(to_exchange_pos == TO_EXCHANGE_RIGHT) select_exchange_right();
+		else if (to_exchange_pos == TO_EXCHANGE_LEFT) select_exchange_left();
+		else if (to_exchange_pos == TO_EXCHANGE_SIDE) select_exchange_side();
+		_ui_update_default_exchangeMenu_1();
+	}
 }
 
 void Before_EXCHANGE(){
-	to_exchange_pos = TO_EXCHANGE_SIDE;
 	// 拿选定位置的矿
 	if(to_exchange_pos == TO_EXCHANGE_TOP){
 		//啥都不用干
 	}
 	else if(to_exchange_pos == TO_EXCHANGE_LEFT) {
 		// 左边
+
+		LIFT_CAMERA = LIFT_CAMERA_MAX;
+		CAMERA_PITCH = 1100;
+		CAMERA_YAW = CAMERA_YAW_STD;
+
 		YAW = YAW_LEFT;
 		ROLL = ROLL_STD;
 		LIFT = -1120000;
@@ -541,10 +597,17 @@ void Before_EXCHANGE(){
 		osDelay(700);
 		PITCH = PITCH_DOWN;
 		osDelay(300);
+		wait_until(press_key_F,0);
 
 		// 下压
 		LIFT = -1270000;
+
+		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
+		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
+		LIFT_CAMERA = LIFT_CAMERA_MIN;
+
 		xipan_top_open();
+		osDelay(500);
 		xipan_left_close();
 		osDelay(1000);
 		LIFT = LIFT_MAX;
@@ -562,6 +625,11 @@ void Before_EXCHANGE(){
 	}
 	else if(to_exchange_pos == TO_EXCHANGE_RIGHT){
 		// 右边
+		// 手动调整视角
+		LIFT_CAMERA = LIFT_CAMERA_MAX;
+		CAMERA_PITCH = 1100;
+		CAMERA_YAW = 1880;
+
 		YAW = YAW_RIGHT;
 		ROLL = ROLL_STD;
 		LIFT = -1120000;
@@ -574,7 +642,13 @@ void Before_EXCHANGE(){
 
 		// 下压
 		LIFT = -1270000;
+
+		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
+		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
+		LIFT_CAMERA = LIFT_CAMERA_MIN;
+
 		xipan_top_open();
+		osDelay(500);
 		xipan_right_close();
 		osDelay(1000);
 		LIFT = LIFT_MAX;
@@ -613,13 +687,15 @@ void Before_EXCHANGE(){
 		wait_until(press_key_F,0);
 		// 下压
 		// LIFT = -1270000;
+		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
+		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
+		LIFT_CAMERA = LIFT_CAMERA_MIN;
+		
 		xipan_bottom_close();
 		osDelay(1000);
 		LIFT = LIFT_MAX;
 
-		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
-		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
-		LIFT_CAMERA = LIFT_CAMERA_MIN;
+
 		osDelay(500);
 		HY = HY_STD;
 		QS = QS_STD;
@@ -734,8 +810,8 @@ void Exit_Last_Mode(){
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
 			ui_default_Menu_ModeText->str_length = 6;
 			ui_update_default_Menu();
-
 			ui_remove_default_exchange();
+			ui_remove_default_exchangeMenu();
 		}
 	}
 	else if(last_posemod == EXCHANGE_INIT) {
@@ -744,8 +820,8 @@ void Exit_Last_Mode(){
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
 			ui_default_Menu_ModeText->str_length = 6;
 			ui_update_default_Menu();
-
 			ui_remove_default_exchange();
+			ui_remove_default_exchangeMenu();
 		}
 	}
 }

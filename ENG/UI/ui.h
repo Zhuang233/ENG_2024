@@ -143,6 +143,21 @@ _ui_update_default_exchange_0()
 #define ui_remove_default_exchange() \
 _ui_remove_default_exchange_0()
 
+#include "ui_default_exchangeMenu_0.h"
+#include "ui_default_exchangeMenu_1.h"
+
+#define ui_init_default_exchangeMenu() \
+_ui_init_default_exchangeMenu_0(); \
+_ui_init_default_exchangeMenu_1()
+
+#define ui_update_default_exchangeMenu() \
+_ui_update_default_exchangeMenu_0(); \
+_ui_update_default_exchangeMenu_1()
+
+#define ui_remove_default_exchangeMenu() \
+_ui_remove_default_exchangeMenu_0(); \
+_ui_remove_default_exchangeMenu_1()
+
 
 #ifdef __cplusplus
 }

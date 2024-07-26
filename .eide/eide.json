@@ -218,6 +218,12 @@
             "path": "ENG/UI/ui_default_exchange_0.c"
           },
           {
+            "path": "ENG/UI/ui_default_exchangeMenu_0.c"
+          },
+          {
+            "path": "ENG/UI/ui_default_exchangeMenu_1.c"
+          },
+          {
             "path": "ENG/UI/ui_default_GOLD_0.c"
           },
           {
