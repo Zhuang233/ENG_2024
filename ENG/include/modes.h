@@ -32,6 +32,7 @@ typedef enum{
 	FETCH_GOLD_AUTO,
 	EXCHANGE_INIT,
 	EXCHANGE,
+	GROUND,
 	DEBUG
 }PoseMode;
 

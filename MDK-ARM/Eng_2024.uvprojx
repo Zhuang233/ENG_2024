@@ -831,6 +831,16 @@
               <FileType>1</FileType>
               <FilePath>..\ENG\UI\ui_default_exchange_0.c</FilePath>
             </File>
+            <File>
+              <FileName>ui_default_exchangeMenu_0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_exchangeMenu_0.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_default_exchangeMenu_1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ENG\UI\ui_default_exchangeMenu_1.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
