@@ -66,28 +66,28 @@ void _ui_init_default_exchange_0() {
 
     ui_default_exchange_topLine->figure_tpye = 0;
     ui_default_exchange_topLine->layer = 5;
-    ui_default_exchange_topLine->start_x = 488;
-    ui_default_exchange_topLine->start_y = 802;
-    ui_default_exchange_topLine->end_x = 1173;
-    ui_default_exchange_topLine->end_y = 802;
+    ui_default_exchange_topLine->start_x = 0;
+    ui_default_exchange_topLine->start_y = 0;
+    ui_default_exchange_topLine->end_x = 0;
+    ui_default_exchange_topLine->end_y = 0;
     ui_default_exchange_topLine->color = 5;
     ui_default_exchange_topLine->width = 15;
 
     ui_default_exchange_rlimitLine->figure_tpye = 0;
     ui_default_exchange_rlimitLine->layer = 5;
-    ui_default_exchange_rlimitLine->start_x = 1349;
-    ui_default_exchange_rlimitLine->start_y = 778;
-    ui_default_exchange_rlimitLine->end_x = 1349;
-    ui_default_exchange_rlimitLine->end_y = 357;
+    ui_default_exchange_rlimitLine->start_x = 0;
+    ui_default_exchange_rlimitLine->start_y = 0;
+    ui_default_exchange_rlimitLine->end_x = 0;
+    ui_default_exchange_rlimitLine->end_y = 0;
     ui_default_exchange_rlimitLine->color = 5;
     ui_default_exchange_rlimitLine->width = 15;
 
     ui_default_exchange_llimitLine->figure_tpye = 0;
     ui_default_exchange_llimitLine->layer = 5;
-    ui_default_exchange_llimitLine->start_x = 299;
-    ui_default_exchange_llimitLine->start_y = 778;
-    ui_default_exchange_llimitLine->end_x = 299;
-    ui_default_exchange_llimitLine->end_y = 357;
+    ui_default_exchange_llimitLine->start_x = 0;
+    ui_default_exchange_llimitLine->start_y = 0;
+    ui_default_exchange_llimitLine->end_x = 0;
+    ui_default_exchange_llimitLine->end_y = 0;
     ui_default_exchange_llimitLine->color = 5;
     ui_default_exchange_llimitLine->width = 15;
 

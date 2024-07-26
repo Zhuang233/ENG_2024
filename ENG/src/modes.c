@@ -91,6 +91,14 @@ bool qs_greater(int target){
 bool pitch_less(int target){
 	return PITCH_READ < target;
 }
+bool hy_greater(int target){
+	return HY_READ > target;
+}
+bool hy_less(int target){
+	return HY_READ < target;
+}
+
+
 bool small_yaw_less(int target){
 	return SMALL_YAW_READ < target;
 }
@@ -121,6 +129,45 @@ void camera_reset(){
 	CAMERA_PITCH = CAMERA_PITCH_STD;
 	CAMERA_YAW = CAMERA_YAW_STD;
 	LIFT_CAMERA = LIFT_CAMERA_MIN;
+}
+
+void SubArm_limit_ui_show(){
+	if((lift_greater(LIFT_MAX - mm2angle_Lift(10)))  && ui_default_exchange_topLine->start_x == 0){
+		ui_default_exchange_topLine->start_x = 488;
+		ui_default_exchange_topLine->start_y = 802;
+		ui_default_exchange_topLine->end_x = 1173;
+		ui_default_exchange_topLine->end_y = 802;
+		ui_update_default_exchange();
+	}
+	else if (!(lift_greater(LIFT_MAX - mm2angle_Lift(10)))  && ui_default_exchange_topLine->start_x != 0) {
+		hind_line(ui_default_exchange_topLine);
+		ui_update_default_exchange();
+	}
+
+	if((hy_greater(HY_ANGLE_MAX - mm2angle_Hy(10)))  && ui_default_exchange_llimitLine->start_x == 0){
+		ui_default_exchange_llimitLine->start_x = 299;
+		ui_default_exchange_llimitLine->start_y = 778;
+		ui_default_exchange_llimitLine->end_x = 299;
+		ui_default_exchange_llimitLine->end_y = 357;
+		ui_update_default_exchange();
+	}
+	else if (!(hy_greater(HY_ANGLE_MAX - mm2angle_Hy(10)))  && ui_default_exchange_llimitLine->start_x != 0){
+		hind_line(ui_default_exchange_llimitLine);
+		ui_update_default_exchange();
+	} 
+
+	if((hy_less(HY_ANGLE_MIN + mm2angle_Hy(10)))  && ui_default_exchange_rlimitLine->start_x == 0){
+		ui_default_exchange_rlimitLine->start_x = 1349;
+		ui_default_exchange_rlimitLine->start_y = 778;
+		ui_default_exchange_rlimitLine->end_x = 1349;
+		ui_default_exchange_rlimitLine->end_y = 357;
+		ui_update_default_exchange();
+	}
+	else if (!(hy_less(HY_ANGLE_MIN + mm2angle_Hy(10)))  && ui_default_exchange_rlimitLine->start_x != 0){
+		hind_line(ui_default_exchange_rlimitLine);
+		ui_update_default_exchange();
+	} 
+
 }
 
 void NONE_loop(){
@@ -228,6 +275,7 @@ void EXCHANGE_loop(){
 	if(Key_Check_Press(&Keys.KEY_Q)){
 		xipan_top_close();
 	}
+	SubArm_limit_ui_show();
 }
 
 void Before_NONE_INIT(){
@@ -475,10 +523,6 @@ void Before_EXCHANGE_INIT(){
 	ui_default_Menu_ModeText->str_length = 6;
 	ui_update_default_Menu();
 	ui_init_default_exchange();
-	hind_line(ui_default_exchange_topLine);
-	hind_line(ui_default_exchange_llimitLine);
-	hind_line(ui_default_exchange_rlimitLine);
-	ui_update_default_exchange();
 }
 
 void Before_EXCHANGE(){

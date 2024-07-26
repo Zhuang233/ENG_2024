@@ -484,20 +484,17 @@ void RoboArm_RC_Ctrl_Fixed_Point(){
 // 单位换算函数
 // 抬升mm转编码器总角度
 int32_t mm2angle_Lift(int32_t pos_mm){
-
-
+	return (LIFT_MAX - LIFT_MIN) * pos_mm / (888-220);
 }
 
 // 前伸mm转编码器总角度
 int32_t mm2angle_Qs(int32_t pos_mm){
-
-
+	return (QS_ANGLE_MAX - QS_ANGLE_MIN) * pos_mm / (450);
 }
 
 // 横移mm转编码器总角度
 int32_t mm2angle_Hy(int32_t pos_mm){
-
-
+	return (HY_ANGLE_MAX - HY_ANGLE_MIN) * pos_mm / (580);
 }
 
 #ifdef OLD_CAR

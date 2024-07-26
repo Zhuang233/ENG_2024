@@ -146,5 +146,8 @@ void RoboArm_RC_Ctrl_Fixed_Point(void);
 void SubArm_Ctrl(void);
 void lift_init(void);
 void Update_Lift_Pos(void);
+int32_t mm2angle_Hy(int32_t pos_mm);
+int32_t mm2angle_Qs(int32_t pos_mm);
+int32_t mm2angle_Lift(int32_t pos_mm);
 
 #endif
