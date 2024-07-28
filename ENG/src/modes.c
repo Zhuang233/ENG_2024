@@ -785,7 +785,18 @@ void Before_EXCHANGE(){
 	// wait_until(bool (*condition)(int), int arg)
 	LIFT = LIFT_MAX;
 	QS = QS_ANGLE_MAX/2;
+	HY = HY_STD;
+	ROLL = ROLL_STD;
+	YAW = YAW_STD;
+	PITCH = PITCH_UP;
+	SubArmResetState.pitch = false;
+	SubArmResetState.roll = false;
+	SubArmResetState.yaw = false;
+	SubArmResetState.lift = false;
+	SubArmResetState.qs = false;
+	SubArmResetState.hy = false;
 }
+
 void EXCHANGE_loop(){
 	SubArm_Ctrl();
 	if(Key_Check_Press(&Keys.KEY_Q)){
@@ -989,12 +1000,12 @@ void Exit_Last_Mode(){
 void ModeManageTask(void const * argument){
 	for(;;){
 		// ctrl + xxx
-			if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_Z)){
+			if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_Z) && posemod == NONE){
 				last_posemod = posemod;
 				posemod = FETCH_GOLD_INIT;
 				posemode_change_flag = true;
 			}
-			if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_X)){
+			if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Press(&Keys.KEY_X) && posemod == NONE){
 				last_posemod = posemod;
 				posemod = FETCH_SLIVER_INIT;
 				posemode_change_flag = true;
@@ -1005,17 +1016,17 @@ void ModeManageTask(void const * argument){
 				posemod = NONE;
 				posemode_change_flag = true;
 			}
-			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_Q)){
+			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_Q) && posemod == NONE){
 				last_posemod = posemod;
 				posemod = DEBUG;
 				posemode_change_flag = true;
 			}
-			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_V)){
+			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_V) && posemod == NONE){
 				last_posemod = posemod;
 				posemod = GROUND;
 				posemode_change_flag = true;
 			}
-			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_C)){
+			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_C) && posemod == NONE){
 				last_posemod = posemod;
 				posemod = EXCHANGE_INIT;
 				posemode_change_flag = true;

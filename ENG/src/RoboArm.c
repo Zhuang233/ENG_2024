@@ -551,8 +551,11 @@ int32_t AngleMap_Qs(int16_t InputAngle){
 
 // 自定义控制器电位计yaw映射
 int32_t AngleMap_Yaw(int16_t InputAngle){
-	return (0.0f - 32300.0f)/(3250.0f - 700.0f) * InputAngle + (700.0f * 0.0f - 3250.0f * 32300.0f)/(700.0f - 3250.0f);
+	int32_t target = (0.0f - 32300.0f)/(3250.0f - 700.0f) * InputAngle + (700.0f * 0.0f - 3250.0f * 32300.0f)/(700.0f - 3250.0f);
+	if(target <0) target = 0;
+	return target;
 }
+	
 
 // 自定义控制器电位计pitch映射
 int32_t AngleMap_Pitch(int16_t InputAngle){
@@ -563,17 +566,55 @@ int32_t AngleMap_Pitch(int16_t InputAngle){
 
 // 自定义控制器电位计roll映射
 int32_t AngleMap_Roll(int16_t InputAngle){
-	return (33500.0f)/(3200.0f - 710.0f) * InputAngle + (3200.0f * 33500.0f/2.0f - (33500.0f*3.0f/2.0f) * 710.0f)/(3200.0f - 710.0f);
+	int32_t target = (33500.0f)/(3200.0f - 710.0f) * InputAngle + (3200.0f * 33500.0f/2.0f - (33500.0f*3.0f/2.0f) * 710.0f)/(3200.0f - 710.0f);
+	if(target < 0) target = 0;
+	return target;
 }
+
 #endif
 
+SubArmMap_t SubArm_ctrl_value = {0,0,0,0,0,0};
+SubArmResetState_t SubArmResetState = {false,false,false,false,false,false};
+
+
+bool value_between(int32_t value, int32_t min, int32_t max){
+	return (value > min && value < max);
+}
+
 void SubArm_Ctrl(){
-	LIFT = AngleMap_Lift(custom_controller_data_t.encoder3);
-	HY = AngleMap_Hy(custom_controller_data_t.encoder1);
-	QS = AngleMap_Qs(custom_controller_data_t.encoder2);
-	PITCH = AngleMap_Pitch(custom_controller_data_t.adc_value3);
-	ROLL = AngleMap_Roll(custom_controller_data_t.adc_value2);
-	YAW = AngleMap_Yaw(custom_controller_data_t.adc_value1);
+	SubArm_ctrl_value.lift = AngleMap_Lift(custom_controller_data_t.encoder3);
+	SubArm_ctrl_value.hy = AngleMap_Hy(custom_controller_data_t.encoder1);
+	SubArm_ctrl_value.qs = AngleMap_Qs(custom_controller_data_t.encoder2);
+	SubArm_ctrl_value.pitch = AngleMap_Pitch(custom_controller_data_t.adc_value3);
+	SubArm_ctrl_value.roll = AngleMap_Roll(custom_controller_data_t.adc_value2);
+	SubArm_ctrl_value.yaw = AngleMap_Yaw(custom_controller_data_t.adc_value1);
+
+	if(value_between(SubArm_ctrl_value.lift, -mm2angle_Lift(50), 0)){
+		SubArmResetState.lift = true;
+	}
+	if(value_between(SubArm_ctrl_value.hy, HY_STD - mm2angle_Hy(50), HY_STD + mm2angle_Hy(50))){
+		SubArmResetState.hy = true;
+	}
+	if(value_between(SubArm_ctrl_value.qs, QS_ANGLE_MAX/2 - mm2angle_Qs(50), QS_ANGLE_MAX/2+mm2angle_Qs(50))){
+		SubArmResetState.qs = true;
+	}
+	if(value_between(SubArm_ctrl_value.roll, ROLL_STD -2000 , ROLL_STD + 2000)){
+		SubArmResetState.roll = true;
+	}
+	if(value_between(SubArm_ctrl_value.pitch, 0, 4000)){
+		SubArmResetState.pitch = true;
+	}
+	if(value_between(SubArm_ctrl_value.yaw, YAW_STD - 2000, YAW_STD + 2000)){
+		SubArmResetState.yaw = true;
+	}
+
+	// 检查是否复位过
+	if(SubArmResetState.hy == true) HY = SubArm_ctrl_value.hy;
+	if(SubArmResetState.qs == true) QS = SubArm_ctrl_value.qs;
+	if(SubArmResetState.lift == true) LIFT = SubArm_ctrl_value.lift;
+	if(SubArmResetState.pitch == true) PITCH = SubArm_ctrl_value.pitch;
+	if(SubArmResetState.roll == true) ROLL = SubArm_ctrl_value.roll;
+	if(SubArmResetState.yaw == true) YAW = SubArm_ctrl_value.yaw;
 }
 
 

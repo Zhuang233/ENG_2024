@@ -127,6 +127,26 @@ int32_t virtual_link(int32_t x);
 #define LIFT_CAMERA_GOLD_DOBULE 1500000
 
 
+typedef struct{
+	int32_t lift;
+	int32_t hy;
+	int32_t qs;
+	int16_t pitch;
+	int16_t roll;
+	int16_t yaw;
+}SubArmMap_t;
+typedef struct{
+	bool qs;
+	bool hy;
+	bool pitch;
+	bool lift;
+	bool yaw;
+	bool roll;
+}SubArmResetState_t;
+
+extern SubArmResetState_t SubArmResetState;
+
+
 void small_yaw_init(void);
 void Update_Small_Yaw_Pos(void);
 
