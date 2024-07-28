@@ -48,6 +48,7 @@ extern uint16_t roll_slow;
 extern uint16_t yaw_slow;
 
 bool posemode_change_flag = false;
+
 PoseMode posemod = NONE;
 PoseMode last_posemod = NONE;
 bool pose_auto = false; // 给其他任务的通知全局变量	
@@ -58,6 +59,8 @@ to_exchange_pos_t to_exchange_pos = TO_EXCHANGE_TOP;
 to_fetch_sliver_t to_fetch_sliver = TO_FETCH_SLIVER_CENTER;
 
 uint8_t select_stage = 0;
+bool first_show_SubArm_unreset_warning = true;
+bool first_delete_SubArm_unreset_warning = true;
 //--------------菜单选择框切换函数------------------
 void select_more_ore(){
 	ui_default_menu3_select->start_x = 239;
@@ -215,6 +218,24 @@ void SubArm_limit_ui_show(){
 		ui_update_default_exchange();
 	} 
 
+}
+void SubArm_unreset_warning_show(){
+	// 首次进入显示，首次6轴复位标志全true清除
+	if(first_show_SubArm_unreset_warning){
+		first_show_SubArm_unreset_warning = false;
+		ui_init_default_waring();
+	}
+	if(	first_delete_SubArm_unreset_warning \
+		&&  SubArmResetState.hy == true \ 
+		&& 	SubArmResetState.qs == true \
+		&& 	SubArmResetState.lift == true \
+		&& 	SubArmResetState.roll == true \
+		&& 	SubArmResetState.yaw == true \
+		&& 	SubArmResetState.pitch == true \
+	){
+		first_delete_SubArm_unreset_warning = false;
+		ui_remove_default_waring();
+	}
 }
 //-------------------------------------------------
 
@@ -795,6 +816,9 @@ void Before_EXCHANGE(){
 	SubArmResetState.lift = false;
 	SubArmResetState.qs = false;
 	SubArmResetState.hy = false;
+
+	first_delete_SubArm_unreset_warning = true;
+	first_delete_SubArm_unreset_warning = true;
 }
 
 void EXCHANGE_loop(){
@@ -806,6 +830,7 @@ void EXCHANGE_loop(){
 		xipan_top_open();
 	}
 
+	// 变换视角
 	if(Key_Check_Press(&Keys.KEY_C)){
 		if(LIFT_CAMERA < LIFT_CAMERA_MIN + 120000){
 			LIFT_CAMERA = LIFT_CAMERA_MAX;
@@ -817,6 +842,7 @@ void EXCHANGE_loop(){
 		}
 	}
 	SubArm_limit_ui_show();
+	SubArm_unreset_warning_show();
 }
 
 //-------------------地矿模式-----------------------

@@ -158,6 +158,17 @@ _ui_update_default_exchangeMenu_1()
 _ui_remove_default_exchangeMenu_0(); \
 _ui_remove_default_exchangeMenu_1()
 
+#include "ui_default_waring_0.h"
+
+#define ui_init_default_waring() \
+_ui_init_default_waring_0()
+
+#define ui_update_default_waring() \
+_ui_update_default_waring_0()
+
+#define ui_remove_default_waring() \
+_ui_remove_default_waring_0()
+
 
 #ifdef __cplusplus
 }
