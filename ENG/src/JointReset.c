@@ -148,7 +148,7 @@ void small_yaw_init_reset_stage(){
 
 // 小yaw位置初始化 堵转检测
 void reset_small_yaw(){
-	float small_yaw_reset_speed = 3000;
+	float small_yaw_reset_speed = -3000;
 	small_yaw_init_reset_stage();
 	duzhuan_TimeInit(&t_duzhuan);
 	GetDt(&t_duzhuan,MILLISECOND);
@@ -164,7 +164,7 @@ void reset_small_yaw(){
 		}
 		
 		// 不转了
-		if((MotoState[7].angle - last_detect_angle < -8000) || start_stage){
+		if((MotoState[7].angle - last_detect_angle > 8000) || start_stage){
 				// 速度环
 				pid_calculate(&pid_small_yaw_reset_spd, -small_yaw_reset_speed, MotoState[7].speed_actual);
 				dji_moto_current_to_send[2] = pid_small_yaw_reset_spd.outPID;
@@ -178,6 +178,7 @@ void reset_small_yaw(){
 			small_yaw_init();
 			MotoStateInit(&MotoState[7]);
 			small_yaw_inited = true;
+			MotoState[7].angle_desired = - 496199;
 		}
 		osDelay(1);
 	}

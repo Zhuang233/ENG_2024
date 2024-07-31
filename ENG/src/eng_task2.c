@@ -1,5 +1,6 @@
 #include "eng_task2.h"
 // #include "portmacro.h"
+#include "cmsis_os2.h"
 #include "ui.h"
 #include "cmsis_os.h"
 #include "chassis.h"
@@ -15,6 +16,7 @@
 #include "modes.h"
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "wd.h"
 
 int8_t zbw_test = 0;
 extern uint8_t pump_flag;
@@ -34,7 +36,7 @@ void LiftTask(void const * argument){
 	reset_lift();
   for(;;)
   {	
-		Update_Lift_Pos();
+	Update_Lift_Pos();
     osDelay(1);
   }
 }
@@ -46,7 +48,7 @@ void DataSyncAnCTask(void const * argument){
 	sync_data_to_c.data.tail = 0xaa;
   for(;;)
   {
-		data_sync_uart();
+	data_sync_uart();
     osDelay(10); 
   }
 }
@@ -674,6 +676,9 @@ void SecondArmTask(void *argument)
 	osDelay(3000); //复位得等3s 2006上电没那么快工作
 	reset_small_qs();
 	reset_small_lift();
+	while (!lift_inited) {
+	 osDelay(1);
+	}
 	reset_small_yaw();
 	reset_lift_camera();
   for(;;)

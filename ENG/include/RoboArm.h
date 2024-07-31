@@ -112,8 +112,8 @@ int32_t virtual_link(int32_t x);
 #define LIFT_MAX 0
 #define LIFT_MIN -1950000
 
-#define SMALL_YAW_MAX 465000
-#define SMALL_YAW_MIN 15000
+#define SMALL_YAW_MAX -10000
+#define SMALL_YAW_MIN -928419
 
 #define SMALL_LIFT_MAX 452000
 #define SMALL_LIFT_MIN 15000
@@ -124,7 +124,7 @@ int32_t virtual_link(int32_t x);
 #define LIFT_CAMERA_MAX 1788000
 #define LIFT_CAMERA_MIN 40000
 #define LIFT_CAMERA_SLIVER 1750000
-#define LIFT_CAMERA_GOLD_DOBULE 1500000
+#define LIFT_CAMERA_GOLD_DOBULE 1500000 + 1500000/32 * 2
 
 
 typedef struct{
