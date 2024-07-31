@@ -534,7 +534,7 @@ int32_t AngleMap_Roll(int16_t InputAngle){
 #else
 // 抬升自定义控制器编码器转编码器总角度映射
 int32_t AngleMap_Lift(int16_t InputAngle){
-	int32_t target = 1950000.0f/6240.0f * InputAngle - 800000.0f;
+	float32_t target = (1950000.0f/6240.0f * (InputAngle * 1.4f)) - 1000000.0f;
 	if(target > 0) target = 0;
 	return target;
 }
@@ -546,7 +546,7 @@ int32_t AngleMap_Hy(int16_t InputAngle){
 
 // 前伸自定义控制器编码器转编码器总角度映射
 int32_t AngleMap_Qs(int16_t InputAngle){
-	return InputAngle * 442000.0f/3120.0f;
+	return InputAngle * 442000.0f/3120.0f * 2;
 }
 
 // 自定义控制器电位计yaw映射
