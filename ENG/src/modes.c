@@ -1232,6 +1232,11 @@ void ModeManageTask(void const * argument){
 				posemod = STORE_INIT;
 				posemode_change_flag = true;
 			}
+			if(Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_R)){
+				sync_data_to_c.data.reset_qs_flag = 1;
+				osDelay(200);
+				sync_data_to_c.data.reset_qs_flag = 0;
+			}
 		
 		//左键确认
 		if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){

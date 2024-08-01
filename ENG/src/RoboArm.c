@@ -287,6 +287,7 @@ void RoboArm_Pos_Init(){
 	sync_data_to_c.data.theta3 = ARM_ANGLE_STD_3;
 	sync_data_to_c.data.qs_pos = 2000;
 	sync_data_to_c.data.hy_pos = -200000;
+	sync_data_to_c.data.reset_qs_flag = 0;
 }
 
 // 遥控控制全车
