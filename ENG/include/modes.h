@@ -33,6 +33,8 @@ typedef enum{
 	EXCHANGE_INIT,
 	EXCHANGE,
 	GROUND,
+	STORE_INIT,
+	STORE,
 	DEBUG
 }PoseMode;
 

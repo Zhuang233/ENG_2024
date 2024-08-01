@@ -731,7 +731,7 @@ void OffsetTask(void const * argument){
 			if(Key_Check_Press(&Keys.KEY_E)) pose_offest.qs -= QS_STEP;
 		}
 		#else
-		if(posemod != NONE){
+		if(posemod != NONE && posemod != STORE_INIT){
 			if(Key_Check_Hold(&Keys.KEY_W)) LIFT += LIFT_STEP;
 			if(LIFT > LIFT_MAX) LIFT = LIFT_MAX;
 			if(Key_Check_Hold(&Keys.KEY_S)) LIFT -= LIFT_STEP;

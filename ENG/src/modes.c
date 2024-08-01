@@ -33,6 +33,11 @@ typedef enum{
 }to_exchange_pos_t;
 
 typedef enum{
+	TO_STORE_LEFT,
+	TO_STORE_RIGHT
+}to_store_pos_t;
+
+typedef enum{
 	TO_FETCH_SLIVER_CENTER,
 	TO_FETCH_SLIVER_LEFT,
 	TO_FETCH_SLIVER_RIGHT
@@ -56,11 +61,15 @@ bool pose_auto = false; // 给其他任务的通知全局变量
 uint8_t fetch_num = 3;
 Fetchmode_t fetch_mode = BY_HAND;
 to_exchange_pos_t to_exchange_pos = TO_EXCHANGE_TOP;
+to_store_pos_t to_store_pos = TO_STORE_RIGHT;
 to_fetch_sliver_t to_fetch_sliver = TO_FETCH_SLIVER_CENTER;
 
 uint8_t select_stage = 0;
 bool first_show_SubArm_unreset_warning = true;
 bool first_delete_SubArm_unreset_warning = true;
+
+bool sw1_down_flag = false;
+uint8_t xipan_debug_open = 1;
 //--------------菜单选择框切换函数------------------
 void select_more_ore(){
 	ui_default_menu3_select->start_x = 239;
@@ -226,12 +235,12 @@ void SubArm_unreset_warning_show(){
 		ui_init_default_waring();
 	}
 	if(	first_delete_SubArm_unreset_warning \
-		&&  SubArmResetState.hy == true \ 
-		&& 	SubArmResetState.qs == true \
-		&& 	SubArmResetState.lift == true \
-		&& 	SubArmResetState.roll == true \
-		&& 	SubArmResetState.yaw == true \
-		&& 	SubArmResetState.pitch == true \
+		&&  SubArmResetState.hy == true \
+		// && 	SubArmResetState.qs == true \
+		// && 	SubArmResetState.lift == true \
+		// && 	SubArmResetState.roll == true \
+		// && 	SubArmResetState.yaw == true \
+		// && 	SubArmResetState.pitch == true 
 	){
 		first_delete_SubArm_unreset_warning = false;
 		ui_remove_default_waring();
@@ -256,6 +265,37 @@ void NONE_loop(){
 			LIFT_CAMERA = LIFT_CAMERA_MIN;
 		}
 	}
+	// 新改
+	//往上拨
+	if(RC_CtrlData.rc.sw1_last == 3 && RC_CtrlData.rc.sw1 == 1 && sw1_down_flag == true){
+		sw1_down_flag = false;
+		if(xipan_debug_open == 1){
+			xipan_debug_open = 2; 
+			xipan_top_open();
+		}
+		else if(xipan_debug_open == 2){
+			xipan_debug_open = 3; 
+			xipan_left_open();
+		}
+		else if(xipan_debug_open == 3){
+			xipan_debug_open = 4; 
+			xipan_right_open();
+			
+		}
+		else if(xipan_debug_open == 4){
+			xipan_debug_open = 1; 
+			xipan_bottom_open();
+			
+		}
+	}
+	if(RC_CtrlData.rc.sw1 == 3){
+		sw1_down_flag = true;
+		xipan_right_close();
+		xipan_left_close();
+		xipan_top_close();
+		xipan_bottom_close();
+		
+	}
 }
 //-------------------------------------------------
 
@@ -267,10 +307,10 @@ void Before_FETCH_GOLD_INIT(){
 	LIFT_CAMERA = LIFT_CAMERA_GOLD_DOBULE;
 
 	// 双臂摆到合适位置
-	SMALL_LIFT = 80000;
-	SMALL_YAW = 50000;
+	SMALL_LIFT = 80000 + 100000;
+	SMALL_YAW = 50000 - 496199;
 	wait_until(small_yaw_less, 70000);
-	LIFT = -1720000;
+	LIFT = -1720000 + mm2angle_Lift(20);
 	// HY = -330000;
 	ROLL = ROLL_STD;
 	osDelay(1000);
@@ -346,16 +386,16 @@ void Before_FETCH_GOLD_AUTO(){
 		xipan_top_open();
 		xipan_bottom_open();
 		osDelay(1000);
-		SMALL_LIFT = 300000;
-		LIFT = -1550000;
+		SMALL_LIFT = 300000 + 150000;
+		LIFT = -1550000 + mm2angle_Lift(20);
 		osDelay(500);
-		SMALL_YAW = 60000;
+		SMALL_YAW = 60000 - 496199;
 		QS = QS_STD;
 		SMALL_QS = SMALL_QS_MIN;
 		osDelay(500);
 	}
 	else if (fetch_num == 1) {
-		SMALL_YAW = 100000;
+		SMALL_YAW = 100000 - 496199;
 		HY = -143200;
 		osDelay(300);
 		PITCH = 16000;
@@ -368,7 +408,7 @@ void Before_FETCH_GOLD_AUTO(){
 		else{
 			osDelay(1000);
 		}
-		LIFT = -1550000;
+		LIFT = -1550000 + mm2angle_Lift(20);
 		if(fetch_mode = BY_HAND){
 			wait_until(press_key_F, 0);
 		}
@@ -481,15 +521,15 @@ void FETCH_SLIVER_INIT_loop(){
 	}
 }
 void Before_FETCH_SLIVER_AUTO(){
-		SMALL_YAW = SMALL_YAW_MAX;
-		LIFT = -622800;
+		SMALL_YAW = - (496199/2) + 50000;
+		LIFT = -622800 + mm2angle_Lift(15);
 		//变化
-		QS = 620000;
+		QS = 620000 - mm2angle_Qs(25);
 		if(fetch_num > 1){
-			HY = -11200;
+			HY = -11200 - mm2angle_Hy(0);	
 		}
 		else{
-			HY = -186000;
+			HY = -186000- mm2angle_Hy(30);
 		}
 		ROLL = ROLL_STD;
 		YAW = YAW_STD;
@@ -497,7 +537,7 @@ void Before_FETCH_SLIVER_AUTO(){
 		chassis_back(550, 500);
 		wait_until(qs_greater, 500000);
 		PITCH = PITCH_DOWN;
-		osDelay(200);
+		osDelay(800);
 		if(fetch_num > 1){
 			if(fetch_mode == BY_HAND){
 				//微调
@@ -532,15 +572,15 @@ void Before_FETCH_SLIVER_AUTO(){
 			osDelay(1000);
 			yaw_rotate_slow_flag = false;
 			xipan_top_close();
-			osDelay(700);
+			osDelay(1000);
 			
 			// 摆第二个位置
 			LIFT = -622800;
 			YAW = YAW_STD;
-			HY = -364000;
-			QS = 620000;
+			HY = -364000- mm2angle_Hy(30);
+			QS = 620000 - mm2angle_Qs(25);
 			wait_until(qs_greater, 500000);
-			osDelay(200);
+			osDelay(800);
 			
 			if(fetch_mode == BY_HAND){
 				//微调
@@ -576,22 +616,22 @@ void Before_FETCH_SLIVER_AUTO(){
 			osDelay(1000);
 			yaw_rotate_slow_flag = false;
 			xipan_top_close();
-			osDelay(700);
+			osDelay(1000);
 		}
 
 		// 摆第三个位置
 		LIFT = -622800;
 		YAW = YAW_STD;
-		HY = -186000;
-		QS = 620000;
+		HY = -186000 - mm2angle_Hy(30);
+		QS = 620000 - mm2angle_Qs(25);
 		wait_until(qs_greater, 500000);
-		osDelay(200);
+		osDelay(800);
 
 		if(fetch_num == 1){
 			wait_until(one_sliver_selected, 0);
 		}
 
-		if(fetch_mode == BY_HAND){
+		if(fetch_mode == BY_HAND && fetch_num != 1){
 			//微调
 			wait_until(press_key_F,0);
 		}
@@ -627,7 +667,6 @@ void FETCH_SLIVER_AUTO_loop(){
 
 }
 //-------------------------------------------------
-
 
 //-------------------兑换模式----------------------
 void Before_EXCHANGE_INIT(){
@@ -718,43 +757,70 @@ void Before_EXCHANGE(){
 	else if(to_exchange_pos == TO_EXCHANGE_RIGHT){
 		// 右边
 		// 手动调整视角
+//		LIFT_CAMERA = LIFT_CAMERA_MAX;
+//		CAMERA_PITCH = 1100;
+//		CAMERA_YAW = 1900;
+
+//		YAW = YAW_RIGHT;
+//		ROLL = ROLL_STD;
+//		LIFT = -1120000;
+//		QS = 437200;
+//		HY = -189000;
+//		osDelay(700);
+//		PITCH = PITCH_DOWN;
+//		osDelay(300);
+//		wait_until(press_key_F,0);
+
+//		// 下压
+//		LIFT = -1270000;
+
+//		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
+//		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
+//		LIFT_CAMERA = LIFT_CAMERA_MIN;
+
+//		xipan_top_open();
+//		osDelay(500);
+//		xipan_right_close();
+//		osDelay(1000);
+//		LIFT = LIFT_MAX;
+//		osDelay(500);
+//		HY = HY_STD;
+//		QS = QS_STD;
+//		pitch_rotate_slow_flag = true;
+//		yaw_rotate_slow_flag = true;
+//		pitch_slow = PITCH_UP;
+//		yaw_slow = YAW_STD;
+//		wait_until(pitch_less, 1000);
+//		pitch_rotate_slow_flag = false;
+//		wait_until(yaw_close, YAW_STD);
+//		yaw_rotate_slow_flag = false;
+		
+		// 从侧边取版本
 		LIFT_CAMERA = LIFT_CAMERA_MAX;
 		CAMERA_PITCH = 1100;
-		CAMERA_YAW = 1880;
-
-		YAW = YAW_RIGHT;
-		ROLL = ROLL_STD;
-		LIFT = -1120000;
-		QS = 437200;
-		HY = -189000;
-		osDelay(700);
-		PITCH = PITCH_DOWN;
-		osDelay(300);
-		wait_until(press_key_F,0);
-
-		// 下压
-		LIFT = -1270000;
-
-		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
-		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
-		LIFT_CAMERA = LIFT_CAMERA_MIN;
-
+		CAMERA_YAW = 1900;
+		YAW = YAW_STD;
+		PITCH = PITCH_UP;
+		ROLL = ROLL_STD - 16384;
+//		HY = xxx;
+//		QS = xxx;
+//		
+//		LIFT = xxx;
+		osDelay(1000);
+		
 		xipan_top_open();
-		osDelay(500);
+		HY = HY - mm2angle_Hy(50);
+		osDelay(1500);
 		xipan_right_close();
 		osDelay(1000);
-		LIFT = LIFT_MAX;
-		osDelay(500);
-		HY = HY_STD;
+		roll_rotate_slow_flag = true;
+		roll_slow = ROLL_STD;
+		osDelay(1000);
+		roll_rotate_slow_flag = false;
+		
+		LIFT = LIFT_STD;
 		QS = QS_STD;
-		pitch_rotate_slow_flag = true;
-		yaw_rotate_slow_flag = true;
-		pitch_slow = PITCH_UP;
-		yaw_slow = YAW_STD;
-		wait_until(pitch_less, 1000);
-		pitch_rotate_slow_flag = false;
-		wait_until(yaw_close, YAW_STD);
-		yaw_rotate_slow_flag = false;
+		HY = HY_STD;
 	}
 	else if(to_exchange_pos == TO_EXCHANGE_SIDE){
 		LIFT_CAMERA = LIFT_CAMERA_MAX;
@@ -844,6 +910,90 @@ void EXCHANGE_loop(){
 	SubArm_limit_ui_show();
 	SubArm_unreset_warning_show();
 }
+//-------------------------------------------------
+
+//-------------------存矿模式----------------------
+void Before_STORE_INIT(){
+	strcpy(ui_default_Menu_ModeText->string, "STORE ");
+	ui_default_Menu_ModeText->str_length = 6;
+	ui_update_default_Menu();
+
+	// 借用兑矿菜单让存矿用
+	ui_init_default_exchangeMenu();
+	if(to_store_pos == TO_STORE_RIGHT) select_exchange_right();
+	else if (to_store_pos == TO_STORE_LEFT) select_exchange_left();
+	_ui_update_default_exchangeMenu_1();
+}
+
+void STORE_INIT_loop(){
+	if(Key_Check_Press(&Keys.KEY_G)){
+		if(to_store_pos == TO_STORE_LEFT){
+			to_store_pos = TO_STORE_RIGHT;
+			select_exchange_right();
+		}
+		else if(to_store_pos == TO_STORE_RIGHT){
+			to_store_pos = TO_STORE_LEFT;
+			select_exchange_left();
+		}
+		_ui_update_default_exchangeMenu_1();
+	}
+}
+
+void Before_STORE(){
+	LIFT = -1120000;
+	if(to_store_pos == TO_STORE_LEFT){
+		QS = 427000;
+		HY = -189000 - mm2angle_Hy(250);
+
+		yaw_rotate_slow_flag = true;
+		pitch_rotate_slow_flag = true;
+		yaw_slow = YAW_LEFT;
+		pitch_slow = PITCH_DOWN;
+		osDelay(2000);
+		yaw_rotate_slow_flag = false;
+		pitch_rotate_slow_flag = false;
+		xipan_top_close();
+		xipan_left_open();
+		LIFT = -1270000;
+		osDelay(1000);
+	}
+	else if (to_store_pos == TO_STORE_RIGHT) {
+		QS = 427000;
+		HY = -189000;
+
+		yaw_rotate_slow_flag = true;
+		pitch_rotate_slow_flag = true;
+		yaw_slow = YAW_RIGHT;
+		pitch_slow = PITCH_DOWN;
+		osDelay(2000);
+		yaw_rotate_slow_flag = false;
+		pitch_rotate_slow_flag = false;
+		xipan_top_close();
+		xipan_right_open();
+		LIFT = -1270000;
+		osDelay(1000);
+	}
+
+	// 回正
+	LIFT = -1120000;
+	osDelay(400);
+	YAW = YAW_STD;
+	PITCH = PITCH_UP;
+	osDelay(300);
+	QS = QS_STD;
+	HY = HY_STD;
+	LIFT = LIFT_STD;
+
+	// 自动退出
+	last_posemod = posemod;
+	posemod = NONE;
+	posemode_change_flag = true;
+}
+
+void STORE_loop(){
+	
+}
+//-------------------------------------------------
 
 //-------------------地矿模式-----------------------
 void Before_GROUND(){
@@ -862,7 +1012,7 @@ void Before_GROUND(){
 	
 	CAMERA_PITCH = 1100;
 	LIFT_CAMERA = LIFT_CAMERA_MAX;
-	CAMERA_YAW = 1600;
+	CAMERA_YAW = 1620;
 
 	wait_until(press_key_F, 0);
 
@@ -914,6 +1064,8 @@ void Before_Next_Mode(){
 	if(posemod == FETCH_SLIVER_AUTO) Before_FETCH_SLIVER_AUTO();
 	if(posemod == EXCHANGE_INIT) Before_EXCHANGE_INIT();
 	if(posemod == EXCHANGE) Before_EXCHANGE();
+	if(posemod == STORE_INIT) Before_STORE_INIT();
+	if(posemod == STORE) Before_STORE();
 	if(posemod == GROUND) Before_GROUND();
 }
 
@@ -1020,6 +1172,24 @@ void Exit_Last_Mode(){
 			ui_update_default_Menu();
 		}
 	}
+	else if(last_posemod == STORE_INIT) {
+		if(posemod == NONE){
+			camera_reset();
+			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
+			ui_default_Menu_ModeText->str_length = 6;
+			ui_update_default_Menu();
+			ui_remove_default_exchangeMenu();
+		}
+	}
+	else if(last_posemod == STORE) {
+		if(posemod == NONE){
+			camera_reset();
+			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
+			ui_default_Menu_ModeText->str_length = 6;
+			ui_update_default_Menu();
+			ui_remove_default_exchangeMenu();
+		}
+	}
 }
 
 // 模式切换管理
@@ -1057,6 +1227,11 @@ void ModeManageTask(void const * argument){
 				posemod = EXCHANGE_INIT;
 				posemode_change_flag = true;
 			}
+			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_S) && posemod == NONE){
+				last_posemod = posemod;
+				posemod = STORE_INIT;
+				posemode_change_flag = true;
+			}
 		
 		//左键确认
 		if(RC_CtrlData.mouse.press_l == 1 && RC_CtrlData.mouse.last_press_l == 0){
@@ -1073,6 +1248,11 @@ void ModeManageTask(void const * argument){
 			if(posemod == EXCHANGE_INIT){
 				last_posemod = posemod;
 				posemod = EXCHANGE;
+				posemode_change_flag = true;
+			}
+			if(posemod == STORE_INIT){
+				last_posemod = posemod;
+				posemod = STORE;
 				posemode_change_flag = true;
 			}
 		}
@@ -1104,6 +1284,8 @@ void ModeExecTask(void const * argument){
 			else if(posemod == EXCHANGE_INIT) 		EXCHANGE_INIT_loop();
 			else if(posemod == EXCHANGE) 			EXCHANGE_loop();
 			else if(posemod == GROUND) 				GROUND_loop();
+			else if(posemod == STORE_INIT) 			STORE_INIT_loop();
+			else if(posemod == STORE) 				STORE_loop();
 			else if(posemod == DEBUG) 				DEBUG_loop();
 			else if(posemod == NONE)				NONE_loop();
 			osDelay(1);
