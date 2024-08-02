@@ -20,6 +20,7 @@
 #include "ui_default_menu3_2.h"
 #include "string.h"
 #include "ui_interface.h"
+#include "referee.h"
 
 typedef enum{
 	AUTO_MODE,
@@ -669,6 +670,8 @@ void FETCH_SLIVER_AUTO_loop(){
 //-------------------------------------------------
 
 //-------------------兑换模式----------------------
+uint8_t start_pump_flag = 0;
+
 void Before_EXCHANGE_INIT(){
 	CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
 	CAMERA_YAW = CAMERA_YAW_EXCHANGE;
@@ -757,70 +760,70 @@ void Before_EXCHANGE(){
 	else if(to_exchange_pos == TO_EXCHANGE_RIGHT){
 		// 右边
 		// 手动调整视角
-//		LIFT_CAMERA = LIFT_CAMERA_MAX;
-//		CAMERA_PITCH = 1100;
-//		CAMERA_YAW = 1900;
-
-//		YAW = YAW_RIGHT;
-//		ROLL = ROLL_STD;
-//		LIFT = -1120000;
-//		QS = 437200;
-//		HY = -189000;
-//		osDelay(700);
-//		PITCH = PITCH_DOWN;
-//		osDelay(300);
-//		wait_until(press_key_F,0);
-
-//		// 下压
-//		LIFT = -1270000;
-
-//		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
-//		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
-//		LIFT_CAMERA = LIFT_CAMERA_MIN;
-
-//		xipan_top_open();
-//		osDelay(500);
-//		xipan_right_close();
-//		osDelay(1000);
-//		LIFT = LIFT_MAX;
-//		osDelay(500);
-//		HY = HY_STD;
-//		QS = QS_STD;
-//		pitch_rotate_slow_flag = true;
-//		yaw_rotate_slow_flag = true;
-//		pitch_slow = PITCH_UP;
-//		yaw_slow = YAW_STD;
-//		wait_until(pitch_less, 1000);
-//		pitch_rotate_slow_flag = false;
-//		wait_until(yaw_close, YAW_STD);
-//		yaw_rotate_slow_flag = false;
-		
-		// 从侧边取版本
 		LIFT_CAMERA = LIFT_CAMERA_MAX;
 		CAMERA_PITCH = 1100;
 		CAMERA_YAW = 1900;
-		YAW = YAW_STD;
-		PITCH = PITCH_UP;
-		ROLL = ROLL_STD - 16384;
-//		HY = xxx;
-//		QS = xxx;
-//		
-//		LIFT = xxx;
-		osDelay(1000);
-		
+
+		YAW = YAW_RIGHT;
+		ROLL = ROLL_STD;
+		LIFT = -1120000;
+		QS = 437200;
+		HY = -189000;
+		osDelay(700);
+		PITCH = PITCH_DOWN;
+		osDelay(300);
+		wait_until(press_key_F,0);
+
+		// 下压
+		LIFT = -1270000;
+
+		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
+		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
+		LIFT_CAMERA = LIFT_CAMERA_MIN;
+
 		xipan_top_open();
-		HY = HY - mm2angle_Hy(50);
-		osDelay(1500);
+		osDelay(500);
 		xipan_right_close();
 		osDelay(1000);
-		roll_rotate_slow_flag = true;
-		roll_slow = ROLL_STD;
-		osDelay(1000);
-		roll_rotate_slow_flag = false;
-		
-		LIFT = LIFT_STD;
-		QS = QS_STD;
+		LIFT = LIFT_MAX;
+		osDelay(500);
 		HY = HY_STD;
+		QS = QS_STD;
+		pitch_rotate_slow_flag = true;
+		yaw_rotate_slow_flag = true;
+		pitch_slow = PITCH_UP;
+		yaw_slow = YAW_STD;
+		wait_until(pitch_less, 1000);
+		pitch_rotate_slow_flag = false;
+		wait_until(yaw_close, YAW_STD);
+		yaw_rotate_slow_flag = false;
+		
+//		// 从侧边取版本
+//		LIFT_CAMERA = LIFT_CAMERA_MAX;
+//		CAMERA_PITCH = 1100;
+//		CAMERA_YAW = 1900;
+//		YAW = YAW_STD;
+//		PITCH = PITCH_UP;
+//		ROLL = ROLL_STD - 16384;
+////		HY = xxx;
+////		QS = xxx;
+////		
+////		LIFT = xxx;
+//		osDelay(1000);
+//		
+//		xipan_top_open();
+//		HY = HY - mm2angle_Hy(50);
+//		osDelay(1500);
+//		xipan_right_close();
+//		osDelay(1000);
+//		roll_rotate_slow_flag = true;
+//		roll_slow = ROLL_STD;
+//		osDelay(1000);
+//		roll_rotate_slow_flag = false;
+//		
+//		LIFT = LIFT_STD;
+//		QS = QS_STD;
+//		HY = HY_STD;
 	}
 	else if(to_exchange_pos == TO_EXCHANGE_SIDE){
 		LIFT_CAMERA = LIFT_CAMERA_MAX;
@@ -885,15 +888,20 @@ void Before_EXCHANGE(){
 
 	first_delete_SubArm_unreset_warning = true;
 	first_delete_SubArm_unreset_warning = true;
+	
+	start_pump_flag = custom_controller_data_t.pump_flag;
 }
 
 void EXCHANGE_loop(){
 	SubArm_Ctrl();
-	if(Key_Check_Press(&Keys.KEY_Q)){
-		xipan_top_close();
-	}
-	if(Key_Check_Press(&Keys.KEY_W)){
+	
+	// 开关泵
+	
+	if(custom_controller_data_t.pump_flag == start_pump_flag){
 		xipan_top_open();
+	}
+	else if(custom_controller_data_t.pump_flag != start_pump_flag){
+		xipan_top_close();
 	}
 
 	// 变换视角

@@ -314,7 +314,8 @@ typedef __packed struct
 	uint16_t adc_value1;
 	uint16_t adc_value2;
 	uint16_t adc_value3;
-	uint8_t undefine[18];
+	uint8_t pump_flag;
+	uint8_t undefine[17];
 } custom_controller_t;
 
 extern custom_controller_t custom_controller_data_t;
