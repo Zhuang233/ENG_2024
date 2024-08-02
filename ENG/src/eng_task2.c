@@ -93,9 +93,9 @@ struct Pose_offest{
 #define QS_STEP 4000
 #define FLIP_STEP 2000
 #else
-#define HY_STEP 200
-#define LIFT_STEP 800
-#define QS_STEP 400
+#define HY_STEP 600
+#define LIFT_STEP 2400
+#define QS_STEP 1200
 #define FLIP_STEP 200
 #endif
 void pose_offest_clear(void){
