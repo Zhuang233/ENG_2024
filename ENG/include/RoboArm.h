@@ -114,6 +114,8 @@ int32_t virtual_link(int32_t x);
 
 #define SMALL_YAW_MAX -10000
 #define SMALL_YAW_MIN -928419
+#define SMALL_YAW_STORE_RIGHT  (-496199 - 60*5000)
+#define SMALL_YAW_STD - 496199
 
 #define SMALL_LIFT_MAX 452000
 #define SMALL_LIFT_MIN 15000

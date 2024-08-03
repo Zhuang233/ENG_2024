@@ -277,10 +277,12 @@ void NONE_loop(){
 		else if(xipan_debug_open == 2){
 			xipan_debug_open = 3; 
 			xipan_left_open();
+			SMALL_YAW = - 496199 + 5000 * 45;
 		}
 		else if(xipan_debug_open == 3){
 			xipan_debug_open = 4; 
 			xipan_right_open();
+			SMALL_YAW = - 496199;
 			
 		}
 		else if(xipan_debug_open == 4){
@@ -436,14 +438,42 @@ void Before_FETCH_GOLD_AUTO(){
 		chassis_back(800,1000);
 	}
 
-	// SMALL_YAW = SMALL_YAW_MAX;
-	SMALL_LIFT = 30000;
+	// SMALL_LIFT = 30000; 不下降了
+
+
 	HY = HY_STD;
-	LIFT = LIFT_STD;
+
+	if(fetch_num == 1){
+		LIFT = LIFT_STD;		
+	}
+	else{
+		LIFT = LIFT_STD + mm2angle_Lift(100);
+	}
+	
 	pitch_rotate_slow_flag = true;
 	pitch_slow = PITCH_UP;
 	wait_until(pitch_less, 1000);
 	pitch_rotate_slow_flag = false;
+
+	// 双金的额外步骤
+	if(fetch_num > 1){
+		SMALL_YAW = SMALL_YAW_STORE_RIGHT;	
+		SMALL_QS = 202222;
+		xipan_right_open();
+		osDelay(1000);
+		SMALL_LIFT = SMALL_LIFT_MIN;
+		osDelay(1500);
+		xipan_bottom_close();
+		osDelay(1000);
+		SMALL_LIFT = 300000 + 150000;
+		SMALL_QS = SMALL_QS_MIN;
+		osDelay(500);
+		SMALL_YAW = - 496199;
+		osDelay(700);
+		SMALL_LIFT = SMALL_LIFT_MIN;
+		LIFT = LIFT_STD;
+	}
+	
 
 	// 自动退出
 	last_posemod = posemod;
