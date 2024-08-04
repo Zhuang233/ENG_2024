@@ -60,7 +60,7 @@ PoseMode last_posemod = NONE;
 bool pose_auto = false; // 给其他任务的通知全局变量	
 
 uint8_t fetch_num = 3;
-Fetchmode_t fetch_mode = BY_HAND;
+Fetchmode_t fetch_mode = AUTO_MODE;
 to_exchange_pos_t to_exchange_pos = TO_EXCHANGE_TOP;
 to_store_pos_t to_store_pos = TO_STORE_RIGHT;
 to_fetch_sliver_t to_fetch_sliver = TO_FETCH_SLIVER_CENTER;
@@ -310,9 +310,10 @@ void Before_FETCH_GOLD_INIT(){
 	LIFT_CAMERA = LIFT_CAMERA_GOLD_DOBULE;
 
 	// 双臂摆到合适位置
-	SMALL_LIFT = 80000 + 100000;
-	SMALL_YAW = 50000 - 496199;
-	wait_until(small_yaw_less, 70000);
+	// SMALL_LIFT = 80000 + 100000;
+	// SMALL_YAW = 50000 - 496199;
+	// wait_until(small_yaw_less, 70000);
+
 	LIFT = -1720000 + mm2angle_Lift(20);
 	// HY = -330000;
 	ROLL = ROLL_STD;
@@ -380,7 +381,12 @@ void FETCH_GOLD_INIT_loop(){
 
 void Before_FETCH_GOLD_AUTO(){
 	if(fetch_num > 1){
-		HY = -330000;
+		// 双臂摆到合适位置
+		SMALL_LIFT = 80000 + 100000;
+		SMALL_YAW = 75000 - 496199;
+		// wait_until(small_yaw_less, 70000 - 496199);
+
+		HY = -330000 - mm2angle_Hy(25);
 		osDelay(600);
 		PITCH = 16000;
 		wait_until(press_key_F, 0);
@@ -398,8 +404,6 @@ void Before_FETCH_GOLD_AUTO(){
 		osDelay(500);
 	}
 	else if (fetch_num == 1) {
-		SMALL_YAW = 100000 - 496199;
-		HY = -143200;
 		osDelay(300);
 		PITCH = 16000;
 		wait_until(press_key_F, 0);
@@ -980,8 +984,9 @@ void STORE_INIT_loop(){
 void Before_STORE(){
 	LIFT = -1120000;
 	if(to_store_pos == TO_STORE_LEFT){
+		SMALL_YAW = SMALL_YAW_STD + 85*5000;
 		QS = 427000;
-		HY = -189000 - mm2angle_Hy(250);
+		HY = -189000 - mm2angle_Hy(25);
 
 		yaw_rotate_slow_flag = true;
 		pitch_rotate_slow_flag = true;
@@ -993,6 +998,7 @@ void Before_STORE(){
 		xipan_top_close();
 		xipan_left_open();
 		LIFT = -1270000;
+		SMALL_YAW = SMALL_YAW_STD + 50*5000;
 		osDelay(1000);
 	}
 	else if (to_store_pos == TO_STORE_RIGHT) {
