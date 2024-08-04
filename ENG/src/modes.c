@@ -130,6 +130,9 @@ void select_exchange_side(){
 bool lift_greater(int target){
 	return LIFT_READ > target;
 }
+bool lift_less(int target){
+	return LIFT_READ < target;
+}
 bool qs_greater(int target){
 	return QS_READ > target;
 }
@@ -382,7 +385,7 @@ void FETCH_GOLD_INIT_loop(){
 void Before_FETCH_GOLD_AUTO(){
 	if(fetch_num > 1){
 		// 双臂摆到合适位置
-		SMALL_LIFT = 80000 + 100000;
+		SMALL_LIFT = 180000 - 8192 * 3;
 		SMALL_YAW = 75000 - 496199;
 		// wait_until(small_yaw_less, 70000 - 496199);
 
@@ -395,7 +398,7 @@ void Before_FETCH_GOLD_AUTO(){
 		xipan_top_open();
 		xipan_bottom_open();
 		osDelay(1000);
-		SMALL_LIFT = 300000 + 150000;
+		SMALL_LIFT = SMALL_LIFT_MAX;
 		LIFT = -1550000 + mm2angle_Lift(20);
 		osDelay(500);
 		SMALL_YAW = 60000 - 496199;
@@ -505,6 +508,8 @@ void Before_FETCH_SLIVER_INIT(){
 		ui_update_default_Menu();
 		ui_init_default_menu2();
 		ui_init_default_menu3();
+		fetch_num = 3;
+		fetch_mode = BY_HAND;
 		if(fetch_num == 1){
 			select_singel_ore();
 		}
@@ -586,31 +591,35 @@ void Before_FETCH_SLIVER_AUTO(){
 			LIFT = -350000;
 			osDelay(750);
 			
-			QS = 427000;
+			QS = 427000 - mm2angle_Qs(30);
 			HY = -189000;
 			yaw_rotate_slow_flag = true;
 			yaw_slow = YAW_LEFT;
-
-			if(fetch_mode == BY_HAND){
-				LIFT_CAMERA = LIFT_CAMERA_MIN;
-				CAMERA_PITCH = CAMERA_PITCH_STD;
-				CAMERA_YAW = CAMERA_YAW_SLIVER;
-				//微调
-				wait_until(press_key_F,0);
-			}
-			
-			CAMERA_PITCH = CAMERA_PITCH_SLIVER;
-			CAMERA_YAW = CAMERA_YAW_SLIVER;
-			LIFT_CAMERA = LIFT_CAMERA_SLIVER;
-
-			xipan_left_open();
 			osDelay(1000);
 			yaw_rotate_slow_flag = false;
+
+			// if(fetch_mode == BY_HAND){
+			// 	LIFT_CAMERA = LIFT_CAMERA_MIN;
+			// 	CAMERA_PITCH = CAMERA_PITCH_STD;
+			// 	CAMERA_YAW = CAMERA_YAW_SLIVER;
+			// 	//微调
+			// 	wait_until(press_key_F,0);
+			// }
+			
+			// CAMERA_PITCH = CAMERA_PITCH_SLIVER;
+			// CAMERA_YAW = CAMERA_YAW_SLIVER;
+			// LIFT_CAMERA = LIFT_CAMERA_SLIVER;
+
+			xipan_left_open();
+
+			// 下压
+			LIFT = -1270000;
+			wait_until(lift_less, -1170000);
 			xipan_top_close();
 			osDelay(1000);
-			
+			LIFT = -622800 + mm2angle_Lift(15);
+			wait_until(lift_greater, -622800);
 			// 摆第二个位置
-			LIFT = -622800;
 			YAW = YAW_STD;
 			HY = -364000- mm2angle_Hy(30);
 			QS = 620000 - mm2angle_Qs(25);
@@ -634,28 +643,34 @@ void Before_FETCH_SLIVER_AUTO(){
 
 			yaw_rotate_slow_flag = true;
 			yaw_slow = YAW_RIGHT;
-
-			if(fetch_mode == BY_HAND){
-				LIFT_CAMERA = LIFT_CAMERA_MIN;
-				CAMERA_PITCH = CAMERA_PITCH_STD;
-				CAMERA_YAW = CAMERA_YAW_SLIVER;
-				//微调
-				wait_until(press_key_F,0);
-			}
-			
-			CAMERA_PITCH = CAMERA_PITCH_SLIVER;
-			CAMERA_YAW = CAMERA_YAW_SLIVER;
-			LIFT_CAMERA = LIFT_CAMERA_SLIVER;
-
-			xipan_right_open();
 			osDelay(1000);
 			yaw_rotate_slow_flag = false;
+
+			// if(fetch_mode == BY_HAND){
+			// 	LIFT_CAMERA = LIFT_CAMERA_MIN;
+			// 	CAMERA_PITCH = CAMERA_PITCH_STD;
+			// 	CAMERA_YAW = CAMERA_YAW_SLIVER;
+			// 	//微调
+			// 	wait_until(press_key_F,0);
+			// }
+			
+			// CAMERA_PITCH = CAMERA_PITCH_SLIVER;
+			// CAMERA_YAW = CAMERA_YAW_SLIVER;
+			// LIFT_CAMERA = LIFT_CAMERA_SLIVER;
+
+			xipan_right_open();
+
+			// 下压
+			LIFT = -1270000;
+			wait_until(lift_less, -1170000);
+
 			xipan_top_close();
 			osDelay(1000);
+			LIFT = -622800 + mm2angle_Lift(15);
+			wait_until(lift_greater, -622800);
 		}
 
 		// 摆第三个位置
-		LIFT = -622800;
 		YAW = YAW_STD;
 		HY = -186000 - mm2angle_Hy(30);
 		QS = 620000 - mm2angle_Qs(25);
@@ -1261,7 +1276,7 @@ void ModeManageTask(void const * argument){
 				posemod = DEBUG;
 				posemode_change_flag = true;
 			}
-			if(Key_Check_Hold(&Keys.KEY_CTRL) &&  Key_Check_Press(&Keys.KEY_V) && posemod == NONE){
+			if(Key_Check_Hold(&Keys.KEY_CTRL) && Key_Check_Hold(&Keys.KEY_SHIFT) &&  Key_Check_Press(&Keys.KEY_V) && posemod == NONE){
 				last_posemod = posemod;
 				posemod = GROUND;
 				posemode_change_flag = true;
