@@ -331,6 +331,9 @@ void Before_FETCH_GOLD_INIT(){
 	ui_update_default_Menu();
 	ui_init_default_menu2();
 	ui_init_default_menu3();
+
+	fetch_num = 1;
+	fetch_mode = BY_HAND;
 	if(fetch_num == 1){
 		select_singel_ore();
 	}
@@ -997,7 +1000,7 @@ void STORE_INIT_loop(){
 }
 
 void Before_STORE(){
-	LIFT = -1120000;
+	LIFT = -1120000 + mm2angle_Lift(50);
 	if(to_store_pos == TO_STORE_LEFT){
 		SMALL_YAW = SMALL_YAW_STD + 85*5000;
 		QS = 427000;
@@ -1007,14 +1010,14 @@ void Before_STORE(){
 		pitch_rotate_slow_flag = true;
 		yaw_slow = YAW_LEFT;
 		pitch_slow = PITCH_DOWN;
-		osDelay(2000);
+		osDelay(2500);
 		yaw_rotate_slow_flag = false;
 		pitch_rotate_slow_flag = false;
 		xipan_top_close();
 		xipan_left_open();
 		LIFT = -1270000;
 		SMALL_YAW = SMALL_YAW_STD + 50*5000;
-		osDelay(1000);
+		osDelay(2500);
 	}
 	else if (to_store_pos == TO_STORE_RIGHT) {
 		QS = 427000;
@@ -1024,13 +1027,13 @@ void Before_STORE(){
 		pitch_rotate_slow_flag = true;
 		yaw_slow = YAW_RIGHT;
 		pitch_slow = PITCH_DOWN;
-		osDelay(2000);
+		osDelay(2500);
 		yaw_rotate_slow_flag = false;
 		pitch_rotate_slow_flag = false;
 		xipan_top_close();
 		xipan_right_open();
 		LIFT = -1270000;
-		osDelay(1000);
+		osDelay(2500);
 	}
 
 	// 回正
