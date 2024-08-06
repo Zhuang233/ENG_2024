@@ -323,57 +323,50 @@ void Before_FETCH_GOLD_INIT(){
 	osDelay(1000);
 
 	//金矿对齐UI
-	ui_init_default_GOLD();
+	// ui_init_default_GOLD();
 
 	// 显示菜单ui
 	strcpy(ui_default_Menu_ModeText->string, "GOLD  ");
 	ui_default_Menu_ModeText->str_length = 6;
 	ui_update_default_Menu();
 	ui_init_default_menu2();
-	ui_init_default_menu3();
+	// ui_init_default_menu3();
 
 	fetch_num = 1;
 	fetch_mode = BY_HAND;
-	if(fetch_num == 1){
-		select_singel_ore();
-	}
-	else{
-		select_more_ore();
-	}
-	if(fetch_mode == BY_HAND){
-		select_by_hand();
-	}
-	else{
-		select_auto_mode();
-	}
-	ui_update_default_menu2();
-	ui_update_default_menu3();
+	// if(fetch_mode == BY_HAND){
+	// 	select_by_hand();
+	// }
+	// else{
+	// 	select_auto_mode();
+	// }
+	// ui_update_default_menu3();
 	select_stage = 0;
 }
 void FETCH_GOLD_INIT_loop(){
-	if (Key_Check_Press(&Keys.KEY_V)) {
-		if(select_stage == 0){
-			ui_default_menu3_select->color = 6;
-			_ui_update_default_menu3_2();
-		}
-		else if (select_stage == 1) {
-			ui_default_menu2_select->color = 6;
-			_ui_update_default_menu2_2();
-		}
-		select_stage++;
-	}
+	// if (Key_Check_Press(&Keys.KEY_V)) {
+	// 	if(select_stage == 0){
+	// 		ui_default_menu3_select->color = 6;
+	// 		_ui_update_default_menu3_2();
+	// 	}
+	// 	else if (select_stage == 1) {
+	// 		ui_default_menu2_select->color = 6;
+	// 		_ui_update_default_menu2_2();
+	// 	}
+	// 	select_stage++;
+	// }
 
-	if(select_stage == 0){
-		if(Key_Check_Press(&Keys.KEY_F)){
-			fetch_num = 1;
-			select_singel_ore();
-		}
-		else if(Key_Check_Press(&Keys.KEY_G)){
-			fetch_num = 3;
-			select_more_ore();
-		}
-	}
-	else if (select_stage == 1) {
+	// if(select_stage == 0){
+	// 	if(Key_Check_Press(&Keys.KEY_F)){
+	// 		fetch_num = 1;
+	// 		select_singel_ore();
+	// 	}
+	// 	else if(Key_Check_Press(&Keys.KEY_G)){
+	// 		fetch_num = 3;
+	// 		select_more_ore();
+	// 	}
+	// }
+	// else if (select_stage == 1) {
 		if(Key_Check_Press(&Keys.KEY_F)){
 			fetch_mode = AUTO_MODE;
 			select_auto_mode();
@@ -382,7 +375,7 @@ void FETCH_GOLD_INIT_loop(){
 			fetch_mode = BY_HAND;
 			select_by_hand();
 		}
-	}
+	// }
 }
 
 void Before_FETCH_GOLD_AUTO(){
@@ -415,21 +408,18 @@ void Before_FETCH_GOLD_AUTO(){
 		wait_until(press_key_F, 0);
 		xipan_top_open();
 		QS = 550000- mm2angle_Qs(30);
-		if(fetch_mode = BY_HAND){
+		osDelay(1000);
+		if(fetch_mode == BY_HAND){
 			wait_until(press_key_F, 0);
 		}
-		else{
-			osDelay(1000);
-		}
+
 		LIFT = -1550000 + mm2angle_Lift(20);
-		if(fetch_mode = BY_HAND){
+		osDelay(500);
+		if(fetch_mode == BY_HAND){
 			wait_until(press_key_F, 0);
-		}
-		else{
-			osDelay(500);
 		}
 		
-		if(fetch_mode = BY_HAND){
+		if(fetch_mode == BY_HAND){
 			QS = 550000- mm2angle_Qs(210);
 			wait_until(press_key_F, 0);
 			QS = QS_STD;
@@ -440,7 +430,7 @@ void Before_FETCH_GOLD_AUTO(){
 		
 	}
 
-	if(fetch_mode = BY_HAND){
+	if(fetch_mode == BY_HAND){
 		wait_until(press_key_F, 0);
 	}
 	else{
@@ -565,7 +555,7 @@ void FETCH_SLIVER_INIT_loop(){
 }
 void Before_FETCH_SLIVER_AUTO(){
 		SMALL_YAW = - (496199/2) + 50000;
-		LIFT = -622800 + mm2angle_Lift(15);
+		LIFT = -622800 + mm2angle_Lift(25);
 		//变化
 		QS = 620000 - mm2angle_Qs(25);
 		if(fetch_num > 1){
@@ -591,7 +581,8 @@ void Before_FETCH_SLIVER_AUTO(){
 			LIFT = -722000;
 			xipan_top_open();
 			osDelay(1500);
-			LIFT = -350000;
+			//往上拔
+			LIFT = -350000 + mm2angle_Lift(50);
 			osDelay(750);
 			
 			QS = 427000 - mm2angle_Qs(30);
@@ -621,6 +612,7 @@ void Before_FETCH_SLIVER_AUTO(){
 			xipan_top_close();
 			osDelay(1000);
 			LIFT = -622800 + mm2angle_Lift(15);
+			SMALL_YAW = SMALL_YAW_STD + 42*5000;
 			wait_until(lift_greater, -622800);
 			// 摆第二个位置
 			YAW = YAW_STD;
@@ -638,7 +630,8 @@ void Before_FETCH_SLIVER_AUTO(){
 			LIFT = -722000;
 			xipan_top_open();
 			osDelay(1500);
-			LIFT = -350000;
+			//往上拔
+			LIFT = -350000 + mm2angle_Lift(50);
 			osDelay(750);
 			
 			QS = 409000;
@@ -669,7 +662,7 @@ void Before_FETCH_SLIVER_AUTO(){
 
 			xipan_top_close();
 			osDelay(1000);
-			LIFT = -622800 + mm2angle_Lift(15);
+			LIFT = -622800 + mm2angle_Lift(25);
 			wait_until(lift_greater, -622800);
 		}
 
@@ -1141,13 +1134,13 @@ void Exit_Last_Mode(){
 		if(posemod == NONE){
 			camera_reset();
 			// 取金矿菜单退回NONE
-			ui_remove_default_GOLD();
+			// ui_remove_default_GOLD();
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
 			ui_default_Menu_ModeText->str_length = 6;
 			ui_update_default_Menu();
 
 			ui_remove_default_menu2();
-			ui_remove_default_menu3();
+			// ui_remove_default_menu3();
 			LIFT = LIFT_STD;
 			PITCH = PITCH_UP;
 			ROLL = ROLL_STD;
@@ -1160,13 +1153,13 @@ void Exit_Last_Mode(){
 		if(posemod == NONE){
 			camera_reset();
 			// 取金矿退回NONE，清理金UI
-			ui_remove_default_GOLD();
+			// ui_remove_default_GOLD();
 			strcpy(ui_default_Menu_ModeText->string, "NONE  ");
 			ui_default_Menu_ModeText->str_length = 6;
 			ui_update_default_Menu();
 
 			ui_remove_default_menu2();
-			ui_remove_default_menu3();
+			// ui_remove_default_menu3();
 
 			
 		}

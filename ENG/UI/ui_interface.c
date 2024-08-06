@@ -5,15 +5,15 @@
 #include "ui_interface.h"
 #include <string.h>
 
-//#define ENG_ID BLUE_ENG_ID
- #define ENG_ID RED_ENG_ID
+// #define ENG_ID BLUE_ENG_ID
+#define ENG_ID RED_ENG_ID
 
 #define BLUE_ENG_ID 102
 #define RED_ENG_ID 2
 
 uint8_t seq = 0;
 int ui_self_id = ENG_ID;
-QueueHandle_t ui_queue;
+QueueHandle_t ui_queue; 
 ui_msg_t ui_msg_send_buf;
 //void print_message(const uint8_t *message, const int length) {
 //    for (int i = 0; i < length; i++) {

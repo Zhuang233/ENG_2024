@@ -26,12 +26,12 @@ void _ui_init_default_menu2_2() {
 
     ui_default_menu2_select->figure_tpye = 1;
     ui_default_menu2_select->layer = 2;
-    ui_default_menu2_select->start_x = 99;
-    ui_default_menu2_select->start_y = 727;
+    ui_default_menu2_select->start_x = 239;
+    ui_default_menu2_select->start_y = 727 + 15;
     ui_default_menu2_select->color = 1;
     ui_default_menu2_select->width = 5;
-    ui_default_menu2_select->end_x = 199;
-    ui_default_menu2_select->end_y = 777;
+    ui_default_menu2_select->end_x = 339;
+    ui_default_menu2_select->end_y = 777 + 15;
 
 
     CAT(ui_proc_, CAT(FRAME_OBJ_NUM, _frame))(&ui_default_menu2_2);
