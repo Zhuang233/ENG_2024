@@ -727,12 +727,13 @@ void Before_EXCHANGE_INIT(){
 	ui_update_default_Menu();
 	ui_init_default_exchange();
 	ui_init_default_exchangeMenu();
-	if(to_exchange_pos != TO_EXCHANGE_TOP){
-		if(to_exchange_pos == TO_EXCHANGE_RIGHT) select_exchange_right();
-		else if (to_exchange_pos == TO_EXCHANGE_LEFT) select_exchange_left();
-		else if (to_exchange_pos == TO_EXCHANGE_SIDE) select_exchange_side();
-		_ui_update_default_exchangeMenu_1();
-	}
+	to_exchange_pos = TO_EXCHANGE_TOP;
+	// if(to_exchange_pos != TO_EXCHANGE_TOP){
+	// 	if(to_exchange_pos == TO_EXCHANGE_RIGHT) select_exchange_right();
+	// 	else if (to_exchange_pos == TO_EXCHANGE_LEFT) select_exchange_left();
+	// 	else if (to_exchange_pos == TO_EXCHANGE_SIDE) select_exchange_side();
+	// 	_ui_update_default_exchangeMenu_1();
+	// }
 }
 void EXCHANGE_INIT_loop(){
 	if(Key_Check_Press(&Keys.KEY_G)){
@@ -771,7 +772,7 @@ void Before_EXCHANGE(){
 		YAW = YAW_LEFT;
 		ROLL = ROLL_STD;
 		LIFT = -1120000;
-		QS = 470000;
+		QS = 470000 - mm2angle_Qs(50);
 		HY = -189000;
 		osDelay(700);
 		PITCH = PITCH_DOWN;
@@ -812,7 +813,7 @@ void Before_EXCHANGE(){
 		YAW = YAW_RIGHT;
 		ROLL = ROLL_STD;
 		LIFT = -1120000;
-		QS = 437200;
+		QS = 437200 - mm2angle_Qs(20);
 		HY = -189000;
 		osDelay(700);
 		PITCH = PITCH_DOWN;
