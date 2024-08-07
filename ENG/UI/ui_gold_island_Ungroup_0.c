@@ -26,11 +26,11 @@ void _ui_init_gold_island_Ungroup_0() {
 
     ui_gold_island_Ungroup_NewRound->figure_tpye = 2;
     ui_gold_island_Ungroup_NewRound->layer = 0;
-    ui_gold_island_Ungroup_NewRound->r = 13;
+    ui_gold_island_Ungroup_NewRound->r = 33;
     ui_gold_island_Ungroup_NewRound->start_x = 955;
     ui_gold_island_Ungroup_NewRound->start_y = 534;
     ui_gold_island_Ungroup_NewRound->color = 0;
-    ui_gold_island_Ungroup_NewRound->width = 10;
+    ui_gold_island_Ungroup_NewRound->width = 15;
 
 
     CAT(ui_proc_, CAT(FRAME_OBJ_NUM, _frame))(&ui_gold_island_Ungroup_0);
