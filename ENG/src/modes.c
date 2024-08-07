@@ -554,8 +554,8 @@ void FETCH_SLIVER_INIT_loop(){
 	}
 }
 void Before_FETCH_SLIVER_AUTO(){
-		SMALL_YAW = - (496199/2) + 50000;
-		LIFT = -622800 + mm2angle_Lift(25);
+		SMALL_YAW = - (496199/2) + 50000 + 50000;
+		LIFT = -622800 + mm2angle_Lift(35);
 		//变化
 		QS = 620000 - mm2angle_Qs(25);
 		if(fetch_num > 1){
@@ -589,7 +589,7 @@ void Before_FETCH_SLIVER_AUTO(){
 			HY = -189000;
 			yaw_rotate_slow_flag = true;
 			yaw_slow = YAW_LEFT;
-			osDelay(1000);
+			osDelay(1500);
 			yaw_rotate_slow_flag = false;
 
 			// if(fetch_mode == BY_HAND){
@@ -611,8 +611,9 @@ void Before_FETCH_SLIVER_AUTO(){
 			wait_until(lift_less, -1170000);
 			xipan_top_close();
 			osDelay(1000);
-			LIFT = -622800 + mm2angle_Lift(15);
-			SMALL_YAW = SMALL_YAW_STD + 42*5000;
+			LIFT = -622800 + mm2angle_Lift(35);
+			// 修改8/7
+			SMALL_YAW = SMALL_YAW_STD + 72*5000;
 			wait_until(lift_greater, -622800);
 			// 摆第二个位置
 			YAW = YAW_STD;
@@ -639,7 +640,7 @@ void Before_FETCH_SLIVER_AUTO(){
 
 			yaw_rotate_slow_flag = true;
 			yaw_slow = YAW_RIGHT;
-			osDelay(1000);
+			osDelay(1500);
 			yaw_rotate_slow_flag = false;
 
 			// if(fetch_mode == BY_HAND){
@@ -662,7 +663,7 @@ void Before_FETCH_SLIVER_AUTO(){
 
 			xipan_top_close();
 			osDelay(1000);
-			LIFT = -622800 + mm2angle_Lift(25);
+			LIFT = -622800 + mm2angle_Lift(35);
 			wait_until(lift_greater, -622800);
 		}
 
@@ -710,7 +711,6 @@ void Before_FETCH_SLIVER_AUTO(){
 		posemode_change_flag = true;
 }
 void FETCH_SLIVER_AUTO_loop(){
-
 }
 //-------------------------------------------------
 
@@ -995,6 +995,7 @@ void STORE_INIT_loop(){
 void Before_STORE(){
 	LIFT = -1120000 + mm2angle_Lift(50);
 	if(to_store_pos == TO_STORE_LEFT){
+		// 修改8/7
 		SMALL_YAW = SMALL_YAW_STD + 85*5000;
 		QS = 427000;
 		HY = -189000 - mm2angle_Hy(25);
@@ -1009,7 +1010,8 @@ void Before_STORE(){
 		xipan_top_close();
 		xipan_left_open();
 		LIFT = -1270000;
-		SMALL_YAW = SMALL_YAW_STD + 50*5000;
+		// 修改8/7
+		// SMALL_YAW = SMALL_YAW_STD + 50*5000;
 		osDelay(2500);
 	}
 	else if (to_store_pos == TO_STORE_RIGHT) {
@@ -1058,7 +1060,7 @@ void Before_GROUND(){
 	ui_update_default_Menu();
 
 	QS = mm2angle_Qs(190);
-	LIFT = -1720000 - mm2angle_Lift(20);
+	LIFT = -1720000;
 	wait_until(qs_greater, mm2angle_Qs(180));
 	YAW = YAW_STD;
 	ROLL = ROLL_STD;
@@ -1076,7 +1078,7 @@ void Before_GROUND(){
 	CAMERA_YAW = CAMERA_YAW_STD;
 
 	xipan_top_open();
-	LIFT = LIFT - mm2angle_Lift(30);
+	LIFT = LIFT - mm2angle_Lift(50);
 	osDelay(1000);
 	LIFT = LIFT_STD;
 	HY = HY_STD;
