@@ -6,7 +6,7 @@
 #include "string.h"
 
 #define FRAME_ID 0
-#define GROUP_ID 0
+#define GROUP_ID 6
 #define START_ID 0
 
 ui_string_frame_t ui_default_exchangeMenu_0;

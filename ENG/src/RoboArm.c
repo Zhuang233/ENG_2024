@@ -593,22 +593,22 @@ void SubArm_Ctrl(){
 	SubArm_ctrl_value.roll = AngleMap_Roll(custom_controller_data_t.adc_value2);
 	SubArm_ctrl_value.yaw = AngleMap_Yaw(custom_controller_data_t.adc_value1);
 
-	if(value_between(SubArm_ctrl_value.lift, -mm2angle_Lift(50), 0)){
+	if(value_between(SubArm_ctrl_value.lift, -mm2angle_Lift(120), 0)){
 		SubArmResetState.lift = true;
 	}
-	if(value_between(SubArm_ctrl_value.hy, HY_STD - mm2angle_Hy(50), HY_STD + mm2angle_Hy(50))){
+	if(value_between(SubArm_ctrl_value.hy, HY_STD - mm2angle_Hy(80), HY_STD + mm2angle_Hy(80))){
 		SubArmResetState.hy = true;
 	}
-	if(value_between(SubArm_ctrl_value.qs, QS_ANGLE_MAX/2 - mm2angle_Qs(50), QS_ANGLE_MAX/2+mm2angle_Qs(50))){
+	if(value_between(SubArm_ctrl_value.qs, QS_ANGLE_MAX/2 - mm2angle_Qs(100), QS_ANGLE_MAX/2+mm2angle_Qs(100))){
 		SubArmResetState.qs = true;
 	}
 	if(value_between(SubArm_ctrl_value.roll, ROLL_STD -8192 , ROLL_STD + 8192)){
 		SubArmResetState.roll = true;
 	}
-	if(value_between(SubArm_ctrl_value.pitch, 0, 4000)){
+	if(value_between(SubArm_ctrl_value.pitch, 0, 6000)){
 		SubArmResetState.pitch = true;
 	}
-	if(value_between(SubArm_ctrl_value.yaw, YAW_STD - 2000, YAW_STD + 2000)){
+	if(value_between(SubArm_ctrl_value.yaw, YAW_STD - 4000, YAW_STD + 4000)){
 		SubArmResetState.yaw = true;
 	}
 

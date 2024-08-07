@@ -202,31 +202,31 @@ void SubArm_limit_ui_show(){
 		ui_default_exchange_topLine->end_y = 802;
 		ui_update_default_exchange();
 	}
-	else if (!(lift_greater(LIFT_MAX - mm2angle_Lift(10)))  && ui_default_exchange_topLine->start_x != 0) {
+	else if (!(lift_greater(LIFT_MAX - mm2angle_Lift(20)))  && ui_default_exchange_topLine->start_x != 0) {
 		hind_line(ui_default_exchange_topLine);
 		ui_update_default_exchange();
 	}
 
-	if((hy_greater(HY_ANGLE_MAX - mm2angle_Hy(10)))  && ui_default_exchange_llimitLine->start_x == 0){
+	if((hy_greater(HY_ANGLE_MAX - mm2angle_Hy(20)))  && ui_default_exchange_llimitLine->start_x == 0){
 		ui_default_exchange_llimitLine->start_x = 299;
 		ui_default_exchange_llimitLine->start_y = 778;
 		ui_default_exchange_llimitLine->end_x = 299;
 		ui_default_exchange_llimitLine->end_y = 357;
 		ui_update_default_exchange();
 	}
-	else if (!(hy_greater(HY_ANGLE_MAX - mm2angle_Hy(10)))  && ui_default_exchange_llimitLine->start_x != 0){
+	else if (!(hy_greater(HY_ANGLE_MAX - mm2angle_Hy(20)))  && ui_default_exchange_llimitLine->start_x != 0){
 		hind_line(ui_default_exchange_llimitLine);
 		ui_update_default_exchange();
 	} 
 
-	if((hy_less(HY_ANGLE_MIN + mm2angle_Hy(10)))  && ui_default_exchange_rlimitLine->start_x == 0){
+	if((hy_less(HY_ANGLE_MIN + mm2angle_Hy(20)))  && ui_default_exchange_rlimitLine->start_x == 0){
 		ui_default_exchange_rlimitLine->start_x = 1349;
 		ui_default_exchange_rlimitLine->start_y = 778;
 		ui_default_exchange_rlimitLine->end_x = 1349;
 		ui_default_exchange_rlimitLine->end_y = 357;
 		ui_update_default_exchange();
 	}
-	else if (!(hy_less(HY_ANGLE_MIN + mm2angle_Hy(10)))  && ui_default_exchange_rlimitLine->start_x != 0){
+	else if (!(hy_less(HY_ANGLE_MIN + mm2angle_Hy(20)))  && ui_default_exchange_rlimitLine->start_x != 0){
 		hind_line(ui_default_exchange_rlimitLine);
 		ui_update_default_exchange();
 	} 
@@ -238,13 +238,13 @@ void SubArm_unreset_warning_show(){
 		first_show_SubArm_unreset_warning = false;
 		ui_init_default_waring();
 	}
-	if(	first_delete_SubArm_unreset_warning \
-		&&  SubArmResetState.hy == true \
-		// && 	SubArmResetState.qs == true \
-		// && 	SubArmResetState.lift == true \
-		// && 	SubArmResetState.roll == true \
-		// && 	SubArmResetState.yaw == true \
-		// && 	SubArmResetState.pitch == true 
+	if(	first_delete_SubArm_unreset_warning == true \
+		&&  SubArmResetState.hy == 1 \
+		&&  SubArmResetState.lift == 1 \
+		&&  SubArmResetState.qs == 1 \
+		&&  SubArmResetState.roll == 1 \
+		&&  SubArmResetState.pitch == 1 \
+		&&  SubArmResetState.yaw == 1 \
 	){
 		first_delete_SubArm_unreset_warning = false;
 		ui_remove_default_waring();
@@ -728,6 +728,8 @@ void Before_EXCHANGE_INIT(){
 	ui_init_default_exchange();
 	ui_init_default_exchangeMenu();
 	to_exchange_pos = TO_EXCHANGE_TOP;
+	first_show_SubArm_unreset_warning = true;
+	first_delete_SubArm_unreset_warning = true;
 	// if(to_exchange_pos != TO_EXCHANGE_TOP){
 	// 	if(to_exchange_pos == TO_EXCHANGE_RIGHT) select_exchange_right();
 	// 	else if (to_exchange_pos == TO_EXCHANGE_LEFT) select_exchange_left();
