@@ -50,6 +50,7 @@ typedef struct __attribute__((packed)){
 	uint8_t resetable;
 	uint8_t power_less_flag;
 	uint8_t reset_qs_flag;
+	uint32_t last_roll_pos;
 	uint8_t tail;
 }FiveJointCtrlDataTD;
 

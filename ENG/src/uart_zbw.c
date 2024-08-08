@@ -29,6 +29,7 @@ void sync_data_to_c_init(){
 	sync_data_to_c.data.resetable = 0;
 	sync_data_to_c.data.power_less_flag = 0;
 	sync_data_to_c.data.reset_qs_flag = 0;
+	sync_data_to_c.data.last_roll_pos = 0;
 }
 
 void decode_five_jiont_back_data(){
