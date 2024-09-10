@@ -674,10 +674,12 @@ void VirtualLinkTask(void const * argument){
 void SecondArmTask(void *argument)
 {
 	osDelay(3000); //复位得等3s 2006上电没那么快工作
-	reset_small_qs();
 	reset_small_lift();
+	SMALL_LIFT = SMALL_LIFT_MIN;
+	reset_small_qs();
 	while (!lift_inited) {
-	 osDelay(1);
+		Update_Small_Lift_Pos();
+	 	osDelay(1);
 	}
 	reset_small_yaw();
 	reset_lift_camera();

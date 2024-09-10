@@ -599,7 +599,7 @@ void SubArm_Ctrl(){
 	if(value_between(SubArm_ctrl_value.hy, HY_STD - mm2angle_Hy(80), HY_STD + mm2angle_Hy(80))){
 		SubArmResetState.hy = true;
 	}
-	if(value_between(SubArm_ctrl_value.qs, QS_ANGLE_MAX/2 - mm2angle_Qs(100), QS_ANGLE_MAX/2+mm2angle_Qs(100))){
+	if(value_between(SubArm_ctrl_value.qs, 0, mm2angle_Qs(150))){
 		SubArmResetState.qs = true;
 	}
 	if(value_between(SubArm_ctrl_value.roll, ROLL_STD -8192 , ROLL_STD + 8192)){

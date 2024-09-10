@@ -118,7 +118,7 @@ int32_t virtual_link(int32_t x);
 #define SMALL_YAW_STD (-496199)
 
 #define SMALL_LIFT_MAX 452000
-#define SMALL_LIFT_MIN 15000
+#define SMALL_LIFT_MIN 80000
 
 #define SMALL_QS_MAX 442000
 #define SMALL_QS_MIN 50000

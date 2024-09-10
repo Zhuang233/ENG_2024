@@ -302,6 +302,8 @@ void NONE_loop(){
 		xipan_bottom_close();
 		
 	}
+	sync_data_to_c.data.last_roll_pos = 0;
+	SMALL_LIFT = SMALL_LIFT_MIN;
 }
 //-------------------------------------------------
 
@@ -317,7 +319,7 @@ void Before_FETCH_GOLD_INIT(){
 	// SMALL_YAW = 50000 - 496199;
 	// wait_until(small_yaw_less, 70000);
 
-	LIFT = -1720000 + mm2angle_Lift(20);
+	LIFT = -1720000 + mm2angle_Lift(25);
 	// HY = -330000;
 	ROLL = ROLL_STD;
 	osDelay(1000);
@@ -407,20 +409,20 @@ void Before_FETCH_GOLD_AUTO(){
 		PITCH = 16000;
 		wait_until(press_key_F, 0);
 		xipan_top_open();
-		QS = 550000- mm2angle_Qs(30);
+		QS = 550000 - mm2angle_Qs(20);
 		osDelay(1000);
 		if(fetch_mode == BY_HAND){
 			wait_until(press_key_F, 0);
 		}
 
-		LIFT = -1550000 + mm2angle_Lift(20);
+		LIFT = -1550000 + mm2angle_Lift(25);
 		osDelay(500);
 		if(fetch_mode == BY_HAND){
 			wait_until(press_key_F, 0);
 		}
 		
 		if(fetch_mode == BY_HAND){
-			QS = 550000- mm2angle_Qs(210);
+			QS = 550000 - mm2angle_Qs(200);
 			wait_until(press_key_F, 0);
 			QS = QS_STD;
 		}
@@ -555,7 +557,11 @@ void FETCH_SLIVER_INIT_loop(){
 }
 void Before_FETCH_SLIVER_AUTO(){
 		SMALL_YAW = - (496199/2) + 50000 + 50000;
-		LIFT = -622800 + mm2angle_Lift(35);
+		LIFT = -622800 + mm2angle_Lift(45);
+		
+		// 自动后退,摆好位置
+		chassis_back(550, 500);
+
 		//变化
 		QS = 620000 - mm2angle_Qs(25);
 		if(fetch_num > 1){
@@ -566,8 +572,6 @@ void Before_FETCH_SLIVER_AUTO(){
 		}
 		ROLL = ROLL_STD;
 		YAW = YAW_STD;
-		// 自动后退,摆好位置
-		chassis_back(550, 500);
 		wait_until(qs_greater, 500000);
 		PITCH = PITCH_DOWN;
 		osDelay(800);
@@ -578,14 +582,14 @@ void Before_FETCH_SLIVER_AUTO(){
 			}
 
 			//下降，吸
-			LIFT = -722000;
+			LIFT = -722000 + mm2angle_Lift(10);
 			xipan_top_open();
 			osDelay(1500);
 			//往上拔
-			LIFT = -350000 + mm2angle_Lift(50);
+			LIFT = -350000 + mm2angle_Lift(60);
 			osDelay(750);
 			
-			QS = 427000 - mm2angle_Qs(30);
+			QS = 427000 - mm2angle_Qs(85);
 			HY = -189000;
 			yaw_rotate_slow_flag = true;
 			yaw_slow = YAW_LEFT;
@@ -607,11 +611,11 @@ void Before_FETCH_SLIVER_AUTO(){
 			xipan_left_open();
 
 			// 下压
-			LIFT = -1270000;
+			LIFT = -1270000 + mm2angle_Lift(10);
 			wait_until(lift_less, -1170000);
 			xipan_top_close();
 			osDelay(1000);
-			LIFT = -622800 + mm2angle_Lift(35);
+			LIFT = -622800 + mm2angle_Lift(45);
 			// 修改8/7
 			SMALL_YAW = SMALL_YAW_STD + 72*5000;
 			wait_until(lift_greater, -622800);
@@ -628,14 +632,14 @@ void Before_FETCH_SLIVER_AUTO(){
 			}
 
 			//下降，吸
-			LIFT = -722000;
+			LIFT = -722000 + mm2angle_Lift(10);
 			xipan_top_open();
 			osDelay(1500);
 			//往上拔
-			LIFT = -350000 + mm2angle_Lift(50);
+			LIFT = -350000 + mm2angle_Lift(60);
 			osDelay(750);
 			
-			QS = 409000;
+			QS = 409000 - mm2angle_Qs(55);
 			HY = -193000;
 
 			yaw_rotate_slow_flag = true;
@@ -658,12 +662,12 @@ void Before_FETCH_SLIVER_AUTO(){
 			xipan_right_open();
 
 			// 下压
-			LIFT = -1270000;
+			LIFT = -1270000 + mm2angle_Lift(10);
 			wait_until(lift_less, -1170000);
 
 			xipan_top_close();
 			osDelay(1000);
-			LIFT = -622800 + mm2angle_Lift(35);
+			LIFT = -622800 + mm2angle_Lift(45);
 			wait_until(lift_greater, -622800);
 		}
 
@@ -684,10 +688,10 @@ void Before_FETCH_SLIVER_AUTO(){
 		}
 
 		//下降，吸
-		LIFT = -722000;
+		LIFT = -722000 + mm2angle_Lift(10);
 		xipan_top_open();
 		osDelay(1500);
-		LIFT = -350000 + mm2angle_Lift(50);
+		LIFT = -350000 + mm2angle_Lift(60);
 		osDelay(750);
 		
 		chassis_auto_ctrl_flag = 1;
@@ -773,8 +777,8 @@ void Before_EXCHANGE(){
 
 		YAW = YAW_LEFT;
 		ROLL = ROLL_STD;
-		LIFT = -1120000;
-		QS = 470000 - mm2angle_Qs(50);
+		LIFT = -1120000 + mm2angle_Lift(10);
+		QS = 470000 - mm2angle_Qs(105);
 		HY = -189000;
 		osDelay(700);
 		PITCH = PITCH_DOWN;
@@ -782,7 +786,7 @@ void Before_EXCHANGE(){
 		wait_until(press_key_F,0);
 
 		// 下压
-		LIFT = -1270000;
+		LIFT = -1270000 + mm2angle_Lift(10);
 
 		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
 		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
@@ -814,8 +818,8 @@ void Before_EXCHANGE(){
 
 		YAW = YAW_RIGHT;
 		ROLL = ROLL_STD;
-		LIFT = -1120000;
-		QS = 437200 - mm2angle_Qs(20);
+		LIFT = -1120000 + mm2angle_Lift(10);
+		QS = 437200 - mm2angle_Qs(75);
 		HY = -189000;
 		osDelay(700);
 		PITCH = PITCH_DOWN;
@@ -823,7 +827,7 @@ void Before_EXCHANGE(){
 		wait_until(press_key_F,0);
 
 		// 下压
-		LIFT = -1270000;
+		LIFT = -1270000 + mm2angle_Lift(10);
 
 		CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
 		CAMERA_YAW = CAMERA_YAW_EXCHANGE;
@@ -922,7 +926,7 @@ void Before_EXCHANGE(){
 	// 初始化同步映射
 	// wait_until(bool (*condition)(int), int arg)
 	LIFT = LIFT_MAX;
-	QS = QS_ANGLE_MAX/2;
+	QS = QS_ANGLE_MIN;
 	HY = HY_STD;
 	ROLL = ROLL_STD;
 	YAW = YAW_STD;
@@ -963,6 +967,15 @@ void EXCHANGE_loop(){
 			CAMERA_PITCH = CAMERA_PITCH_EXCHANGE;
 		}
 	}
+	
+	// 末端roll
+	if(Key_Check_Hold(&Keys.KEY_F)){
+		sync_data_to_c.data.last_roll_pos += 10000; 
+	}
+	if(Key_Check_Hold(&Keys.KEY_G)){
+		sync_data_to_c.data.last_roll_pos -= 10000;
+	}
+	
 	SubArm_limit_ui_show();
 	SubArm_unreset_warning_show();
 }
@@ -1000,7 +1013,7 @@ void Before_STORE(){
 	if(to_store_pos == TO_STORE_LEFT){
 		// 修改8/7
 		SMALL_YAW = SMALL_YAW_STD + 85*5000;
-		QS = 427000;
+		QS = 427000 - mm2angle_Qs(85);
 		HY = -189000 - mm2angle_Hy(25);
 
 		yaw_rotate_slow_flag = true;
@@ -1018,7 +1031,7 @@ void Before_STORE(){
 		osDelay(2500);
 	}
 	else if (to_store_pos == TO_STORE_RIGHT) {
-		QS = 427000;
+		QS = 427000 - mm2angle_Qs(85);
 		HY = -189000;
 
 		yaw_rotate_slow_flag = true;
@@ -1063,7 +1076,7 @@ void Before_GROUND(){
 	ui_update_default_Menu();
 
 	QS = mm2angle_Qs(190);
-	LIFT = -1720000;
+	LIFT = -1720000 + mm2angle_Lift(10);
 	wait_until(qs_greater, mm2angle_Qs(180));
 	YAW = YAW_STD;
 	ROLL = ROLL_STD;
